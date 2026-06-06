@@ -1,14 +1,18 @@
-import { Smartphone, Cloud, CloudCog, Cpu, Lock, Settings, Sparkles } from "lucide-react";
+import { Smartphone, Cloud, CloudCog, Cpu, Lock, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useCoreSpend, type Category } from "@/lib/corespend-store";
+import { useCoreSpend, type Category, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 
-const ITEMS: { key: Category; label: string; icon: typeof Smartphone; available: boolean }[] = [
+type NavItem = { key: ActiveView; label: string; icon: typeof Smartphone; available: boolean; pinned?: boolean };
+
+const ITEMS: NavItem[] = [
+  { key: "overview", label: "Gesamtübersicht (Transparenz)", icon: LayoutDashboard, available: true, pinned: true },
   { key: "mobilfunk", label: "Mobilfunk & Telco", icon: Smartphone, available: true },
   { key: "m365", label: "Microsoft 365", icon: Cloud, available: true },
   { key: "saas", label: "SaaS & Cloud", icon: CloudCog, available: false },
   { key: "hardware", label: "Hardware & Assets", icon: Cpu, available: false },
 ];
+
 
 export function Sidebar() {
   const { activeView, setActiveView } = useCoreSpend();
