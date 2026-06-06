@@ -133,7 +133,7 @@ function AdminInner() {
           </div>
         </div>
         <p className="text-[11px] text-muted-foreground mt-3">
-          Ohne Override wird der Preis automatisch aus den Upload-Status (Basis 2.800 € − 400 € je Modul) berechnet.
+          Ohne Override wird der Preis automatisch aus den Upload-Status (Basis 2.800 € − 300 € je Bereich, min. 1.300 €) berechnet.
         </p>
       </div>
 
