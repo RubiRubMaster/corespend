@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
-import { TrendingDown, Wallet, Sparkles, ArrowUpRight, CheckCircle2, Bot, Lock, ChevronRight } from "lucide-react";
 import { useCoreSpend, formatEUR, CATEGORIES, CATEGORY_META, type Category } from "@/lib/corespend-store";
-import { iconFor } from "./iconFor";
 import { cn } from "@/lib/utils";
 
 export function CoreDashboard() {
@@ -36,14 +34,12 @@ export function CoreDashboard() {
           label="Gesamte IT-Ausgaben"
           value={formatEUR(totalCost)}
           sub="pro Jahr · 5 Kernbereiche aggregiert"
-          icon={<Wallet className="h-5 w-5" />}
           gradient="from-primary/15 via-primary/5 to-transparent"
         />
         <TopMetric
           label="Gesamtersparnis · Potenzial"
           value={formatEUR(totalSavings)}
           sub="pro Jahr · KI-validiert, marktbenchmarked"
-          icon={<TrendingDown className="h-5 w-5" />}
           gradient="from-success/20 via-success/5 to-transparent"
           accent
         />
@@ -51,7 +47,6 @@ export function CoreDashboard() {
           label="CoreSpend Abonnement-Tarif"
           value={`${formatEUR(currentPrice)} / Mon.`}
           sub="dynamisch reduziert je freigeschaltetem Bereich"
-          icon={<Sparkles className="h-5 w-5" />}
           gradient="from-primary/10 via-success/10 to-transparent"
           badge="Aktiv"
         />
@@ -92,14 +87,14 @@ export function CoreDashboard() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-success/15 pointer-events-none" />
         <div className="relative flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-success grid place-items-center">
-              <Bot className="h-6 w-6 text-background" />
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-success grid place-items-center text-lg font-bold text-background">
+              AI
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold">CoreAI · Negotiation Agent</h3>
                 <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5">
-                  <Lock className="h-3 w-3" /> Coming Soon
+                  <span>🔒</span> Coming Soon
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mt-1 max-w-xl">
@@ -108,7 +103,7 @@ export function CoreDashboard() {
               </p>
             </div>
           </div>
-          <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+          <span className="text-muted-foreground group-hover:text-primary transition-colors text-sm">→</span>
         </div>
       </button>
     </div>
@@ -116,15 +111,14 @@ export function CoreDashboard() {
 }
 
 function TopMetric({
-  label, value, sub, icon, gradient, accent, badge,
-}: { label: string; value: ReactNode; sub: string; icon: ReactNode; gradient: string; accent?: boolean; badge?: string }) {
+  label, value, sub, gradient, accent, badge,
+}: { label: string; value: ReactNode; sub: string; gradient: string; accent?: boolean; badge?: string }) {
   return (
     <div className="relative glass-card p-6 overflow-hidden">
       <div className={cn("absolute inset-0 bg-gradient-to-br pointer-events-none", gradient)} />
       <div className="relative flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{label}</span>
-          <span className={cn("text-muted-foreground", accent && "text-success")}>{icon}</span>
         </div>
         <div className="flex items-baseline gap-3 flex-wrap">
           <div className={cn("text-3xl font-semibold tabular-nums tracking-tight leading-none", accent && "text-success")}>
@@ -132,7 +126,7 @@ function TopMetric({
           </div>
           {badge && (
             <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5">
-              <CheckCircle2 className="h-3 w-3" /> {badge}
+              <span>✓</span> {badge}
             </span>
           )}
         </div>
@@ -152,7 +146,6 @@ function SectionRow({
   onSubClick: (sub: string) => void;
 }) {
   const meta = CATEGORY_META[category];
-  const Icon = iconFor(meta.iconName);
 
   return (
     <div className="glass-card p-6">
@@ -175,8 +168,8 @@ function SectionRow({
                   </span>
                 )}
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5">
-                <Icon className="h-3.5 w-3.5" /> {meta.costSub}
+              <div className="text-xs text-muted-foreground mt-0.5">
+                {meta.costSub}
               </div>
             </div>
           </div>
@@ -187,7 +180,7 @@ function SectionRow({
               value={meta.savingsPerYear ? formatEUR(meta.savingsPerYear) : "—"}
               accent={!!meta.savingsPerYear}
             />
-            <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+            <span className="text-muted-foreground group-hover:text-primary transition-colors text-sm">→</span>
           </div>
         </div>
       </button>
@@ -222,7 +215,7 @@ function SectionRow({
                   </div>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover/sub:text-primary shrink-0 transition-colors" />
+              <span className="text-muted-foreground group-hover/sub:text-primary shrink-0 transition-colors text-sm">›</span>
             </button>
           );
         })}

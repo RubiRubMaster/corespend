@@ -1,6 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
 import { useCoreSpend, CATEGORIES, CATEGORY_META, type Category } from "@/lib/corespend-store";
-import { iconFor } from "./iconFor";
 import { cn } from "@/lib/utils";
 
 export function CoreStart() {
@@ -32,7 +30,6 @@ export function CoreStart() {
 
 function StartCard({ category, unlocked, onClick }: { category: Category; unlocked: boolean; onClick: () => void }) {
   const meta = CATEGORY_META[category];
-  const Icon = iconFor(meta.iconName);
 
   return (
     <button
@@ -46,10 +43,10 @@ function StartCard({ category, unlocked, onClick }: { category: Category; unlock
       <div className="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-primary/10 blur-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="relative flex items-start justify-between mb-6">
-        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border">
-          <Icon className="h-7 w-7 text-primary" />
+        <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border text-2xl">
+          {meta.emoji}
         </div>
-        <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+        <span className="text-muted-foreground group-hover:text-primary transition-colors text-sm">→</span>
       </div>
 
       <div className="relative">
