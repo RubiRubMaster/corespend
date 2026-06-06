@@ -12,9 +12,10 @@ type Props = {
   checklist: string[];
   ctaLabel: string;
   discount: number;
+  subItems?: { emoji: string; label: string }[];
 };
 
-export function UploadCard({ category, title, icon: Icon, available, checklist, ctaLabel, discount }: Props) {
+export function UploadCard({ category, title, icon: Icon, available, checklist, ctaLabel, discount, subItems }: Props) {
   const { categories, startProcessing } = useCoreSpend();
   const state = categories[category];
   const [fileName, setFileName] = useState<string | undefined>();
