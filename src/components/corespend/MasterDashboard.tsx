@@ -36,10 +36,10 @@ export function MasterDashboard() {
       <header className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            CoreSpend · Master-Cockpit
+            CoreSpend · Cockpit
           </div>
           <h1 className="text-3xl font-semibold tracking-tight mt-1">
-            Gesamtübersicht <span className="text-muted-foreground font-normal">· Transparenz</span>
+            Management Overview <span className="text-muted-foreground font-normal">· Transparenz</span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
             Ein zentraler Blick auf alle Kernkostenblöcke deiner IT — vom Telco-Vertrag bis zur Hardware-Flotte.
@@ -90,8 +90,8 @@ export function MasterDashboard() {
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           <SectionCard
-            emoji="📱"
-            title="Mobilfunk & Telco"
+            emoji="📞"
+            title="Telekommunikation"
             icon={Smartphone}
             unlocked={categories.mobilfunk.status !== "idle"}
             cost="221.040 €"
@@ -107,7 +107,7 @@ export function MasterDashboard() {
           />
           <SectionCard
             emoji="💻"
-            title="Microsoft 365"
+            title="Office Suite"
             icon={Cloud}
             unlocked={categories.m365.status !== "idle"}
             cost="294.000 €"
@@ -151,7 +151,7 @@ export function MasterDashboard() {
           />
           <SectionCard
             emoji="🔌"
-            title="Hardware & Assets"
+            title="Hardware"
             icon={Cpu}
             unlocked={categories.hardware.status !== "idle"}
             cost="78.560 €"
