@@ -9,7 +9,6 @@ import {
   type UploadStatus,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
-import { ArrowLeft, RotateCcw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "CoreSpend · Admin" }] }),
@@ -48,7 +47,7 @@ function AdminInner() {
         <div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
             <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
-              <ArrowLeft className="h-3 w-3" /> Zurück
+              <span>←</span> Zurück
             </Link>
             <span>·</span>
             <span>Admin-Steuerung</span>
@@ -62,7 +61,7 @@ function AdminInner() {
           onClick={resetAll}
           className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
         >
-          <RotateCcw className="h-3.5 w-3.5" />
+          <span>↻</span>
           Alles zurücksetzen
         </button>
       </div>

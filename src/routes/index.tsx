@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, Sparkles, BarChart3, Upload, LineChart, Smartphone, Cloud, CloudCog, Cpu } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,8 +32,8 @@ function Landing() {
       <header className="relative z-10">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-success grid place-items-center">
-              <Sparkles className="h-5 w-5 text-background" />
+            <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-success grid place-items-center text-sm font-bold text-background">
+              CS
             </div>
             <div>
               <div className="text-base font-semibold tracking-tight">CoreSpend</div>
@@ -47,7 +46,7 @@ function Landing() {
             to="/app"
             className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface/60 backdrop-blur px-3.5 py-2 text-xs font-medium text-foreground hover:bg-accent transition"
           >
-            Zur Plattform <ArrowRight className="h-3.5 w-3.5" />
+            Zur Plattform <span>→</span>
           </Link>
         </div>
       </header>
@@ -71,10 +70,10 @@ function Landing() {
             className="group inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-6 py-3.5 text-sm font-semibold shadow-[0_20px_60px_-20px_color-mix(in_oklab,var(--success)_70%,transparent)] hover:brightness-110 transition"
           >
             Jetzt Starten
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            <span className="transition group-hover:translate-x-0.5">→</span>
           </Link>
           <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5" /> DSGVO-konform · AES-256 verschlüsselt
+            <span>🛡</span> DSGVO-konform · AES-256 verschlüsselt
           </span>
         </div>
       </section>
@@ -90,19 +89,16 @@ function Landing() {
         <div className="grid gap-5 md:grid-cols-3">
           <Step
             n="01"
-            icon={<Upload className="h-5 w-5" />}
             title="Daten teilen"
             text="Lade Verträge, Rechnungen und Lizenz-Reports in unsere sichere Umgebung. Jede Datei reduziert deinen Plattformpreis."
           />
           <Step
             n="02"
-            icon={<BarChart3 className="h-5 w-5" />}
             title="Benchmark nutzen"
             text="Unsere KI vergleicht deine Konditionen in Echtzeit mit anonymisierten DACH-Marktdaten — ehrlich, datenbasiert, transparent."
           />
           <Step
             n="03"
-            icon={<LineChart className="h-5 w-5" />}
             title="Kosten senken"
             text="Erhalte konkrete Verhandlungshebel und Verhandlungsfenster — oder lass unsere Experten direkt für dich verhandeln."
           />
@@ -118,10 +114,10 @@ function Landing() {
           </h2>
         </div>
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          <AreaTile icon={<Smartphone className="h-5 w-5" />} label="Telekommunikation" sub="Mobilfunk · Festnetz · Daten" />
-          <AreaTile icon={<Cloud className="h-5 w-5" />} label="Office Suite" sub="Microsoft 365 & mehr" />
-          <AreaTile icon={<CloudCog className="h-5 w-5" />} label="SaaS & Cloud" sub="Lizenzen · AWS · Azure · GCP" />
-          <AreaTile icon={<Cpu className="h-5 w-5" />} label="Hardware" sub="Smartphones · Workplace" />
+          <AreaTile label="Telekommunikation" sub="Mobilfunk · Festnetz · Daten" />
+          <AreaTile label="Office Suite" sub="Microsoft 365 & mehr" />
+          <AreaTile label="SaaS & Cloud" sub="Lizenzen · AWS · Azure · GCP" />
+          <AreaTile label="Hardware" sub="Smartphones · Workplace" />
         </div>
       </section>
 
@@ -140,7 +136,7 @@ function Landing() {
             to="/app"
             className="mt-7 inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-6 py-3.5 text-sm font-semibold hover:brightness-110 transition"
           >
-            Jetzt Starten <ArrowRight className="h-4 w-4" />
+            Jetzt Starten <span>→</span>
           </Link>
         </div>
       </section>
@@ -155,21 +151,21 @@ function Landing() {
   );
 }
 
-function Step({ n, icon, title, text }: { n: string; icon: React.ReactNode; title: string; text: string }) {
+function Step({ n, title, text }: { n: string; title: string; text: string }) {
   return (
     <div className="glass-card p-6 relative overflow-hidden">
       <div className="absolute top-4 right-5 text-[11px] font-mono text-muted-foreground/60 tracking-wider">{n}</div>
-      <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-primary">{icon}</div>
+      <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">S</div>
       <h3 className="mt-4 text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{text}</p>
     </div>
   );
 }
 
-function AreaTile({ icon, label, sub }: { icon: React.ReactNode; label: string; sub: string }) {
+function AreaTile({ label, sub }: { label: string; sub: string }) {
   return (
     <div className="glass-card p-5">
-      <div className="h-9 w-9 rounded-lg bg-accent grid place-items-center text-primary">{icon}</div>
+      <div className="h-9 w-9 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">A</div>
       <div className="mt-3 text-sm font-semibold tracking-tight">{label}</div>
       <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>
     </div>
