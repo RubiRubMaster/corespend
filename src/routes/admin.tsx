@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CoreSpendProvider, useCoreSpend, formatEUR, type Category, type UploadStatus } from "@/lib/corespend-store";
+import {
+  CoreSpendProvider,
+  useCoreSpend,
+  formatEUR,
+  CATEGORIES as CAT_KEYS,
+  CATEGORY_META,
+  type Category,
+  type UploadStatus,
+} from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 
@@ -18,12 +26,10 @@ function AdminPage() {
   );
 }
 
-const CATEGORIES: { key: Category; label: string }[] = [
-  { key: "mobilfunk", label: "Mobilfunk & Telco" },
-  { key: "m365", label: "Microsoft 365" },
-  { key: "saas", label: "SaaS & Cloud" },
-  { key: "hardware", label: "Hardware & Assets" },
-];
+const CATEGORIES: { key: Category; label: string }[] = CAT_KEYS.map((k) => ({
+  key: k,
+  label: CATEGORY_META[k].label,
+}));
 
 const STATUSES: UploadStatus[] = ["idle", "processing", "pending", "analyzed"];
 const STATUS_LABEL: Record<UploadStatus, string> = {
@@ -127,7 +133,7 @@ function AdminInner() {
           </div>
         </div>
         <p className="text-[11px] text-muted-foreground mt-3">
-          Ohne Override wird der Preis automatisch aus den Upload-Status (Basis 2.800 € − 400 € je Modul) berechnet.
+          Ohne Override wird der Preis automatisch aus den Upload-Status (Basis 2.800 € − 300 € je Bereich, min. 1.300 €) berechnet.
         </p>
       </div>
 
