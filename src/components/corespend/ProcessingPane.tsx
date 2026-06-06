@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Loader2, ShieldCheck, Clock } from "lucide-react";
 import type { Category } from "@/lib/corespend-store";
 
 const STEPS = [
@@ -26,8 +25,8 @@ export function ProcessingPane({ category: _category, title }: { category: Categ
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center">
-          <Loader2 className="h-5 w-5 text-success animate-spin" />
+        <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-success text-sm font-bold animate-pulse">
+          ↻
         </div>
         <div>
           <h3 className="font-semibold">{title}</h3>
@@ -54,7 +53,7 @@ export function ProcessingPane({ category: _category, title }: { category: Categ
       </div>
 
       <div className="rounded-lg border border-success/30 bg-success/5 px-4 py-3 flex items-start gap-3">
-        <Clock className="h-4 w-4 text-success mt-0.5 shrink-0" />
+        <span className="text-success mt-0.5 shrink-0 text-sm">◷</span>
         <div className="text-xs leading-relaxed">
           <div className="font-medium text-foreground">Expertenprüfung: 24–48 Stunden</div>
           <div className="text-muted-foreground mt-0.5">
@@ -64,7 +63,7 @@ export function ProcessingPane({ category: _category, title }: { category: Categ
       </div>
 
       <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
-        <ShieldCheck className="h-3 w-3" /> Verarbeitung in deutschem Rechenzentrum · ISO 27001
+        <span className="text-success text-xs">🛡</span> Verarbeitung in deutschem Rechenzentrum · ISO 27001
       </div>
     </div>
   );

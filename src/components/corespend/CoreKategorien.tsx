@@ -1,6 +1,4 @@
-import { ArrowLeft, ArrowUpRight, Clock, CheckCircle2, Loader2 } from "lucide-react";
 import { useCoreSpend, CATEGORY_META } from "@/lib/corespend-store";
-import { iconFor } from "./iconFor";
 import { cn } from "@/lib/utils";
 
 export function CoreKategorien() {
@@ -18,7 +16,6 @@ export function CoreKategorien() {
   }
 
   const meta = CATEGORY_META[currentCategory];
-  const Icon = iconFor(meta.iconName);
   const cat = categories[currentCategory];
 
   return (
@@ -28,11 +25,11 @@ export function CoreKategorien() {
           onClick={goToStart}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-3"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Zurück zu Core Start
+          <span>←</span> Zurück zu Core Start
         </button>
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border">
-            <Icon className="h-7 w-7 text-primary" />
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border text-2xl">
+            {meta.emoji}
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">🗂️ Core Kategorien</div>
@@ -74,7 +71,7 @@ export function CoreKategorien() {
                   </div>
                 </div>
                 {!disabled && (
-                  <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-muted-foreground group-hover:text-primary transition-colors text-sm">→</span>
                 )}
               </div>
 
@@ -115,21 +112,21 @@ function StatusBadge({ status }: { status: string }) {
   if (status === "analyzed") {
     return (
       <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5 mt-1">
-        <CheckCircle2 className="h-3 w-3" /> Analysiert
+        <span>✓</span> Analysiert
       </span>
     );
   }
   if (status === "pending") {
     return (
       <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-primary border border-primary/40 bg-primary/10 rounded-full px-2 py-0.5 mt-1">
-        <Clock className="h-3 w-3" /> In Prüfung
+        <span>◷</span> In Prüfung
       </span>
     );
   }
   if (status === "processing") {
     return (
       <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-primary border border-primary/40 bg-primary/10 rounded-full px-2 py-0.5 mt-1">
-        <Loader2 className="h-3 w-3 animate-spin" /> Verarbeitung
+        <span className="animate-spin inline-block">↻</span> Verarbeitung
       </span>
     );
   }

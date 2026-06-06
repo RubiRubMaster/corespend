@@ -1,10 +1,6 @@
 import { useRef, useState } from "react";
-import {
-  ArrowLeft, Upload, FileCheck2, ShieldCheck, Clock, CheckCircle2, KeyRound, Workflow, Copy, RefreshCw, Webhook,
-} from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useCoreSpend, formatEUR, CATEGORY_META, PRICING } from "@/lib/corespend-store";
-import { iconFor } from "./iconFor";
 import { cn } from "@/lib/utils";
 import { ProcessingPane } from "./ProcessingPane";
 
@@ -82,7 +78,6 @@ export function CoreDataUpload() {
 
   const meta = CATEGORY_META[currentCategory];
   const sub = meta.subs.find((s) => s.key === currentSub)!;
-  const Icon = iconFor(meta.iconName);
   const cat = categories[currentCategory];
   const subStatus = cat.subStatus[currentSub] ?? "idle";
   const isProcessing = subStatus === "processing";
@@ -103,11 +98,11 @@ export function CoreDataUpload() {
           onClick={() => goToCategory(currentCategory)}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-3"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Zurück zu {meta.label}
+          <span>←</span> Zurück zu {meta.label}
         </button>
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border">
-            <Icon className="h-7 w-7 text-primary" />
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border text-2xl">
+            {meta.emoji}
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">📥 Core DataUpload</div>
@@ -127,10 +122,10 @@ export function CoreDataUpload() {
         <Tabs defaultValue="manual" className="space-y-5">
           <TabsList className="bg-surface border border-border h-auto p-1">
             <TabsTrigger value="manual" className="gap-2 px-4 py-2">
-              <Upload className="h-4 w-4" /> Manueller Upload
+              <span>↑</span> Manueller Upload
             </TabsTrigger>
             <TabsTrigger value="auto" className="gap-2 px-4 py-2">
-              <Workflow className="h-4 w-4" /> Automatisierter Import
+              <span>⚙</span> Automatisierter Import
             </TabsTrigger>
           </TabsList>
 
@@ -142,7 +137,7 @@ export function CoreDataUpload() {
                   <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Dokumenten-Upload</div>
                   {isComplete && (
                     <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-success">
-                      <CheckCircle2 className="h-3 w-3" /> Hochgeladen
+                      <span>✓</span> Hochgeladen
                     </span>
                   )}
                 </div>
@@ -163,7 +158,7 @@ export function CoreDataUpload() {
                       dragging && "border-success bg-success/5",
                     )}
                   >
-                    <Upload className="h-7 w-7 mx-auto text-muted-foreground" />
+                    <div className="text-2xl text-muted-foreground">↑</div>
                     <p className="text-sm mt-3">
                       {fileName ? (
                         <span className="text-foreground">{fileName}</span>
@@ -173,7 +168,7 @@ export function CoreDataUpload() {
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">PDF · CSV · XLSX · ZIP — max. 50 MB</p>
                     <p className="text-[10px] text-muted-foreground mt-3 flex items-center justify-center gap-1">
-                      <ShieldCheck className="h-3 w-3" /> AES-256 · DSGVO-konform · ISO 27001 RZ Deutschland
+                      <span>🛡</span> AES-256 · DSGVO-konform · ISO 27001 RZ Deutschland
                     </p>
                     <input
                       ref={inputRef}
@@ -186,7 +181,7 @@ export function CoreDataUpload() {
 
                 {isComplete && (
                   <div className="rounded-lg border border-success/40 bg-success/5 px-4 py-3 flex items-start gap-3">
-                    <Clock className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                    <span className="text-success mt-0.5 shrink-0 text-sm">◷</span>
                     <div className="text-xs leading-relaxed">
                       <div className="font-medium text-foreground">In Expertenprüfung (24–48h)</div>
                       <div className="text-muted-foreground mt-0.5">
@@ -219,7 +214,7 @@ export function CoreDataUpload() {
                 <ul className="space-y-2.5">
                   {checklist.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground/90">
-                      <FileCheck2 className="h-4 w-4 text-primary/80 shrink-0 mt-0.5" />
+                      <span className="text-primary/80 shrink-0 mt-0.5">☑</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -238,8 +233,8 @@ export function CoreDataUpload() {
               <div className="glass-card p-6 space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border">
-                      <KeyRound className="h-5 w-5 text-primary" />
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border text-xs font-bold text-primary">
+                      API
                     </div>
                     <div>
                       <h3 className="font-semibold">🔑 REST API</h3>
@@ -252,7 +247,7 @@ export function CoreDataUpload() {
                 </div>
 
                 <CodeRow label="API Key" value={apiKey} onCopy={() => copy(apiKey)} mask />
-                <CodeRow label="Webhook URL" value={webhookUrl} onCopy={() => copy(webhookUrl)} icon={<Webhook className="h-3.5 w-3.5" />} />
+                <CodeRow label="Webhook URL" value={webhookUrl} onCopy={() => copy(webhookUrl)} />
 
                 <div className="rounded-lg border border-border bg-background/50 p-3 text-[11px] font-mono text-muted-foreground leading-relaxed">
                   <span className="text-success">POST</span> {webhookUrl}<br />
@@ -264,7 +259,7 @@ export function CoreDataUpload() {
                   onClick={() => copy(apiKey)}
                   className="w-full flex items-center justify-center gap-2 rounded-lg bg-accent hover:bg-accent/70 px-4 py-2.5 text-sm transition-colors"
                 >
-                  <RefreshCw className="h-4 w-4" /> Neuen API-Key generieren
+                  <span>↻</span> Neuen API-Key generieren
                 </button>
               </div>
 
@@ -272,8 +267,8 @@ export function CoreDataUpload() {
               <div className="glass-card p-6 space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border">
-                      <Workflow className="h-5 w-5 text-primary" />
+                    <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary/20 to-success/20 grid place-items-center border border-border text-xs font-bold text-primary">
+                      n8n
                     </div>
                     <div>
                       <h3 className="font-semibold">⚙️ n8n Automatisierung</h3>
@@ -302,22 +297,22 @@ export function CoreDataUpload() {
                 </div>
 
                 <ul className="space-y-1.5 text-xs text-muted-foreground">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-success" /> Trigger: Webhook · Cron · Datei-Upload</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-success" /> Auth-Node mit hinterlegtem API-Key</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-success" /> Mapping auf CoreSpend-Schema vorkonfiguriert</li>
+                  <li className="flex items-center gap-2"><span className="text-success">✓</span> Trigger: Webhook · Cron · Datei-Upload</li>
+                  <li className="flex items-center gap-2"><span className="text-success">✓</span> Auth-Node mit hinterlegtem API-Key</li>
+                  <li className="flex items-center gap-2"><span className="text-success">✓</span> Mapping auf CoreSpend-Schema vorkonfiguriert</li>
                 </ul>
 
                 <button
                   onClick={() => copy(`{"name":"CoreSpend ${meta.label} ${sub.label}","nodes":[...]}`)}
                   className="w-full flex items-center justify-center gap-2 rounded-lg bg-success/15 hover:bg-success/25 text-success border border-success/40 px-4 py-2.5 text-sm font-medium transition-colors"
                 >
-                  <Copy className="h-4 w-4" /> Workflow-Template kopieren
+                  <span>⎘</span> Workflow-Template kopieren
                 </button>
               </div>
             </div>
 
             <div className="glass-card p-5 text-xs text-muted-foreground flex items-start gap-3">
-              <ShieldCheck className="h-4 w-4 text-success mt-0.5 shrink-0" />
+              <span className="text-success mt-0.5 shrink-0 text-sm">🛡</span>
               <div>
                 <span className="text-foreground font-medium">Sicherheits-Hinweis:</span> Alle automatisierten Imports werden serverseitig validiert,
                 anonymisiert und in einem ISO-27001-zertifizierten Rechenzentrum in Deutschland verarbeitet. Der API-Key kann jederzeit rotiert werden.
@@ -331,13 +326,13 @@ export function CoreDataUpload() {
 }
 
 function CodeRow({
-  label, value, onCopy, mask, icon,
-}: { label: string; value: string; onCopy: () => void; mask?: boolean; icon?: React.ReactNode }) {
+  label, value, onCopy, mask,
+}: { label: string; value: string; onCopy: () => void; mask?: boolean }) {
   const display = mask ? `${value.slice(0, 16)}${"•".repeat(10)}` : value;
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1.5">
-        {icon} {label}
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+        {label}
       </div>
       <div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 pl-3 pr-1.5 py-1.5">
         <code className="flex-1 text-[12px] font-mono text-foreground/90 truncate">{display}</code>
@@ -346,7 +341,7 @@ function CodeRow({
           className="rounded-md p-1.5 hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
           aria-label="Kopieren"
         >
-          <Copy className="h-3.5 w-3.5" />
+          <span className="text-xs">⎘</span>
         </button>
       </div>
     </div>

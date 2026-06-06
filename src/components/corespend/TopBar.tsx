@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { TrendingDown, Zap } from "lucide-react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +20,8 @@ export function TopBar() {
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="flex items-center gap-4 px-6 py-3.5">
         <div className="flex items-center gap-3 glass-card px-4 py-2.5">
-          <div className="h-8 w-8 grid place-items-center rounded-md bg-accent">
-            <Zap className="h-4 w-4 text-primary" />
+          <div className="h-8 w-8 grid place-items-center rounded-md bg-accent text-xs font-bold text-primary">
+            €
           </div>
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -39,7 +38,7 @@ export function TopBar() {
           </div>
           {totalDiscount > 0 && (
             <div className="flex items-center gap-1 ml-2 pl-3 border-l border-border">
-              <TrendingDown className="h-3.5 w-3.5 text-success" />
+              <span className="text-xs text-success">↓</span>
               <span className="text-xs font-medium text-success tabular-nums">
                 −{formatEUR(totalDiscount)}
               </span>
