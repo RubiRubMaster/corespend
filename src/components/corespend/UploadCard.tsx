@@ -117,6 +117,23 @@ export function UploadCard({ category, title, icon: Icon, available, checklist, 
         </div>
       )}
 
+      {subItems && subItems.length > 0 && (
+        <div className="space-y-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Enthaltene Bereiche</div>
+          <div className="flex flex-wrap gap-1.5">
+            {subItems.map((s) => (
+              <span
+                key={s.label}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent/40 px-2.5 py-1 text-[11px] text-foreground/90"
+              >
+                <span>{s.emoji}</span>
+                <span>{s.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="space-y-2">
         <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Benötigte Dokumente</div>
         <ul className="space-y-1.5">
