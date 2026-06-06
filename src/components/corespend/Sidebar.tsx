@@ -1,14 +1,18 @@
-import { Smartphone, Cloud, CloudCog, Cpu, Lock, Settings, Sparkles } from "lucide-react";
+import { Smartphone, Cloud, CloudCog, Cpu, Lock, Settings, Sparkles, LayoutDashboard } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useCoreSpend, type Category } from "@/lib/corespend-store";
+import { useCoreSpend, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 
-const ITEMS: { key: Category; label: string; icon: typeof Smartphone; available: boolean }[] = [
+type NavItem = { key: ActiveView; label: string; icon: typeof Smartphone; available: boolean; pinned?: boolean };
+
+const ITEMS: NavItem[] = [
+  { key: "overview", label: "Gesamtübersicht (Transparenz)", icon: LayoutDashboard, available: true, pinned: true },
   { key: "mobilfunk", label: "Mobilfunk & Telco", icon: Smartphone, available: true },
   { key: "m365", label: "Microsoft 365", icon: Cloud, available: true },
   { key: "saas", label: "SaaS & Cloud", icon: CloudCog, available: false },
   { key: "hardware", label: "Hardware & Assets", icon: Cpu, available: false },
 ];
+
 
 export function Sidebar() {
   const { activeView, setActiveView } = useCoreSpend();
@@ -36,30 +40,35 @@ export function Sidebar() {
         <div className="px-2 pb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           Module
         </div>
-        {ITEMS.map((it) => {
+        {ITEMS.map((it, idx) => {
           const active = activeView === it.key;
           const Icon = it.icon;
           return (
-            <button
-              key={it.key}
-              onClick={() => it.available && setActiveView(it.key)}
-              disabled={!it.available}
-              className={cn(
-                "group w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
-                active
-                  ? "bg-accent text-foreground border border-border shadow-sm"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
-                !it.available && "opacity-60 cursor-not-allowed",
+            <div key={it.key}>
+              <button
+                onClick={() => it.available && setActiveView(it.key)}
+                disabled={!it.available}
+                className={cn(
+                  "group w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
+                  active
+                    ? "bg-accent text-foreground border border-border shadow-sm"
+                    : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  it.pinned && !active && "text-foreground",
+                  !it.available && "opacity-60 cursor-not-allowed",
+                )}
+              >
+                <Icon className={cn("h-4 w-4 shrink-0", it.pinned && "text-primary")} />
+                <span className="flex-1 text-left truncate">{it.label}</span>
+                {!it.available && (
+                  <span className="flex items-center gap-1 text-[9px] uppercase tracking-wider text-muted-foreground">
+                    <Lock className="h-3 w-3" /> Bald
+                  </span>
+                )}
+              </button>
+              {it.pinned && idx === 0 && (
+                <div className="my-2 mx-2 border-t border-border/60" />
               )}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="flex-1 text-left truncate">{it.label}</span>
-              {!it.available && (
-                <span className="flex items-center gap-1 text-[9px] uppercase tracking-wider text-muted-foreground">
-                  <Lock className="h-3 w-3" /> Bald
-                </span>
-              )}
-            </button>
+            </div>
           );
         })}
       </nav>

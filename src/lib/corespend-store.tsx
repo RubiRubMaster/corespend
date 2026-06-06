@@ -8,7 +8,7 @@ export type CategoryState = {
   fileName?: string;
 };
 
-export type ActiveView = Category | "settings";
+export type ActiveView = Category | "overview" | "settings";
 
 const BASE_PRICE = 2800;
 const DISCOUNT_PER_CATEGORY = 400;
@@ -45,7 +45,7 @@ const initialCategories: Record<Category, CategoryState> = {
 
 export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState(initialCategories);
-  const [activeView, setActiveView] = useState<ActiveView>("mobilfunk");
+  const [activeView, setActiveView] = useState<ActiveView>("overview");
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
 
   const setStatus = useCallback((c: Category, s: UploadStatus) => {
