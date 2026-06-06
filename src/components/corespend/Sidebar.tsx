@@ -1,24 +1,33 @@
-import { Smartphone, Cloud, CloudCog, Cpu, Settings, Sparkles, LayoutDashboard, Upload } from "lucide-react";
+import { Settings, Sparkles, LayoutDashboard, Rocket, FolderTree, UploadCloud, Bot, Lock } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useCoreSpend, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 
-type NavItem = { key: ActiveView; label: string; icon: typeof Smartphone; pinned?: boolean };
+type NavItem = { key: ActiveView; label: string; icon: typeof LayoutDashboard; emoji: string };
 
 const PRIMARY: NavItem[] = [
-  { key: "onboarding", label: "Onboarding · Daten-Upload", icon: Upload, pinned: true },
-  { key: "overview", label: "Management Overview", icon: LayoutDashboard, pinned: true },
-];
-
-const MODULES: NavItem[] = [
-  { key: "mobilfunk", label: "Telekommunikation", icon: Smartphone },
-  { key: "m365", label: "Office Suite", icon: Cloud },
-  { key: "saas", label: "SaaS & Cloud", icon: CloudCog },
-  { key: "hardware", label: "Hardware", icon: Cpu },
+  { key: "dashboard", label: "Core Dashboard", icon: LayoutDashboard, emoji: "📊" },
+  { key: "start", label: "Core Start", icon: Rocket, emoji: "🚀" },
+  { key: "kategorie", label: "Core Kategorien", icon: FolderTree, emoji: "🗂️" },
+  { key: "upload", label: "Core DataUpload", icon: UploadCloud, emoji: "📥" },
 ];
 
 export function Sidebar() {
-  const { activeView, setActiveView } = useCoreSpend();
+  const { activeView, setActiveView, goToDashboard, goToStart, currentCategory, currentSub, goToCategory, goToUpload } = useCoreSpend();
+
+  const handle = (k: ActiveView) => {
+    if (k === "dashboard") return goToDashboard();
+    if (k === "start") return goToStart();
+    if (k === "kategorie") {
+      if (currentCategory) return goToCategory(currentCategory);
+      return goToStart(); // need a category first
+    }
+    if (k === "upload") {
+      if (currentCategory && currentSub) return goToUpload(currentCategory, currentSub);
+      return goToStart();
+    }
+    setActiveView(k);
+  };
 
   return (
     <aside className="hidden md:flex w-[260px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
@@ -39,20 +48,51 @@ export function Sidebar() {
         </p>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <div className="px-2 pb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-          Cockpit
+          System
         </div>
-        {PRIMARY.map((it) => (
-          <NavBtn key={it.key} item={it} active={activeView === it.key} onClick={() => setActiveView(it.key)} />
-        ))}
-        <div className="my-3 mx-2 border-t border-border/60" />
-        <div className="px-2 pb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-          Bereiche
-        </div>
-        {MODULES.map((it) => (
-          <NavBtn key={it.key} item={it} active={activeView === it.key} onClick={() => setActiveView(it.key)} />
-        ))}
+        {PRIMARY.map((it) => {
+          const disabled =
+            (it.key === "kategorie" && !currentCategory) ||
+            (it.key === "upload" && (!currentCategory || !currentSub));
+          return (
+            <NavBtn
+              key={it.key}
+              item={it}
+              active={activeView === it.key}
+              disabled={disabled}
+              onClick={() => handle(it.key)}
+            />
+          );
+        })}
+
+        <div className="my-4 mx-2 border-t border-border/60" />
+
+        <button
+          onClick={() => setActiveView("ai")}
+          className={cn(
+            "group w-full text-left rounded-xl p-3 border transition-all relative overflow-hidden",
+            activeView === "ai"
+              ? "border-success/60 bg-success/10"
+              : "border-border bg-gradient-to-br from-primary/5 via-transparent to-success/10 hover:border-success/40",
+          )}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-success grid place-items-center shrink-0">
+              <Bot className="h-4 w-4 text-background" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold leading-tight truncate">CoreAI · Negotiation</div>
+              <div className="text-[10px] uppercase tracking-wider text-success/90 flex items-center gap-1 mt-0.5">
+                <Lock className="h-2.5 w-2.5" /> Coming Soon
+              </div>
+            </div>
+          </div>
+          <p className="mt-2 text-[10.5px] leading-snug text-muted-foreground">
+            Autonomer KI-Verhandlungsassistent · trainiert auf 1.200+ DACH-Verträgen.
+          </p>
+        </button>
       </nav>
 
       <div className="px-3 py-4 border-t border-border space-y-1">
@@ -68,8 +108,7 @@ export function Sidebar() {
   );
 }
 
-function NavBtn({ item, active, onClick }: { item: NavItem; active: boolean; onClick: () => void }) {
-  const Icon = item.icon;
+function NavBtn({ item, active, disabled, onClick }: { item: NavItem; active: boolean; disabled?: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -78,10 +117,11 @@ function NavBtn({ item, active, onClick }: { item: NavItem; active: boolean; onC
         active
           ? "bg-accent text-foreground border border-border shadow-sm"
           : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
-        item.pinned && !active && "text-foreground",
+        disabled && "opacity-50",
       )}
+      title={disabled ? "Bitte erst eine Kategorie auswählen" : undefined}
     >
-      <Icon className={cn("h-4 w-4 shrink-0", item.pinned && "text-primary")} />
+      <span className="text-base leading-none w-5 text-center">{item.emoji}</span>
       <span className="flex-1 text-left truncate">{item.label}</span>
     </button>
   );
