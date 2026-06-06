@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CoreSpendProvider, useCoreSpend, formatEUR, type Category, type UploadStatus } from "@/lib/corespend-store";
+import {
+  CoreSpendProvider,
+  useCoreSpend,
+  formatEUR,
+  CATEGORIES as CAT_KEYS,
+  CATEGORY_META,
+  type Category,
+  type UploadStatus,
+} from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 
@@ -18,12 +26,10 @@ function AdminPage() {
   );
 }
 
-const CATEGORIES: { key: Category; label: string }[] = [
-  { key: "mobilfunk", label: "Mobilfunk & Telco" },
-  { key: "m365", label: "Microsoft 365" },
-  { key: "saas", label: "SaaS & Cloud" },
-  { key: "hardware", label: "Hardware & Assets" },
-];
+const CATEGORIES: { key: Category; label: string }[] = CAT_KEYS.map((k) => ({
+  key: k,
+  label: CATEGORY_META[k].label,
+}));
 
 const STATUSES: UploadStatus[] = ["idle", "processing", "pending", "analyzed"];
 const STATUS_LABEL: Record<UploadStatus, string> = {
