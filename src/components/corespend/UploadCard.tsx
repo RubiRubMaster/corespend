@@ -12,9 +12,10 @@ type Props = {
   checklist: string[];
   ctaLabel: string;
   discount: number;
+  subItems?: { emoji: string; label: string }[];
 };
 
-export function UploadCard({ category, title, icon: Icon, available, checklist, ctaLabel, discount }: Props) {
+export function UploadCard({ category, title, icon: Icon, available, checklist, ctaLabel, discount, subItems }: Props) {
   const { categories, startProcessing } = useCoreSpend();
   const state = categories[category];
   const [fileName, setFileName] = useState<string | undefined>();
@@ -112,6 +113,23 @@ export function UploadCard({ category, title, icon: Icon, available, checklist, 
             <div className="text-muted-foreground mt-0.5">
               Dein Rabatt von {formatEUR(discount)} / Monat ist <span className="text-success">bereits aktiv</span>.
             </div>
+          </div>
+        </div>
+      )}
+
+      {subItems && subItems.length > 0 && (
+        <div className="space-y-2">
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Enthaltene Bereiche</div>
+          <div className="flex flex-wrap gap-1.5">
+            {subItems.map((s) => (
+              <span
+                key={s.label}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-accent/40 px-2.5 py-1 text-[11px] text-foreground/90"
+              >
+                <span>{s.emoji}</span>
+                <span>{s.label}</span>
+              </span>
+            ))}
           </div>
         </div>
       )}
