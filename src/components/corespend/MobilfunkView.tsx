@@ -19,8 +19,8 @@ export function MobilfunkView() {
       {mobilfunkStatus === "idle" && <StateA />}
       {(mobilfunkStatus === "processing" || mobilfunkStatus === "pending") && <StateB />}
       {mobilfunkStatus === "analyzed" && mobilfunkStage === "cockpit" && <StateC />}
-      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkStrategyWizard />}
-      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkMandate />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkConsultantChat />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkConsultantChat />}
     </div>
   );
 }
