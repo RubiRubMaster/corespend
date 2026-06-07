@@ -122,19 +122,24 @@ function Landing() {
       </header>
 
       {/* Hero — Vision & Mission (EN) */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-16 pb-16 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
           Enterprise · IT Spend Intelligence
         </span>
-        <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05]">
+        <div className="mt-6 text-6xl md:text-8xl font-bold tracking-tight leading-[1.05]">
+          <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+            CoreSpend
+          </span>
+        </div>
+        <h1 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1]">
           Reinventing{" "}
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             technology procurement
           </span>{" "}
           for the AI era.
         </h1>
-        <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Built to serve IT and procurement teams by reinventing the way they work.
         </p>
 
