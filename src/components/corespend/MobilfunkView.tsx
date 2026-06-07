@@ -423,8 +423,11 @@ function StateC() {
           <ExportAction title="Verhandlungs-Guide" sub="Strategische Argumentationshilfen für das Gespräch mit deinem Provider" emoji="📘" />
           <ExportAction title="Analyse-Report (XLSX)" sub="Detaillierter Komplett-Report als Datenbasis für den Einkauf" emoji="📊" />
         </div>
-        <button className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]">
-          🔥 Verhandlungsmandat aktivieren · erfolgsbasiert
+        <button
+          onClick={() => setMobilfunkStage("wizard")}
+          className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"
+        >
+          🔥 Verhandlungsstrategie konfigurieren · 5 Schritte zum Mandat →
         </button>
       </div>
 
