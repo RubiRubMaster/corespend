@@ -142,6 +142,21 @@ function Landing() {
           Unternehmen teilen anonymisierte IT-Daten, erhalten über den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit absolute Kostentransparenz — und senken ihre Lizenz-, Provider- und Vertragskosten datenbasiert auf das absolute Marktminimum.
         </p>
 
+        {/* Trust badges */}
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
+          {BADGES.map((b) => (
+            <div
+              key={b.label}
+              className="rounded-xl border border-border bg-surface/60 backdrop-blur px-4 py-3 text-left"
+            >
+              <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                <span>{b.emoji}</span> {b.label}
+              </div>
+              <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{b.sub}</div>
+            </div>
+          ))}
+        </div>
+
         {/* CoreSpend-Prinzip */}
         <div className="mt-14">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
@@ -159,21 +174,6 @@ function Landing() {
               </div>
               <h3 className="text-sm font-semibold text-foreground tracking-tight pr-6">{s.title}</h3>
               <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{s.text}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Trust badges */}
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
-          {BADGES.map((b) => (
-            <div
-              key={b.label}
-              className="rounded-xl border border-border bg-surface/60 backdrop-blur px-4 py-3 text-left"
-            >
-              <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                <span>{b.emoji}</span> {b.label}
-              </div>
-              <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{b.sub}</div>
             </div>
           ))}
         </div>
