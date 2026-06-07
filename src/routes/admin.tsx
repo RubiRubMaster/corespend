@@ -3,10 +3,9 @@ import {
   CoreSpendProvider,
   useCoreSpend,
   formatEUR,
-  CATEGORIES as CAT_KEYS,
-  CATEGORY_META,
-  type Category,
+  PRICING,
   type UploadStatus,
+  type MobilfunkMetrics,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 
@@ -25,82 +24,97 @@ function AdminPage() {
   );
 }
 
-const CATEGORIES: { key: Category; label: string }[] = CAT_KEYS.map((k) => ({
-  key: k,
-  label: CATEGORY_META[k].label,
-}));
-
 const STATUSES: UploadStatus[] = ["idle", "processing", "pending", "analyzed"];
 const STATUS_LABEL: Record<UploadStatus, string> = {
   idle: "Nicht hochgeladen",
-  processing: "Verarbeitung",
-  pending: "Ausstehend (Expertenprüfung)",
-  analyzed: "Analysiert",
+  processing: "Verarbeitung (State B)",
+  pending: "Expertenprüfung",
+  analyzed: "Freigeschaltet (State C)",
 };
 
 function AdminInner() {
-  const { categories, setStatus, priceOverride, setPriceOverride, currentPrice, resetAll } = useCoreSpend();
+  const {
+    mobilfunkStatus,
+    setMobilfunkStatus,
+    metrics,
+    updateMetrics,
+    priceOverride,
+    setPriceOverride,
+    currentPrice,
+    resetAll,
+  } = useCoreSpend();
+
+  const setMetric = (k: keyof MobilfunkMetrics, v: string) => {
+    const n = Number(v);
+    if (!Number.isNaN(n)) updateMetrics({ [k]: n } as Partial<MobilfunkMetrics>);
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
             <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
-              <span>←</span> Zurück
+              <span>←</span> Zurück zur Landingpage
             </Link>
             <span>·</span>
-            <span>Admin-Steuerung</span>
+            <span>Admin · Live-Steuerung</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Live-Steuerung · Präsentationsmodus</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Präsentations-Steuerung</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Überschreibe Upload-Status und Pricing-Variablen in Echtzeit.
+            Steuere die Mobilfunk-Pipeline (State A/B/C), überschreibe Kennzahlen und Preis in Echtzeit.
           </p>
         </div>
         <button
           onClick={resetAll}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+          className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
         >
-          <span>↻</span>
-          Alles zurücksetzen
+          ↻ Alles zurücksetzen
         </button>
       </div>
 
+      {/* Mobilfunk Pipeline State */}
       <div className="glass-card p-6">
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          Upload-Status je Modul
+          Mobilfunk Pipeline · State
         </div>
-        <div className="space-y-3">
-          {CATEGORIES.map((c) => (
-            <div key={c.key} className="flex items-center justify-between gap-4 py-2 border-b border-border/60 last:border-0">
-              <div className="text-sm font-medium">{c.label}</div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  Aktuell: <span className="text-foreground">{STATUS_LABEL[categories[c.key].status]}</span>
-                </span>
-                <div className="flex rounded-lg border border-border overflow-hidden">
-                  {STATUSES.map((s) => {
-                    const active = categories[c.key].status === s;
-                    return (
-                      <button
-                        key={s}
-                        onClick={() => setStatus(c.key, s)}
-                        className={
-                          "px-3 py-1.5 text-xs transition-colors " +
-                          (active ? "bg-success text-success-foreground" : "hover:bg-accent text-muted-foreground")
-                        }
-                      >
-                        {STATUS_LABEL[s]}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="text-sm">
+            Aktuell: <span className="text-foreground font-medium">{STATUS_LABEL[mobilfunkStatus]}</span>
+          </div>
+          <div className="flex rounded-lg border border-border overflow-hidden">
+            {STATUSES.map((s) => (
+              <button
+                key={s}
+                onClick={() => setMobilfunkStatus(s)}
+                className={
+                  "px-3 py-1.5 text-xs transition-colors " +
+                  (mobilfunkStatus === s ? "bg-success text-success-foreground" : "hover:bg-accent text-muted-foreground")
+                }
+              >
+                {STATUS_LABEL[s]}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* Mobilfunk Metrics override */}
+      <div className="glass-card p-6">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
+          Mobilfunk Kennzahlen (Management Dashboard & Cockpit)
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          <MetricField label="Kosten / Monat (€)" value={metrics.costMonthly} onChange={(v) => setMetric("costMonthly", v)} />
+          <MetricField label="Nutzung (%)" value={metrics.usagePercent} onChange={(v) => setMetric("usagePercent", v)} />
+          <MetricField label="Laufzeit (Monate)" value={metrics.runtimeMonths} onChange={(v) => setMetric("runtimeMonths", v)} />
+          <MetricField label="Einsparpotenzial / Jahr (€)" value={metrics.savingsYearly} onChange={(v) => setMetric("savingsYearly", v)} />
+          <MetricField label="ARPU Ist (€)" value={metrics.arpuActual} step="0.01" onChange={(v) => setMetric("arpuActual", v)} />
+          <MetricField label="ARPU Markt-Target (€)" value={metrics.arpuTarget} step="0.01" onChange={(v) => setMetric("arpuTarget", v)} />
+        </div>
+      </div>
+
+      {/* Pricing override */}
       <div className="glass-card p-6">
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
           Pricing-Override
@@ -108,7 +122,9 @@ function AdminInner() {
         <div className="flex items-center gap-4 flex-wrap">
           <div>
             <div className="text-xs text-muted-foreground">Effektiver Preis</div>
-            <div className="text-2xl font-semibold tabular-nums">{formatEUR(currentPrice)} <span className="text-xs text-muted-foreground">/ Monat</span></div>
+            <div className="text-2xl font-semibold tabular-nums">
+              {formatEUR(currentPrice)} <span className="text-xs text-muted-foreground">/ Monat</span>
+            </div>
           </div>
           <div className="h-10 w-px bg-border" />
           <div className="flex items-center gap-2">
@@ -132,46 +148,27 @@ function AdminInner() {
           </div>
         </div>
         <p className="text-[11px] text-muted-foreground mt-3">
-          Ohne Override wird der Preis automatisch aus den Upload-Status (Basis 2.800 € − 300 € je Bereich, min. 1.300 €) berechnet.
+          Basis {formatEUR(PRICING.BASE_PRICE)} − {formatEUR(PRICING.DISCOUNT_PER_AREA)} je aktiviertem Bereich
+          (max. {PRICING.TOTAL_AREAS} Bereiche · Minimum {formatEUR(PRICING.MIN_PRICE)}).
         </p>
       </div>
-
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          Hochgeladene Testdateien
-        </div>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground border-b border-border">
-              <th className="py-2 pr-4 font-medium">Modul</th>
-              <th className="py-2 pr-4 font-medium">Dateiname</th>
-              <th className="py-2 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {CATEGORIES.map((c) => {
-              const s = categories[c.key];
-              return (
-                <tr key={c.key} className="border-b border-border/60 last:border-0">
-                  <td className="py-3 pr-4">{c.label}</td>
-                  <td className="py-3 pr-4 text-muted-foreground">{s.fileName ?? "—"}</td>
-                  <td className="py-3">
-                    <span className={
-                      s.status === "analyzed"
-                        ? "text-[11px] px-2 py-1 rounded bg-success/15 text-success font-medium"
-                        : s.status === "idle"
-                        ? "text-[11px] px-2 py-1 rounded bg-accent text-muted-foreground"
-                        : "text-[11px] px-2 py-1 rounded bg-primary/15 text-primary font-medium"
-                    }>
-                      {STATUS_LABEL[s.status]}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
     </div>
+  );
+}
+
+function MetricField({
+  label, value, step = "1", onChange,
+}: { label: string; value: number; step?: string; onChange: (v: string) => void }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <input
+        type="number"
+        step={step}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-success"
+      />
+    </label>
   );
 }
