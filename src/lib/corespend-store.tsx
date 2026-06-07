@@ -179,6 +179,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const value: Ctx = {
     mobilfunkStatus,
     mobilfunkFile,
+    mobilfunkStage,
+    strategy,
     activeView,
     lockedHint,
     metrics,
@@ -197,12 +199,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     startMobilfunkUpload,
     demoUnlock,
     setMobilfunkStatus,
+    setMobilfunkStage,
+    updateStrategy,
+    resetStrategy,
     updateMetrics,
     setPriceOverride,
     setSpendOverride,
     setSavingsOverride,
     resetAll,
-
   };
 
   return <CoreSpendContext.Provider value={value}>{children}</CoreSpendContext.Provider>;
