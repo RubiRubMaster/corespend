@@ -424,7 +424,7 @@ function StateC() {
           onClick={() => setMobilfunkStage("wizard")}
           className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"
         >
-          🔥 Verhandlungsstrategie konfigurieren · 5 Schritte zum Mandat →
+          💬 Anforderungen im Detail mit AI Consultant besprechen →
         </button>
       </div>
 
