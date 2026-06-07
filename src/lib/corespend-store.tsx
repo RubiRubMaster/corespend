@@ -66,6 +66,10 @@ type Ctx = {
   lockedHint: Category | null;
   metrics: MobilfunkMetrics;
   priceOverride: number | null;
+  spendOverride: number | null;
+  savingsOverride: number | null;
+  effectiveSpendMonthly: number;
+  effectiveSavingsYearly: number;
   currentPrice: number;
   totalDiscount: number;
   activatedAreas: number;
@@ -78,8 +82,11 @@ type Ctx = {
   setMobilfunkStatus: (s: UploadStatus) => void;
   updateMetrics: (m: Partial<MobilfunkMetrics>) => void;
   setPriceOverride: (n: number | null) => void;
+  setSpendOverride: (n: number | null) => void;
+  setSavingsOverride: (n: number | null) => void;
   resetAll: () => void;
 };
+
 
 const CoreSpendContext = createContext<Ctx | null>(null);
 
