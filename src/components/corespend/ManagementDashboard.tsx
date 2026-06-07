@@ -1,32 +1,98 @@
 import { toast } from "sonner";
-import { useCoreSpend, formatEUR } from "@/lib/corespend-store";
+import { useEffect, useRef, useState } from "react";
+import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 export function ManagementDashboard() {
-  const { mobilfunkStatus, metrics, goMobilfunk } = useCoreSpend();
+  const {
+    mobilfunkStatus, metrics, goMobilfunk,
+    currentPrice, totalDiscount, activatedAreas,
+    effectiveSpendMonthly, effectiveSavingsYearly,
+  } = useCoreSpend();
   const mobilfunkLive = mobilfunkStatus === "analyzed";
+  const live = mobilfunkLive;
+
+  const prev = useRef(currentPrice);
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (prev.current !== currentPrice) {
+      setFlash(true);
+      const t = setTimeout(() => setFlash(false), 1200);
+      prev.current = currentPrice;
+      return () => clearTimeout(t);
+    }
+  }, [currentPrice]);
 
   return (
     <div className="space-y-8">
-      <header className="flex items-end justify-between flex-wrap gap-4">
-        <div>
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            CoreSpend · Enterprise Cockpit
+      <header className="space-y-5">
+        <div className="flex items-end justify-between flex-wrap gap-4">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              CoreSpend · Enterprise Cockpit
+            </div>
+            <h1 className="text-3xl font-semibold tracking-tight mt-1">
+              Management Dashboard
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
+              Globale Übersicht aller 5 Kern-IT-Bereiche. Jede Kachel ist identisch aufgebaut:
+              Top-Level KPIs, bereichs-spezifische Kennzahlen und Procure-Actions.
+            </p>
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight mt-1">
-            Management Dashboard
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
-            Globale Übersicht aller 5 Kern-IT-Bereiche. Jede Kachel ist identisch aufgebaut:
-            Top-Level KPIs, bereichs-spezifische Kennzahlen und Procure-Actions.
-          </p>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
+            Live · zuletzt synchronisiert vor 2 Min.
+          </div>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
-          Live · zuletzt synchronisiert vor 2 Min.
+
+        {/* Global KPI row + pricing */}
+        <div className="grid gap-3 lg:grid-cols-[1fr_auto] items-stretch">
+          <div className="grid grid-cols-3 gap-3">
+            <GlobalKpi
+              label="Validierte IT-Ausgaben (Gesamt)"
+              value={live || effectiveSpendMonthly > 0 ? `${formatEUR(effectiveSpendMonthly)} / Monat` : "— / Monat"}
+            />
+            <GlobalKpi
+              label="Identifiziertes Einsparpotenzial"
+              value={live || effectiveSavingsYearly > 0 ? `${formatEUR(effectiveSavingsYearly)} / Jahr` : "— / Jahr"}
+              tone="success"
+            />
+            <GlobalKpi
+              label="Aktive Bereiche"
+              value={`${activatedAreas} / ${PRICING.TOTAL_AREAS} Bereiche analysiert`}
+              tone="muted"
+            />
+          </div>
+          <div
+            className={cn(
+              "rounded-lg border px-4 py-3 flex flex-col leading-tight min-w-[300px]",
+              totalDiscount > 0
+                ? "border-success/40 bg-gradient-to-br from-success/15 to-primary/10"
+                : "border-border bg-surface/50",
+            )}
+          >
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              CoreSpend Enterprise Lizenz
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className={cn("text-lg font-semibold tabular-nums leading-tight", flash && "animate-flash-success")}>
+                {formatEUR(currentPrice)}
+                <span className="text-xs font-normal text-muted-foreground"> / Monat</span>
+              </span>
+              {totalDiscount > 0 && (
+                <span className="text-xs text-muted-foreground line-through tabular-nums">
+                  {formatEUR(PRICING.BASE_PRICE)}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] text-muted-foreground mt-0.5">
+              Basis {formatEUR(PRICING.BASE_PRICE)} · Data-Contribution Bonus −{formatEUR(PRICING.DISCOUNT_PER_AREA)} pro geteiltem Bereich
+            </span>
+          </div>
         </div>
       </header>
+
 
       {/* 1 · Telekommunikation (active, split into 3) */}
       <CategoryTile
@@ -73,9 +139,13 @@ export function ManagementDashboard() {
                   <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success" full>🔥 Verhandlungsexperten aktivieren</ActionBtn>
                 </>
               ) : (
-                <ActionBtn onClick={goMobilfunk} variant="primary" full>
-                  ➜ Mobilfunk-Daten teilen & freischalten
-                </ActionBtn>
+                <>
+                  <ActionBtn onClick={() => toast.success("CFO-Report wird generiert", { description: "PDF mit Kernzahlen ist in 30 Sek. bereit." })}>📄 CFO-Report</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success">🔥 Verhandlungsexperten</ActionBtn>
+                  <ActionBtn onClick={goMobilfunk} variant="primary" full>
+                    ➜ Mobilfunk-Daten teilen & freischalten
+                  </ActionBtn>
+                </>
               )
             }
           />
@@ -407,6 +477,28 @@ function LockedAction() {
     <div className="flex flex-wrap gap-1.5 opacity-70">
       <ActionBtn disabled>📄 CFO-Report</ActionBtn>
       <ActionBtn disabled variant="success">🔥 Verhandlungsexperten</ActionBtn>
+    </div>
+  );
+}
+
+function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?: "success" | "muted" }) {
+  return (
+    <div
+      className={cn(
+        "rounded-lg border px-3.5 py-2.5 flex flex-col leading-tight bg-surface/40",
+        tone === "success" ? "border-success/30" : "border-border",
+      )}
+    >
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span
+        className={cn(
+          "text-sm font-semibold tabular-nums mt-1",
+          tone === "success" && "text-success",
+          tone === "muted" && "text-foreground/80",
+        )}
+      >
+        {value}
+      </span>
     </div>
   );
 }
