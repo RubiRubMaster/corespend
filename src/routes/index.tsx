@@ -138,10 +138,6 @@ function Landing() {
           Built to serve IT and procurement teams by reinventing the way they work.
         </p>
 
-        <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Built to serve IT and procurement teams by reinventing the way they work.
-        </p>
-
         {/* CoreSpend-Prinzip */}
         <div className="mt-14">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
