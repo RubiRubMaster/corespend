@@ -1,8 +1,10 @@
-import { useCoreSpend, formatEUR, CATEGORIES_META, type Category } from "@/lib/corespend-store";
+import { toast } from "sonner";
+import { useCoreSpend, formatEUR } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 export function ManagementDashboard() {
-  const { mobilfunkStatus, metrics, goMobilfunk, goLocked } = useCoreSpend();
+  const { mobilfunkStatus, metrics, goMobilfunk } = useCoreSpend();
   const mobilfunkLive = mobilfunkStatus === "analyzed";
 
   return (
@@ -10,13 +12,14 @@ export function ManagementDashboard() {
       <header className="flex items-end justify-between flex-wrap gap-4">
         <div>
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            CoreSpend · Cockpit
+            CoreSpend · Enterprise Cockpit
           </div>
           <h1 className="text-3xl font-semibold tracking-tight mt-1">
             Management Dashboard
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
-            Globale Übersicht aller 5 Kern-IT-Bereiche. Kosten, Nutzung, Vertragslaufzeit und Einsparpotenzial in Echtzeit aggregiert.
+            Globale Übersicht aller 5 Kern-IT-Bereiche. Jede Kachel ist identisch aufgebaut:
+            Top-Level KPIs, bereichs-spezifische Kennzahlen und Procure-Actions.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -25,91 +28,187 @@ export function ManagementDashboard() {
         </div>
       </header>
 
-      {/* KPI summary */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <KpiCard
-          label="Validierte IT-Ausgaben (live)"
-          value={mobilfunkLive ? formatEUR(metrics.costMonthly * 12) : "—"}
-          sub={mobilfunkLive ? "Mobilfunk · weitere Bereiche folgen" : "0 / 5 Bereiche analysiert"}
-          tone="primary"
-        />
-        <KpiCard
-          label="Identifiziertes Einsparpotenzial"
-          value={mobilfunkLive ? `${formatEUR(metrics.savingsYearly)} / Jahr` : "—"}
-          sub={mobilfunkLive ? "KI-validiert · DACH-Benchmark" : "Daten ausstehend"}
-          tone="success"
-        />
-        <KpiCard
-          label="Aktive Bereiche"
-          value={mobilfunkLive ? "1 / 5" : "0 / 5"}
-          sub="Office, SaaS, Cloud, Hardware folgen"
-          tone="muted"
-        />
-      </div>
+      {/* 1 · Telekommunikation (active, split into 3) */}
+      <CategoryTile
+        emoji="📞"
+        title="Telekommunikation"
+        subtitle="Mobilfunk · Festnetz · Daten / Standortvernetzung"
+        statusBadge={mobilfunkLive ? { label: "Aktiv", tone: "success" } : { label: "Teil-aktiv", tone: "primary" }}
+        kpis={[
+          { label: "Ist-Kosten (kumuliert)", value: mobilfunkLive ? `${formatEUR(metrics.costMonthly)} / Mo.` : "—" },
+          { label: "Benchmark-Abweichung", value: mobilfunkLive ? "+37 % (Überzahlung)" : "—", tone: mobilfunkLive ? "destructive" : "muted" },
+          { label: "Einsparpotenzial", value: mobilfunkLive ? `${formatEUR(metrics.savingsYearly)} / Jahr` : "—", tone: "success" },
+        ]}
+      >
+        <div className="grid gap-3 lg:grid-cols-3">
+          {/* Mobilfunk */}
+          <SubSegment
+            emoji="📱"
+            label="Mobilfunk"
+            active={mobilfunkLive}
+            badge={mobilfunkLive ? "Live" : "Wartet auf Daten"}
+            onOpen={goMobilfunk}
+            specificKpis={
+              mobilfunkLive
+                ? [
+                    { l: "ARPU (Ist)", v: `${metrics.arpuActual.toFixed(2).replace(".", ",")} €`, sub: `Markt-Target ${metrics.arpuTarget.toFixed(2).replace(".", ",")} €` },
+                    { l: "Karteileichen", v: "14 SIMs", sub: "0 KB Verbrauch in 90 Tagen" },
+                    { l: "Roaming-Ausreißer", v: "3 Geräte", sub: "USA · Schweiz · außerhalb EU" },
+                    { l: "Restlaufzeit Rahmenvertrag", v: `${metrics.runtimeMonths} Monate`, sub: "bis automatische Verlängerung" },
+                  ]
+                : [
+                    { l: "ARPU (Ist)", v: "—", sub: "Markt-Target wird berechnet" },
+                    { l: "Karteileichen", v: "—", sub: "Inaktive SIM-Karten" },
+                    { l: "Roaming-Ausreißer", v: "—", sub: "Hochpreisige Auslandskosten" },
+                    { l: "Restlaufzeit Rahmenvertrag", v: "—", sub: "Vertragsende-Erkennung" },
+                  ]
+            }
+            actions={
+              mobilfunkLive ? (
+                <>
+                  <ActionBtn onClick={() => toast.success("CFO-Report wird generiert", { description: "PDF mit Kernzahlen ist in 30 Sek. bereit." })}>📄 CFO-Report</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Verhandlungs-Guide vorbereitet", { description: "Strategische Argumentationshilfen für den Provider-Termin." })}>📘 Verhandlungs-Guide</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Analyse-Report wird exportiert", { description: "XLSX-Komplettreport für den Einkauf." })}>📊 Analyse-Report</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Kündigungsschreiben für 14 SIMs generiert", { description: "Sofort versandfertig · spart 4.200 € / Jahr." })} variant="destructive">❌ Inaktive SIMs kündigen</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success" full>🔥 Verhandlungsexperten aktivieren</ActionBtn>
+                </>
+              ) : (
+                <ActionBtn onClick={goMobilfunk} variant="primary" full>
+                  ➜ Mobilfunk-Daten teilen & freischalten
+                </ActionBtn>
+              )
+            }
+          />
 
-      {/* Table-style overview */}
-      <div className="glass-card overflow-hidden">
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold tracking-wide uppercase">
-              IT-Bereiche · Kosten- & Vertragstransparenz
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Klicke einen Bereich an, um zur Detail-Pipeline zu wechseln.
-            </p>
+          {/* Festnetz */}
+          <SubSegment
+            emoji="☎️"
+            label="Festnetz"
+            active={false}
+            badge="🔒 Coming Soon"
+            specificKpis={[
+              { l: "Ungenutzte Sprachkanäle", v: "—", sub: "SIP-Trunks ohne Traffic" },
+              { l: "Fix vs. Flex", v: "—", sub: "Grundgebühr / Verbindungskosten" },
+              { l: "Sonderrufnummern", v: "—", sub: "Hotline-Kosten 0800/0180" },
+            ]}
+            actions={<LockedAction />}
+          />
+
+          {/* Daten / Standortvernetzung */}
+          <SubSegment
+            emoji="🌐"
+            label="Daten / Standortvernetzung"
+            active={false}
+            badge="🔒 Coming Soon"
+            specificKpis={[
+              { l: "Kosten pro Standort", v: "—", sub: "Ø monatlich je Niederlassung" },
+              { l: "SLA-Strafen", v: "—", sub: "Provider-Rückzahlungen bei Ausfall" },
+              { l: "Bandbreiten-Effizienz", v: "—", sub: "Leitungen < 10 % ausgelastet" },
+            ]}
+            actions={<LockedAction />}
+          />
+        </div>
+      </CategoryTile>
+
+      {/* 2 · Office Suite */}
+      <CategoryTile
+        emoji="💻"
+        title="Office-Suite"
+        subtitle="Microsoft 365 · Google Workspace · Adobe"
+        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
+        locked
+        kpis={lockedTopKpis}
+      >
+        <div className="grid gap-3 lg:grid-cols-3">
+          <SpecificBlock
+            items={[
+              { l: "Lizenz-Auslastung", v: "—", sub: "Utilization Rate in %" },
+              { l: "Doppel-Lizenzen", v: "—", sub: "SaaS-Overlap: Slack vs. Teams · Zoom vs. Meet" },
+              { l: "Shadow-IT-Erkennung", v: "—", sub: "Kreditkarten-Abos außerhalb Procurement" },
+            ]}
+          />
+          <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
+            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+            <ActionBtn disabled>⬇️ Lizenz-Downgrade anfordern (E5 → E3)</ActionBtn>
+            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
           </div>
         </div>
+      </CategoryTile>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border">
-                <th className="px-6 py-3 font-medium">Bereich</th>
-                <th className="px-4 py-3 font-medium text-right">Kosten</th>
-                <th className="px-4 py-3 font-medium text-right">Nutzung</th>
-                <th className="px-4 py-3 font-medium text-right">Laufzeit</th>
-                <th className="px-4 py-3 font-medium text-right">Einsparpotenzial</th>
-                <th className="px-6 py-3 font-medium text-right">Aktion</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Mobilfunk (live or pending) */}
-              <Row
-                emoji="📱"
-                label="Telekommunikation · Mobilfunk"
-                sub="Hauptbereich · MVP-Fokus"
-                cost={mobilfunkLive ? `${formatEUR(metrics.costMonthly)} / Mo.` : "—"}
-                usage={mobilfunkLive ? `${metrics.usagePercent}%` : "—"}
-                runtime={mobilfunkLive ? `${metrics.runtimeMonths} Monate` : "—"}
-                potential={mobilfunkLive ? `${formatEUR(metrics.savingsYearly)} / Jahr` : "—"}
-                status={
-                  mobilfunkLive
-                    ? "live"
-                    : mobilfunkStatus === "processing" || mobilfunkStatus === "pending"
-                    ? "processing"
-                    : "open"
-                }
-                onClick={goMobilfunk}
-              />
-              {/* Locked categories */}
-              {CATEGORIES_META.filter((c) => !c.available).map((c) => (
-                <Row
-                  key={c.key}
-                  emoji={c.emoji}
-                  label={c.label}
-                  sub="Coming Soon · in Vorbereitung"
-                  cost="—"
-                  usage="—"
-                  runtime="—"
-                  potential="—"
-                  status="locked"
-                  onClick={() => goLocked(c.key as Category)}
-                />
-              ))}
-            </tbody>
-          </table>
+      {/* 3 · SaaS */}
+      <CategoryTile
+        emoji="☁️"
+        title="SaaS Plattformen"
+        subtitle="Salesforce · HubSpot · Adobe Creative Cloud · weitere"
+        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
+        locked
+        kpis={lockedTopKpis}
+      >
+        <div className="grid gap-3 lg:grid-cols-3">
+          <SpecificBlock
+            items={[
+              { l: "Seat-Auslastung Salesforce", v: "—", sub: "Aktive Logins / lizenzierte User" },
+              { l: "Adobe Named-User-Status", v: "—", sub: "Inaktive Creative-Cloud-Seats" },
+              { l: "Vertragsende-Cluster", v: "—", sub: "Renewals in den nächsten 90 Tagen" },
+            ]}
+          />
+          <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
+            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+            <ActionBtn disabled>📊 Auslastungs-Analyse</ActionBtn>
+            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+          </div>
         </div>
-      </div>
+      </CategoryTile>
+
+      {/* 4 · Cloud */}
+      <CategoryTile
+        emoji="🌩"
+        title="Cloud Infrastruktur"
+        subtitle="AWS · Azure · GCP"
+        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
+        locked
+        kpis={lockedTopKpis}
+      >
+        <div className="grid gap-3 lg:grid-cols-3">
+          <SpecificBlock
+            items={[
+              { l: "Zombies / Unused Resources", v: "—", sub: "Ungenutzte Instanzen · verwaiste Speicherblöcke" },
+              { l: "RI / Savings-Plan-Abdeckung", v: "—", sub: "Prepaid vs. teurer Minutentakt" },
+              { l: "Daten-Transferkosten", v: "—", sub: "Egress · versteckter Datenexport" },
+            ]}
+          />
+          <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
+            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+            <ActionBtn disabled>🔔 Cloud-Alarm einrichten</ActionBtn>
+            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+          </div>
+        </div>
+      </CategoryTile>
+
+      {/* 5 · Hardware */}
+      <CategoryTile
+        emoji="🔌"
+        title="Hardware (Smartphones & Workplace)"
+        subtitle="Leasing · Refurbishment · End-of-Life"
+        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
+        locked
+        kpis={lockedTopKpis}
+      >
+        <div className="grid gap-3 lg:grid-cols-3">
+          <SpecificBlock
+            items={[
+              { l: "Leasing-Strafgebühren", v: "—", sub: "Verspätete oder beschädigte Rückgaben" },
+              { l: "Geräte pro Mitarbeiter", v: "—", sub: "Mitarbeiter mit mehreren aktiven Devices" },
+              { l: "Restwert-Potenzial", v: "—", sub: "Erlöse durch Refurbishment / Wiederverkauf" },
+            ]}
+          />
+          <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
+            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+            <ActionBtn disabled>♻️ Refurbishment-Analyse</ActionBtn>
+            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+          </div>
+        </div>
+      </CategoryTile>
 
       {/* Trust strip */}
       <div className="grid gap-3 md:grid-cols-4 text-[11px] text-muted-foreground">
@@ -129,77 +228,185 @@ export function ManagementDashboard() {
   );
 }
 
-function KpiCard({
-  label, value, sub, tone,
-}: { label: string; value: string; sub: string; tone: "primary" | "success" | "muted" }) {
+/* ---------- shared bits ---------- */
+
+const lockedTopKpis = [
+  { label: "Ist-Kosten", value: "—" },
+  { label: "Benchmark-Abweichung", value: "—" },
+  { label: "Einsparpotenzial", value: "—" },
+] satisfies { label: string; value: string; tone?: "success" | "destructive" | "muted" }[];
+
+type TileKpi = { label: string; value: string; tone?: "success" | "destructive" | "muted" };
+
+function CategoryTile({
+  emoji, title, subtitle, statusBadge, kpis, locked, children,
+}: {
+  emoji: string; title: string; subtitle: string;
+  statusBadge: { label: string; tone: "success" | "primary" | "muted" };
+  kpis: TileKpi[];
+  locked?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <div className="glass-card p-5 relative overflow-hidden">
-      <div className={cn(
-        "absolute inset-0 pointer-events-none bg-gradient-to-br",
-        tone === "primary" && "from-primary/15 via-transparent to-transparent",
-        tone === "success" && "from-success/20 via-transparent to-transparent",
-        tone === "muted" && "from-accent/30 via-transparent to-transparent",
-      )} />
-      <div className="relative">
-        <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">{label}</div>
-        <div className={cn(
-          "mt-2 text-3xl font-semibold tabular-nums tracking-tight",
-          tone === "success" && "text-success",
-        )}>{value}</div>
-        <div className="text-xs text-muted-foreground mt-1.5">{sub}</div>
+    <section
+      className={cn(
+        "glass-card overflow-hidden relative",
+        locked && "opacity-55 hover:opacity-70 transition-opacity",
+      )}
+    >
+      {locked && (
+        <div className="absolute top-4 right-4 text-2xl text-primary/70">🔒</div>
+      )}
+      <div className="px-6 py-5 border-b border-border flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl bg-accent grid place-items-center text-2xl">{emoji}</div>
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+          </div>
+        </div>
+        <span
+          className={cn(
+            "text-[10px] uppercase tracking-wider rounded-full px-2 py-0.5 border",
+            statusBadge.tone === "success" && "text-success border-success/40 bg-success/10",
+            statusBadge.tone === "primary" && "text-primary border-primary/40 bg-primary/10",
+            statusBadge.tone === "muted" && "text-muted-foreground border-border bg-surface/40",
+          )}
+        >
+          {statusBadge.label}
+        </span>
       </div>
+
+      {/* Top-Level KPIs */}
+      <div className="grid grid-cols-3 border-b border-border">
+        {kpis.map((k) => (
+          <div key={k.label} className="px-6 py-4 border-r border-border last:border-r-0">
+            <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">{k.label}</div>
+            <div
+              className={cn(
+                "mt-1.5 text-xl font-semibold tabular-nums tracking-tight",
+                k.tone === "success" && "text-success",
+                k.tone === "destructive" && "text-destructive",
+                k.tone === "muted" && "text-muted-foreground",
+              )}
+            >
+              {k.value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="p-6">{children}</div>
+    </section>
+  );
+}
+
+function SubSegment({
+  emoji, label, active, badge, onOpen, specificKpis, actions,
+}: {
+  emoji: string; label: string; active: boolean; badge: string;
+  onOpen?: () => void;
+  specificKpis: { l: string; v: string; sub: string }[];
+  actions: ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-xl border bg-background/40 p-4 flex flex-col gap-3",
+        active ? "border-success/30" : "border-border opacity-60",
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <button
+          onClick={onOpen}
+          disabled={!active && !onOpen}
+          className={cn("flex items-center gap-2 text-sm font-medium", active && onOpen && "hover:text-primary transition-colors")}
+        >
+          <span className="text-base">{emoji}</span>
+          {label}
+          {active && onOpen && <span className="text-xs text-muted-foreground">→</span>}
+        </button>
+        <span
+          className={cn(
+            "text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border",
+            active
+              ? "text-success border-success/40 bg-success/10"
+              : "text-muted-foreground border-border",
+          )}
+        >
+          {badge}
+        </span>
+      </div>
+
+      <div className="grid gap-1.5">
+        {specificKpis.map((k) => (
+          <div key={k.l} className="flex items-baseline justify-between gap-3 py-1.5 border-b border-border/40 last:border-0">
+            <div className="text-[11px] text-muted-foreground leading-tight">
+              <div className="text-foreground/85">{k.l}</div>
+              <div>{k.sub}</div>
+            </div>
+            <div className={cn("text-sm font-semibold tabular-nums whitespace-nowrap", !active && "text-muted-foreground")}>
+              {k.v}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap gap-1.5 mt-1">{actions}</div>
     </div>
   );
 }
 
-function Row({
-  emoji, label, sub, cost, usage, runtime, potential, status, onClick,
-}: {
-  emoji: string; label: string; sub: string;
-  cost: string; usage: string; runtime: string; potential: string;
-  status: "live" | "processing" | "open" | "locked";
-  onClick: () => void;
-}) {
-  const locked = status === "locked";
+function SpecificBlock({ items }: { items: { l: string; v: string; sub: string }[] }) {
   return (
-    <tr
+    <div className="rounded-xl border border-border bg-background/40 p-4 grid gap-1.5">
+      {items.map((k) => (
+        <div key={k.l} className="flex items-baseline justify-between gap-3 py-1.5 border-b border-border/40 last:border-0">
+          <div className="text-[11px] leading-tight">
+            <div className="text-foreground/85">{k.l}</div>
+            <div className="text-muted-foreground">{k.sub}</div>
+          </div>
+          <div className="text-sm font-semibold tabular-nums text-muted-foreground whitespace-nowrap">{k.v}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ActionBtn({
+  children, onClick, variant = "default", disabled, full,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  variant?: "default" | "success" | "destructive" | "primary";
+  disabled?: boolean;
+  full?: boolean;
+}) {
+  return (
+    <button
       onClick={onClick}
+      disabled={disabled}
       className={cn(
-        "border-b border-border/60 last:border-0 transition-colors group cursor-pointer",
-        locked ? "opacity-55 hover:bg-accent/20" : "hover:bg-accent/30",
+        "text-xs font-medium rounded-md px-3 py-2 border transition-colors",
+        full && "w-full justify-center",
+        disabled && "opacity-50 cursor-not-allowed",
+        !disabled && variant === "default" && "border-border bg-surface/60 hover:bg-accent text-foreground/90",
+        !disabled && variant === "primary" && "border-primary/40 bg-primary/15 hover:bg-primary/25 text-primary",
+        !disabled && variant === "success" && "border-success/40 bg-success/15 hover:bg-success/25 text-success",
+        !disabled && variant === "destructive" && "border-destructive/40 bg-destructive/10 hover:bg-destructive/20 text-destructive",
+        disabled && "border-border bg-surface/40 text-muted-foreground",
       )}
     >
-      <td className="px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="text-xl">{emoji}</div>
-          <div>
-            <div className="font-medium flex items-center gap-2">
-              {label}
-              {status === "live" && (
-                <span className="text-[9px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-1.5 py-0.5">Live</span>
-              )}
-              {status === "processing" && (
-                <span className="text-[9px] uppercase tracking-wider text-primary border border-primary/40 bg-primary/10 rounded-full px-1.5 py-0.5">In Prüfung</span>
-              )}
-              {locked && (
-                <span className="text-[9px] uppercase tracking-wider text-muted-foreground border border-border rounded-full px-1.5 py-0.5">
-                  🔒 Coming Soon
-                </span>
-              )}
-            </div>
-            <div className="text-[11px] text-muted-foreground mt-0.5">{sub}</div>
-          </div>
-        </div>
-      </td>
-      <td className="px-4 py-4 text-right tabular-nums">{cost}</td>
-      <td className="px-4 py-4 text-right tabular-nums">{usage}</td>
-      <td className="px-4 py-4 text-right tabular-nums">{runtime}</td>
-      <td className={cn("px-4 py-4 text-right tabular-nums", status === "live" && "text-success font-semibold")}>{potential}</td>
-      <td className="px-6 py-4 text-right">
-        <span className="text-muted-foreground group-hover:text-primary transition-colors">
-          {locked ? "Details" : status === "open" ? "Daten teilen →" : "Öffnen →"}
-        </span>
-      </td>
-    </tr>
+      {children}
+    </button>
+  );
+}
+
+function LockedAction() {
+  return (
+    <div className="flex flex-wrap gap-1.5 opacity-70">
+      <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+      <ActionBtn disabled variant="success">🔥 Verhandlungsexperten</ActionBtn>
+    </div>
   );
 }

@@ -66,6 +66,10 @@ type Ctx = {
   lockedHint: Category | null;
   metrics: MobilfunkMetrics;
   priceOverride: number | null;
+  spendOverride: number | null;
+  savingsOverride: number | null;
+  effectiveSpendMonthly: number;
+  effectiveSavingsYearly: number;
   currentPrice: number;
   totalDiscount: number;
   activatedAreas: number;
@@ -78,8 +82,11 @@ type Ctx = {
   setMobilfunkStatus: (s: UploadStatus) => void;
   updateMetrics: (m: Partial<MobilfunkMetrics>) => void;
   setPriceOverride: (n: number | null) => void;
+  setSpendOverride: (n: number | null) => void;
+  setSavingsOverride: (n: number | null) => void;
   resetAll: () => void;
 };
+
 
 const CoreSpendContext = createContext<Ctx | null>(null);
 
@@ -90,6 +97,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [lockedHint, setLockedHint] = useState<Category | null>(null);
   const [metrics, setMetrics] = useState<MobilfunkMetrics>(DEFAULT_MOBILFUNK);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
+  const [spendOverride, setSpendOverride] = useState<number | null>(null);
+  const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
 
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
@@ -111,15 +120,26 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMobilfunkFile(undefined);
     setMetrics(DEFAULT_MOBILFUNK);
     setPriceOverride(null);
+    setSpendOverride(null);
+    setSavingsOverride(null);
   }, []);
 
-  const { activatedAreas, totalDiscount, currentPrice } = useMemo(() => {
-    // MVP: only mobilfunk is a contributing area
-    const areas = mobilfunkStatus !== "idle" ? 1 : 0;
+  const mobilfunkLive = mobilfunkStatus === "analyzed";
+
+  const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
+    const areas = mobilfunkLive ? 1 : 0;
     const discount = areas * PRICING.DISCOUNT_PER_AREA;
     const price = priceOverride ?? Math.max(PRICING.BASE_PRICE - discount, PRICING.MIN_PRICE);
-    return { activatedAreas: areas, totalDiscount: discount, currentPrice: price };
-  }, [mobilfunkStatus, priceOverride]);
+    const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
+    const savings = savingsOverride ?? (mobilfunkLive ? metrics.savingsYearly : 0);
+    return {
+      activatedAreas: areas,
+      totalDiscount: discount,
+      currentPrice: price,
+      effectiveSpendMonthly: spend,
+      effectiveSavingsYearly: savings,
+    };
+  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, metrics.savingsYearly]);
 
   const value: Ctx = {
     mobilfunkStatus,
@@ -128,6 +148,10 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     lockedHint,
     metrics,
     priceOverride,
+    spendOverride,
+    savingsOverride,
+    effectiveSpendMonthly,
+    effectiveSavingsYearly,
     currentPrice,
     totalDiscount,
     activatedAreas,
@@ -140,7 +164,10 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMobilfunkStatus,
     updateMetrics,
     setPriceOverride,
+    setSpendOverride,
+    setSavingsOverride,
     resetAll,
+
   };
 
   return <CoreSpendContext.Provider value={value}>{children}</CoreSpendContext.Provider>;
