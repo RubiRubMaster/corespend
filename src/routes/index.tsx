@@ -3,13 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CoreSpend — Core IT Spend Intelligence" },
+      { title: "CoreSpend — Enterprise IT Spend Intelligence" },
       {
         name: "description",
         content:
-          "CoreSpend ist Deutschlands erste KI-gestützte Plattform für IT-Leiter und Einkaufsverantwortliche zur Analyse, Benchmark und Optimierung der Kern-IT-Ausgaben.",
+          "CoreSpend ist Deutschlands kollaboratives IT-Benchmark-Netzwerk. Unternehmen teilen anonymisierte IT-Daten, erhalten Kostentransparenz und senken Lizenzkosten auf das absolute Marktminimum.",
       },
-      { property: "og:title", content: "CoreSpend — Core IT Spend Intelligence" },
+      { property: "og:title", content: "CoreSpend — Enterprise IT Spend Intelligence" },
       {
         property: "og:description",
         content: "Made to serve IT & Procurement by changing the way you source your Core IT.",
@@ -19,26 +19,31 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+const BADGES = [
+  { emoji: "🛡", label: "DSGVO-konform" },
+  { emoji: "🔐", label: "AES-256 Verschlüsselung" },
+  { emoji: "🇩🇪", label: "Hosting in Frankfurt" },
+  { emoji: "📄", label: "Automatischer NDA-Schutz" },
+];
+
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-      {/* Ambient gradients */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute top-1/3 -right-32 h-[480px] w-[480px] rounded-full bg-success/15 blur-3xl" />
       </div>
 
-      {/* Nav */}
       <header className="relative z-10">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-success grid place-items-center text-sm font-bold text-background">
               CS
             </div>
             <div>
               <div className="text-base font-semibold tracking-tight">CoreSpend</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                IT & Procurement Intelligence
+                Enterprise · IT Spend Intelligence
               </div>
             </div>
           </div>
@@ -52,10 +57,10 @@ function Landing() {
       </header>
 
       {/* Hero */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-16 pb-20 text-center">
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-20 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-          Live · KI-gestützte Core IT Plattform
+          Deutschlands kollaboratives IT-Benchmark-Netzwerk
         </span>
         <h1 className="mt-6 text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05]">
           Core<span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">Spend</span>
@@ -63,65 +68,56 @@ function Landing() {
         <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Made to serve IT &amp; Procurement by changing the way you source your Core IT.
         </p>
+        <p className="mt-4 text-sm text-muted-foreground/90 max-w-3xl mx-auto leading-relaxed">
+          Unternehmen teilen anonymisierte IT-Daten, erhalten in Echtzeit Kostentransparenz —
+          und senken ihre Lizenz- und Vertragskosten datenbasiert auf das absolute Marktminimum.
+        </p>
+
+        {/* Trust badges */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
+          {BADGES.map((b) => (
+            <span
+              key={b.label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/60 backdrop-blur px-3 py-1.5 text-[11px] text-foreground/90"
+            >
+              <span>{b.emoji}</span> {b.label}
+            </span>
+          ))}
+        </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/app"
-            className="group inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-6 py-3.5 text-sm font-semibold shadow-[0_20px_60px_-20px_color-mix(in_oklab,var(--success)_70%,transparent)] hover:brightness-110 transition"
+            className="group inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-7 py-4 text-sm font-semibold shadow-[0_20px_60px_-20px_color-mix(in_oklab,var(--success)_70%,transparent)] hover:brightness-110 transition"
           >
-            Jetzt Starten
+            Enterprise-Analyse starten
             <span className="transition group-hover:translate-x-0.5">→</span>
           </Link>
-          <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <span>🛡</span> DSGVO-konform · AES-256 verschlüsselt
+          <span className="text-xs text-muted-foreground">
+            48h Onboarding · keine Provider-Kündigung notwendig
           </span>
         </div>
       </section>
 
-      {/* Wie es funktioniert */}
+      {/* How it works */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Wie CoreSpend funktioniert</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
-            Drei Schritte zu voller Kostentransparenz
+            Drei Schritte zu absoluter Kostentransparenz
           </h2>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
-          <Step
-            n="01"
-            title="Daten teilen"
-            text="Lade Verträge, Rechnungen und Lizenz-Reports in unsere sichere Umgebung. Jede Datei reduziert deinen Plattformpreis."
-          />
-          <Step
-            n="02"
-            title="Benchmark nutzen"
-            text="Unsere KI vergleicht deine Konditionen in Echtzeit mit anonymisierten DACH-Marktdaten — ehrlich, datenbasiert, transparent."
-          />
-          <Step
-            n="03"
-            title="Kosten senken"
-            text="Erhalte konkrete Verhandlungshebel und Verhandlungsfenster — oder lass unsere Experten direkt für dich verhandeln."
-          />
+          <Step n="01" title="Daten anonym teilen"
+            text="Lade Verträge, Rechnungen und Reports in die ISO-zertifizierte Umgebung. Jeder geteilte Bereich senkt deinen Tarif um 200 €/Mo." />
+          <Step n="02" title="Live-Benchmark"
+            text="Unsere KI vergleicht deine Konditionen mit anonymisierten DACH-Marktdaten — ehrlich, datenbasiert, transparent." />
+          <Step n="03" title="Kosten datenbasiert senken"
+            text="Erhalte konkrete Verhandlungshebel und Argumente — oder lass unsere Experten erfolgsbasiert für dich verhandeln." />
         </div>
       </section>
 
-      {/* Bereiche */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 pb-20">
-        <div className="text-center mb-10">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Abgedeckte Bereiche</div>
-          <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
-            Deine gesamte Core IT — auf einer Plattform
-          </h2>
-        </div>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          <AreaTile label="Telekommunikation" sub="Mobilfunk · Festnetz · Daten" />
-          <AreaTile label="Office Suite" sub="Microsoft 365 & mehr" />
-          <AreaTile label="SaaS & Cloud" sub="Lizenzen · AWS · Azure · GCP" />
-          <AreaTile label="Hardware" sub="Smartphones · Workplace" />
-        </div>
-      </section>
-
-      {/* Outcome */}
+      {/* CTA outcome */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
         <div className="glass-card p-8 md:p-10 text-center">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Dein Ergebnis</div>
@@ -129,22 +125,22 @@ function Landing() {
             Volle Kostentransparenz und datenbasierte Hebel für deine nächste Verhandlung.
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-            CoreSpend bricht das traditionelle, intransparente B2B IT-Einkaufssystem — und stellt IT-Leiter und
-            Einkaufsverantwortliche endgültig auf Augenhöhe mit Anbietern.
+            CoreSpend bricht das intransparente B2B IT-Einkaufssystem und stellt IT-Leiter
+            und Einkaufsverantwortliche endgültig auf Augenhöhe mit Anbietern.
           </p>
           <Link
             to="/app"
-            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-6 py-3.5 text-sm font-semibold hover:brightness-110 transition"
+            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-7 py-3.5 text-sm font-semibold hover:brightness-110 transition"
           >
-            Jetzt Starten <span>→</span>
+            Enterprise-Analyse starten <span>→</span>
           </Link>
         </div>
       </section>
 
       <footer className="relative z-10 border-t border-border">
         <div className="max-w-6xl mx-auto px-6 py-6 text-[11px] text-muted-foreground flex flex-wrap items-center justify-between gap-2">
-          <span>© {new Date().getFullYear()} CoreSpend · Core IT Spend Intelligence</span>
-          <span>Made in Germany · DSGVO-konform</span>
+          <span>© {new Date().getFullYear()} CoreSpend · Enterprise IT Spend Intelligence</span>
+          <span>Made in Germany · DSGVO-konform · Hosting Frankfurt</span>
         </div>
       </footer>
     </div>
@@ -158,16 +154,6 @@ function Step({ n, title, text }: { n: string; title: string; text: string }) {
       <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">S</div>
       <h3 className="mt-4 text-lg font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{text}</p>
-    </div>
-  );
-}
-
-function AreaTile({ label, sub }: { label: string; sub: string }) {
-  return (
-    <div className="glass-card p-5">
-      <div className="h-9 w-9 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">A</div>
-      <div className="mt-3 text-sm font-semibold tracking-tight">{label}</div>
-      <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>
     </div>
   );
 }

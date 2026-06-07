@@ -1,16 +1,11 @@
 import { useCoreSpend } from "@/lib/corespend-store";
-import { CoreDashboard } from "./CoreDashboard";
-import { CoreStart } from "./CoreStart";
-import { CoreKategorien } from "./CoreKategorien";
-import { CoreDataUpload } from "./CoreDataUpload";
-import { CoreAiAgent } from "./CoreAiAgent";
+import { ManagementDashboard } from "./ManagementDashboard";
+import { MobilfunkView } from "./MobilfunkView";
+import { LockedView } from "./LockedView";
 
 export function Dashboard() {
   const { activeView } = useCoreSpend();
-
-  if (activeView === "start") return <CoreStart />;
-  if (activeView === "kategorie") return <CoreKategorien />;
-  if (activeView === "upload") return <CoreDataUpload />;
-  if (activeView === "ai") return <CoreAiAgent />;
-  return <CoreDashboard />;
+  if (activeView === "mobilfunk") return <MobilfunkView />;
+  if (activeView === "locked") return <LockedView />;
+  return <ManagementDashboard />;
 }
