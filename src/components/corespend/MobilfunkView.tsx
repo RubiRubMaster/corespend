@@ -30,10 +30,8 @@ function Header() {
   const stateLabel =
     mobilfunkStatus === "idle" ? "State A · Core DataUpload" :
     mobilfunkStatus === "analyzed"
-      ? mobilfunkStage === "wizard"
-        ? "State D · Strategie-Assistent"
-        : mobilfunkStage === "mandate"
-        ? "State E · Verhandlungsmandat"
+      ? mobilfunkStage === "wizard" || mobilfunkStage === "mandate"
+        ? "State D · AI Consultant Briefing"
         : "State C · Unlocked Cockpit"
       : "State B · Enterprise Waiting";
 
