@@ -19,6 +19,24 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+const STEPS = [
+  {
+    n: "01",
+    title: "Daten analysieren",
+    text: "Lade Verträge, Rechnungen und Nutzungsdaten hoch. Unsere KI extrahiert alle relevanten Kennzahlen innerhalb weniger Minuten.",
+  },
+  {
+    n: "02",
+    title: "Potenziale identifizieren",
+    text: "Erkenne Überzahlungen, ungenutzte Lizenzen und Benchmark-Abweichungen — präzise aufbereitet für dein nächstes Management-Update.",
+  },
+  {
+    n: "03",
+    title: "Verhandlungsmacht sichern",
+    text: "Erhalte datenbasierte Argumentationsketten, Drohkulissen und einen maßgeschneiderten Verhandlungsleitfaden für maximale Einsparungen.",
+  },
+];
+
 const BADGES = [
   { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Daten vor der Analyse" },
   { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard" },
@@ -120,17 +138,25 @@ function Landing() {
           Built to serve IT and procurement teams by reinventing the way they work.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/app"
-            className="group inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-7 py-4 text-sm font-semibold shadow-[0_20px_60px_-20px_color-mix(in_oklab,var(--success)_70%,transparent)] hover:brightness-110 transition"
-          >
-            Enterprise-Analyse starten
-            <span className="transition group-hover:translate-x-0.5">→</span>
-          </Link>
-          <span className="text-xs text-muted-foreground">
-            48h Onboarding · keine Provider-Kündigung notwendig
-          </span>
+        {/* CoreSpend-Prinzip */}
+        <div className="mt-14">
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
+          <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
+            Drei Schritte zu absoluter Kostentransparenz
+          </h2>
+        </div>
+
+        {/* 3 Steps */}
+        <div className="mt-8 grid gap-4 md:grid-cols-3 max-w-5xl mx-auto text-left">
+          {STEPS.map((s) => (
+            <div key={s.n} className="rounded-xl border border-border bg-surface/60 backdrop-blur px-5 py-5 relative overflow-hidden">
+              <div className="absolute top-3 right-4 text-[11px] font-mono text-muted-foreground/60 tracking-wider">
+                {s.n}
+              </div>
+              <h3 className="text-sm font-semibold text-foreground tracking-tight pr-6">{s.title}</h3>
+              <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{s.text}</p>
+            </div>
+          ))}
         </div>
 
         {/* Trust badges */}
@@ -146,6 +172,19 @@ function Landing() {
               <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{b.sub}</div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/app"
+            className="group inline-flex items-center gap-2 rounded-xl bg-success text-success-foreground px-7 py-4 text-sm font-semibold shadow-[0_20px_60px_-20px_color-mix(in_oklab,var(--success)_70%,transparent)] hover:brightness-110 transition"
+          >
+            Enterprise-Analyse starten
+            <span className="transition group-hover:translate-x-0.5">→</span>
+          </Link>
+          <span className="text-xs text-muted-foreground">
+            48h Onboarding · keine Provider-Kündigung notwendig
+          </span>
         </div>
       </section>
 
