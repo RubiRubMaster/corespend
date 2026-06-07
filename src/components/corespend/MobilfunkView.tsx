@@ -6,8 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
 import { toast } from "sonner";
-import { MobilfunkStrategyWizard } from "./MobilfunkStrategyWizard";
-import { MobilfunkMandate } from "./MobilfunkMandate";
+import { MobilfunkConsultantChat } from "./MobilfunkConsultantChat";
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
