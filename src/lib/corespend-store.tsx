@@ -121,6 +121,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
+  const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
+  const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
 
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
@@ -131,15 +133,26 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMobilfunkStatus("processing");
   }, []);
 
-  const demoUnlock = useCallback(() => setMobilfunkStatus("analyzed"), []);
+  const demoUnlock = useCallback(() => {
+    setMobilfunkStatus("analyzed");
+    setMobilfunkStage("cockpit");
+  }, []);
 
   const updateMetrics = useCallback((m: Partial<MobilfunkMetrics>) => {
     setMetrics((prev) => ({ ...prev, ...m }));
   }, []);
 
+  const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
+    setStrategy((prev) => ({ ...prev, ...s }));
+  }, []);
+
+  const resetStrategy = useCallback(() => setStrategy(DEFAULT_STRATEGY), []);
+
   const resetAll = useCallback(() => {
     setMobilfunkStatus("idle");
     setMobilfunkFile(undefined);
+    setMobilfunkStage("cockpit");
+    setStrategy(DEFAULT_STRATEGY);
     setMetrics(DEFAULT_MOBILFUNK);
     setPriceOverride(null);
     setSpendOverride(null);
