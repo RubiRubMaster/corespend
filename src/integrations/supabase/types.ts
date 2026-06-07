@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mobilfunk_uploads: {
+        Row: {
+          created_at: string
+          customer_company: string | null
+          customer_email: string | null
+          customer_note: string | null
+          id: string
+          mime_type: string | null
+          notification_error: string | null
+          notification_sent_at: string | null
+          original_filename: string
+          size_bytes: number
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          customer_company?: string | null
+          customer_email?: string | null
+          customer_note?: string | null
+          id?: string
+          mime_type?: string | null
+          notification_error?: string | null
+          notification_sent_at?: string | null
+          original_filename: string
+          size_bytes: number
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          customer_company?: string | null
+          customer_email?: string | null
+          customer_note?: string | null
+          id?: string
+          mime_type?: string | null
+          notification_error?: string | null
+          notification_sent_at?: string | null
+          original_filename?: string
+          size_bytes?: number
+          storage_path?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
