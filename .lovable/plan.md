@@ -1,53 +1,47 @@
 ## Ziel
-Wenn ein Kunde im Mobilfunk-Schritt ein Dokument hochlädt, bekommst du (rubonbeck@icloud.com) sofort eine E-Mail mit dem Dateinamen, Metadaten und einem **sicheren Download-Link** zur Datei.
 
-## Warum Download-Link statt Attachment?
-Lovable Emails unterstützt keine Datei-Anhänge, und Verträge/Rechnungen sprengen schnell die 20-MB-Limits klassischer Mail-Anhänge. Lösung: Datei landet verschlüsselt im privaten Storage, du klickst in der E-Mail auf einen signierten Link (gültig z.B. 7 Tage).
+Nach Abschluss der Mobilfunk-Analyse (State C) startet ein interaktiver 5-Schritte-Beratungsdialog ("Verhandlungs-Strategie-Assistent"), bevor der Nutzer das finale Verhandlungsmandat erhält.
 
-## Voraussetzungen (werden automatisch eingerichtet)
-1. **Lovable Cloud aktivieren** – stellt Datenbank, Storage und E-Mail-Infrastruktur bereit.
-2. **E-Mail-Domain einrichten** – damit Mails von einer eigenen Absenderadresse (z.B. `notify@deinedomain.de`) verschickt werden statt im Spam zu landen. Dafür wirst du einmalig nach deiner Domain gefragt und musst NS-Records bei deinem DNS-Anbieter setzen.
-3. **App-E-Mail-Infrastruktur scaffolden** – legt Queue, Versand-Route und Templates an.
+## Neuer Flow
 
-## Umsetzung im Detail
+```text
+StateA Upload → StateB Waiting → StateC Cockpit (Findings)
+                                       │
+                                       ▼
+                              [Verhandlungsstrategie starten]
+                                       │
+                                       ▼
+                    StateD · 5-Schritte-Wizard
+                                       │
+                                       ▼
+                    StateE · Verhandlungsmandat (Summary)
+```
 
-### A. Storage
-- Privater Bucket `mobilfunk-uploads`.
-- Jede Datei wird unter `uploads/{timestamp}-{uuid}-{originalname}` abgelegt.
-- Kein öffentlicher Zugriff, nur signierte URLs.
+## 5 Schritte des Wizards
 
-### B. Datenbank-Tabelle `uploads`
-Felder: `id`, `created_at`, `original_filename`, `mime_type`, `size_bytes`, `storage_path`, `customer_email` (optional, falls Kunde eingibt), `customer_company` (optional), `notification_sent_at`.
+1. **Strategische Ausrichtung** – Radio: `Geräuschlose Nachverhandlung` vs. `Offene Marktausschreibung (max. Drohkulisse)`
+2. **Vertragslaufzeit** – Radio: `12 Mo. (flexibel)` / `24 Mo. (Standard)` / `36 Mo. (max. Rabatt)`
+3. **Liquidität / Abrechnung** – Checkboxen: `Zahlungsziel 60 Tage netto`, `Zahlungsziel 90 Tage netto`, `Konsolidierte ERP-Gesamtrechnung`
+4. **Vertragsschutz-Klauseln** – Checkboxen: `Mitarbeiter-Flex-Klausel (bis 20% SIMs straffrei kündbar)`, `Technologie-/5G-Sonderkündigungsrecht`
+5. **Flotten-Infrastruktur** – Checkboxen: `eSIM/MDM-Vollautomatisierung`, `Multi-SIM für Tablets`, `Netzvorgabe (Telekom / Vodafone / O2 / egal)` (Select)
 
-### C. Upload-Flow im Frontend (`MobilfunkView` / „Dokumente sicher übertragen"-Seite)
-1. Drag-&-Drop-Zone akzeptiert PDF, XLSX, CSV, ZIP (max. 50 MB pro Datei).
-2. Beim Drop:
-   - Client-seitige Validierung (Größe, MIME-Type).
-   - Direkter Upload in den Storage-Bucket.
-   - Eintrag in `uploads`-Tabelle via Server-Function.
-3. Nach Erfolg → Übergang zum bestehenden „Magic Enterprise Waiting Screen" (State B).
+Jeder Schritt: Headline, kurzer Beratertext, Optionen, "Zurück" / "Weiter". Fortschrittsbalken oben (1/5 … 5/5). Live-Sidebar mit "Strategie-Impact" (z. B. erwartete Verhandlungsmacht-Anzeige, geschätzter Hebel auf Einsparung).
 
-### D. E-Mail-Versand
-- React-Email-Template `mobilfunk-upload-notification.tsx` mit:
-  - Betreff: `🆕 Neuer Mobilfunk-Upload: {dateiname}`
-  - Inhalt: Dateiname, Größe, Upload-Zeit, optional Kunden-Infos, **„Datei herunterladen"-Button** (7-Tage-signierter Storage-Link), Hinweistext.
-- Server-Function nach erfolgreichem DB-Insert:
-  - Erzeugt 7-Tage-signierten Download-Link via `supabase.storage.createSignedUrl()`.
-  - Ruft den scaffoldeten `sendTransactionalEmail()`-Helper auf mit `recipientEmail: "rubonbeck@icloud.com"`, festgelegt im Code.
-  - Idempotenzschlüssel: `mobilfunk-upload-{uploadId}`.
+## Abschluss (StateE)
 
-### E. Sicherheit
-- Bucket privat, keine öffentlichen Listings.
-- Server-Function für Insert + Mailversand läuft mit Service-Role; keine Client-Geheimnisse exponiert.
-- Empfänger-E-Mail `rubonbeck@icloud.com` hartkodiert (keine Manipulation durch Kunden möglich).
-- Validation per Zod (Dateigröße ≤ 50 MB, erlaubte MIME-Types).
+Card mit Zusammenfassung aller Entscheidungen + Button "📄 Verhandlungsmandat herunterladen (Demo)" und "Strategie anpassen" (zurück zu Schritt 1). Aktiviert weiterhin Mobilfunk-Bereich im Management Dashboard (bereits implementiert).
 
-## Was du tun musst
-1. **Lovable Cloud aktivieren** bestätigen (1 Klick im nachfolgenden Schritt).
-2. **Domain auswählen**, von der die Mails verschickt werden sollen (z.B. `notify.corespend.io`), und einmalig die angezeigten NS-Records bei deinem DNS-Anbieter eintragen. Bis zur DNS-Verifizierung warten die Mails in der Queue – sobald aktiv, werden sie automatisch zugestellt.
-3. Fertig – Uploads landen ab dann automatisch in deinem iCloud-Posteingang.
+## Technische Umsetzung
 
-## Technische Hinweise
-- Stack: TanStack Start Server Functions + Supabase Storage + Lovable Emails Queue.
-- Keine externen Provider (Resend/Mailgun) nötig.
-- Dateien bleiben dauerhaft im Storage (auch nach Ablauf des Mail-Links erreichbar via Cloud-Konsole).
+- **State im Store** (`src/lib/corespend-store.tsx`): erweitere `UploadStatus` um `"strategy"` und `"mandate"`, oder besser separater `mobilfunkStage: "cockpit" | "wizard" | "mandate"` nur wenn `mobilfunkStatus === "analyzed"`. Plus `NegotiationStrategy`-Objekt mit den 5 Antworten + Setter.
+- **Neue Datei** `src/components/corespend/MobilfunkStrategyWizard.tsx` – kapselt Wizard-UI (Schritt-State, Progress, 5 Step-Komponenten, Navigation). Nutzt vorhandene shadcn `RadioGroup`, `Checkbox`, `Select`, `Button`, `Card`.
+- **Neue Datei** `src/components/corespend/MobilfunkMandate.tsx` – Summary-View.
+- **`MobilfunkView.tsx`**: In `StateC` am Ende der Findings-Sektion CTA-Button "Verhandlungsstrategie konfigurieren →" hinzufügen. Switch im Hauptrender: wenn stage = wizard → Wizard, wenn mandate → Mandate, sonst StateC. Header-Label entsprechend erweitern (State D / State E).
+- **Design**: Konsistent mit bestehendem `glass-card`, gradient-Icons, Success/Primary-Tokens. Keine neuen Farbwerte.
+- **Reset**: `resetAll()` setzt Strategie + Stage zurück.
+
+## Out of Scope
+
+Keine Backend-Persistierung der Strategie-Antworten (Prototyp). Kein echter PDF-Export — Button zeigt Toast "Mandat wird vorbereitet".
+
+Soll ich so umsetzen?
