@@ -3,6 +3,23 @@ import { createContext, useContext, useState, useCallback, useMemo, type ReactNo
 export type Category = "telco" | "office" | "saas" | "cloud" | "hardware";
 export type SubKey = "mobilfunk" | "festnetz" | "daten";
 export type UploadStatus = "idle" | "processing" | "pending" | "analyzed";
+export type MobilfunkStage = "cockpit" | "wizard" | "mandate";
+
+export type NegotiationStrategy = {
+  approach: "renegotiate" | "tender" | null;
+  termMonths: 12 | 24 | 36 | null;
+  payment: { net60: boolean; net90: boolean; consolidated: boolean };
+  clauses: { flexStaff: boolean; techExit: boolean };
+  fleet: { esimMdm: boolean; multiSim: boolean; network: "any" | "telekom" | "vodafone" | "o2" };
+};
+
+const DEFAULT_STRATEGY: NegotiationStrategy = {
+  approach: null,
+  termMonths: null,
+  payment: { net60: false, net90: false, consolidated: false },
+  clauses: { flexStaff: false, techExit: false },
+  fleet: { esimMdm: false, multiSim: false, network: "any" },
+};
 
 /** Top-level activeView. */
 export type ActiveView = "dashboard" | "mobilfunk" | "locked" | "ai";
@@ -62,6 +79,8 @@ export const PRICING = {
 type Ctx = {
   mobilfunkStatus: UploadStatus;
   mobilfunkFile?: string;
+  mobilfunkStage: MobilfunkStage;
+  strategy: NegotiationStrategy;
   activeView: ActiveView;
   lockedHint: Category | null;
   metrics: MobilfunkMetrics;
@@ -80,6 +99,9 @@ type Ctx = {
   startMobilfunkUpload: (fileName?: string) => void;
   demoUnlock: () => void;
   setMobilfunkStatus: (s: UploadStatus) => void;
+  setMobilfunkStage: (s: MobilfunkStage) => void;
+  updateStrategy: (s: Partial<NegotiationStrategy>) => void;
+  resetStrategy: () => void;
   updateMetrics: (m: Partial<MobilfunkMetrics>) => void;
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
@@ -99,6 +121,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
+  const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
+  const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
 
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
@@ -109,15 +133,26 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMobilfunkStatus("processing");
   }, []);
 
-  const demoUnlock = useCallback(() => setMobilfunkStatus("analyzed"), []);
+  const demoUnlock = useCallback(() => {
+    setMobilfunkStatus("analyzed");
+    setMobilfunkStage("cockpit");
+  }, []);
 
   const updateMetrics = useCallback((m: Partial<MobilfunkMetrics>) => {
     setMetrics((prev) => ({ ...prev, ...m }));
   }, []);
 
+  const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
+    setStrategy((prev) => ({ ...prev, ...s }));
+  }, []);
+
+  const resetStrategy = useCallback(() => setStrategy(DEFAULT_STRATEGY), []);
+
   const resetAll = useCallback(() => {
     setMobilfunkStatus("idle");
     setMobilfunkFile(undefined);
+    setMobilfunkStage("cockpit");
+    setStrategy(DEFAULT_STRATEGY);
     setMetrics(DEFAULT_MOBILFUNK);
     setPriceOverride(null);
     setSpendOverride(null);
@@ -144,6 +179,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const value: Ctx = {
     mobilfunkStatus,
     mobilfunkFile,
+    mobilfunkStage,
+    strategy,
     activeView,
     lockedHint,
     metrics,
@@ -162,12 +199,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     startMobilfunkUpload,
     demoUnlock,
     setMobilfunkStatus,
+    setMobilfunkStage,
+    updateStrategy,
+    resetStrategy,
     updateMetrics,
     setPriceOverride,
     setSpendOverride,
     setSavingsOverride,
     resetAll,
-
   };
 
   return <CoreSpendContext.Provider value={value}>{children}</CoreSpendContext.Provider>;

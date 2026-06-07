@@ -6,28 +6,37 @@ import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
 import { toast } from "sonner";
+import { MobilfunkStrategyWizard } from "./MobilfunkStrategyWizard";
+import { MobilfunkMandate } from "./MobilfunkMandate";
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
 export function MobilfunkView() {
-  const { mobilfunkStatus } = useCoreSpend();
+  const { mobilfunkStatus, mobilfunkStage } = useCoreSpend();
 
   return (
     <div className="space-y-6">
       <Header />
       {mobilfunkStatus === "idle" && <StateA />}
       {(mobilfunkStatus === "processing" || mobilfunkStatus === "pending") && <StateB />}
-      {mobilfunkStatus === "analyzed" && <StateC />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "cockpit" && <StateC />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkStrategyWizard />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkMandate />}
     </div>
   );
 }
 
 function Header() {
-  const { mobilfunkStatus, goDashboard } = useCoreSpend();
+  const { mobilfunkStatus, mobilfunkStage, goDashboard } = useCoreSpend();
   const stateLabel =
     mobilfunkStatus === "idle" ? "State A · Core DataUpload" :
-    mobilfunkStatus === "analyzed" ? "State C · Unlocked Cockpit" :
-    "State B · Enterprise Waiting";
+    mobilfunkStatus === "analyzed"
+      ? mobilfunkStage === "wizard"
+        ? "State D · Strategie-Assistent"
+        : mobilfunkStage === "mandate"
+        ? "State E · Verhandlungsmandat"
+        : "State C · Unlocked Cockpit"
+      : "State B · Enterprise Waiting";
 
   return (
     <div>
@@ -322,7 +331,7 @@ function StateB() {
 
 /* -------------------- STATE C -------------------- */
 function StateC() {
-  const { metrics, resetAll } = useCoreSpend();
+  const { metrics, resetAll, setMobilfunkStage } = useCoreSpend();
   const arpuOver = metrics.arpuActual > metrics.arpuTarget
     ? Math.round(((metrics.arpuActual - metrics.arpuTarget) / metrics.arpuTarget) * 100)
     : 0;
@@ -414,8 +423,11 @@ function StateC() {
           <ExportAction title="Verhandlungs-Guide" sub="Strategische Argumentationshilfen für das Gespräch mit deinem Provider" emoji="📘" />
           <ExportAction title="Analyse-Report (XLSX)" sub="Detaillierter Komplett-Report als Datenbasis für den Einkauf" emoji="📊" />
         </div>
-        <button className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]">
-          🔥 Verhandlungsmandat aktivieren · erfolgsbasiert
+        <button
+          onClick={() => setMobilfunkStage("wizard")}
+          className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"
+        >
+          🔥 Verhandlungsstrategie konfigurieren · 5 Schritte zum Mandat →
         </button>
       </div>
 
