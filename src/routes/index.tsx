@@ -127,19 +127,19 @@ function Landing() {
           <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
           Enterprise · IT Spend Intelligence
         </span>
-        <div className="mt-6 text-6xl md:text-8xl font-bold tracking-tight leading-[1.05]">
+        <div className="mt-8 text-6xl md:text-8xl font-bold tracking-tighter leading-[1.0]">
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             CoreSpend
           </span>
         </div>
-        <h1 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight leading-[1.1]">
+        <h1 className="mt-8 text-3xl md:text-[2.75rem] font-medium tracking-tight leading-[1.15] max-w-3xl mx-auto">
           Reinventing{" "}
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
             technology procurement
           </span>{" "}
           for the AI era.
         </h1>
-        <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-8 text-[15px] text-muted-foreground/80 max-w-xl mx-auto leading-relaxed tracking-wide">
           Built to serve IT and procurement teams by reinventing the way they work.
         </p>
 
