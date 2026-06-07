@@ -139,9 +139,13 @@ export function ManagementDashboard() {
                   <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success" full>🔥 Verhandlungsexperten aktivieren</ActionBtn>
                 </>
               ) : (
-                <ActionBtn onClick={goMobilfunk} variant="primary" full>
-                  ➜ Mobilfunk-Daten teilen & freischalten
-                </ActionBtn>
+                <>
+                  <ActionBtn onClick={() => toast.success("CFO-Report wird generiert", { description: "PDF mit Kernzahlen ist in 30 Sek. bereit." })}>📄 CFO-Report</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success">🔥 Verhandlungsexperten</ActionBtn>
+                  <ActionBtn onClick={goMobilfunk} variant="primary" full>
+                    ➜ Mobilfunk-Daten teilen & freischalten
+                  </ActionBtn>
+                </>
               )
             }
           />
