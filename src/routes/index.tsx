@@ -20,10 +20,57 @@ export const Route = createFileRoute("/")({
 });
 
 const BADGES = [
-  { emoji: "🛡", label: "DSGVO-konform" },
-  { emoji: "🔐", label: "AES-256 Verschlüsselung" },
-  { emoji: "🇩🇪", label: "Hosting in Frankfurt" },
-  { emoji: "📄", label: "Automatischer NDA-Schutz" },
+  { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Daten vor der Analyse" },
+  { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard" },
+  { emoji: "🇩🇪", label: "Hosting in Frankfurt", sub: "ISO 27001 Rechenzentren" },
+  { emoji: "📝", label: "Automatischer NDA-Schutz", sub: "Aktiv ab dem ersten Upload" },
+];
+
+const WHAT_ITEMS = [
+  {
+    title: "Glasklare Transparenz",
+    text: "Sofortige Analyse aller Verträge, Lizenzen und Mobilfunkflotten.",
+  },
+  {
+    title: "Ungesehene Potenziale",
+    text: 'Automatisierte Identifikation von Überzahlungen, ungenutzten Lizenzen ("Karteileichen") und massiven Benchmark-Abweichungen.',
+  },
+  {
+    title: "CFO-Ready Insights",
+    text: "Managementtaugliche Berichte, direkt nutzbar für die interne Budgetfreigabe.",
+  },
+  {
+    title: "Smarte Verhandlungs-Unterstützung",
+    text: "Digitale Vorbereitung und Begleitung von Anbieter-Verhandlungen für das absolute Marktoptimum.",
+  },
+];
+
+const HOW_PILLARS = [
+  {
+    n: "01",
+    title: "Infrastruktur-Intelligenz",
+    text: "Intelligente Algorithmen scannen reale Nutzungsdaten und matchen sie mit vertraglichen Pflichten.",
+  },
+  {
+    n: "02",
+    title: "Automatisierte Vertrags-Analyse",
+    text: "KI-gestützte Auswertung von Rahmenverträgen, Kündigungsfristen, Zahlungszielen und Sonderklauseln.",
+  },
+  {
+    n: "03",
+    title: "Live-Benchmark-Daten",
+    text: "Ein kollaboratives, anonymisiertes DACH-Netzwerk liefert echte Marktpreise vergleichbarer Unternehmen in Echtzeit.",
+  },
+  {
+    n: "04",
+    title: "Autonome Verhandlungs-Agenten",
+    text: "Digitale Assistenten generieren maßgeschneiderte Argumentationsketten und Drohkulissen für den Einkauf.",
+  },
+  {
+    n: "05",
+    title: "Zertifiziertes Experten-Netzwerk",
+    text: "Jede automatisierte Analyse wird von verifizierten IT-Einkaufsexperten auditiert — für 100% Präzision und Compliance.",
+  },
 ];
 
 function Landing() {
@@ -56,8 +103,8 @@ function Landing() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-20 text-center">
+      {/* Hero — Vision & Mission (EN) */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur px-3 py-1 text-[11px] uppercase tracking-wider text-muted-foreground">
           <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
           Enterprise · IT Spend Intelligence
@@ -69,26 +116,9 @@ function Landing() {
           </span>{" "}
           for the AI era.
         </h1>
-        <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Built to serve IT and procurement teams by reinventing the way they work.
         </p>
-        <p className="mt-4 text-sm text-muted-foreground/90 max-w-3xl mx-auto leading-relaxed">
-          Die KI-gestützte Plattform, die dein gesamtes IT-Vertragsportfolio vollautomatisch
-          durchleuchtet — von Lizenzen bis Mobilfunkflotten. Glasklare Transparenz, CFO-Ready
-          Insights und smarte Verhandlungs-Unterstützung auf Knopfdruck.
-        </p>
-
-        {/* Trust badges */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
-          {BADGES.map((b) => (
-            <span
-              key={b.label}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface/60 backdrop-blur px-3 py-1.5 text-[11px] text-foreground/90"
-            >
-              <span>{b.emoji}</span> {b.label}
-            </span>
-          ))}
-        </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -102,36 +132,70 @@ function Landing() {
             48h Onboarding · keine Provider-Kündigung notwendig
           </span>
         </div>
+
+        {/* Trust badges */}
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
+          {BADGES.map((b) => (
+            <div
+              key={b.label}
+              className="rounded-xl border border-border bg-surface/60 backdrop-blur px-4 py-3 text-left"
+            >
+              <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                <span>{b.emoji}</span> {b.label}
+              </div>
+              <div className="mt-1 text-[11px] text-muted-foreground leading-snug">{b.sub}</div>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* How it works */}
+      {/* The What */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20">
+        <div className="text-center mb-12">
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">The What</div>
+          <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight max-w-3xl mx-auto">
+            Eine KI-Plattform, die dein gesamtes IT-Vertragsportfolio vollautomatisch durchleuchtet.
+          </h2>
+          <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Wir haben CoreSpend für IT- und Einkaufsverantwortliche entwickelt, die Transparenz,
+            Geschwindigkeit und harte Verhandlungsergebnisse fordern — auf Knopfdruck.
+          </p>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          {WHAT_ITEMS.map((i) => (
+            <div key={i.title} className="glass-card p-6">
+              <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">
+                ✓
+              </div>
+              <h3 className="mt-4 text-lg font-semibold tracking-tight">{i.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{i.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* The How */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pb-20">
-        <div className="text-center mb-10">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
-          <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight">
-            Modernste Technologie. Tiefes Marktwissen.
+        <div className="text-center mb-12">
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">The How</div>
+          <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight max-w-3xl mx-auto">
+            Modernste Technologie. Tiefes Marktwissen. Fünf Kern-Säulen für deinen Erfolg.
           </h2>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          <Step
-            n="01"
-            title="Infrastruktur- & Vertrags-Intelligenz"
-            text="KI-gestützte Auswertung von Rahmenverträgen, Kündigungsfristen und realer Nutzung — Überzahlungen und ungenutzte Lizenzen werden automatisch sichtbar."
-          />
-          <Step
-            n="02"
-            title="Live-Benchmark-Daten"
-            text="Ein kollaboratives, anonymisiertes DACH-Netzwerk liefert echte Marktpreise vergleichbarer Unternehmen in Echtzeit."
-          />
-          <Step
-            n="03"
-            title="Autonome Verhandlungs-Agenten"
-            text="Maßgeschneiderte Argumentationsketten, auditiert von zertifizierten IT-Einkaufsexperten — für 100 % Präzision und Compliance."
-          />
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {HOW_PILLARS.map((p) => (
+            <div key={p.n} className="glass-card p-6 relative overflow-hidden">
+              <div className="absolute top-4 right-5 text-[11px] font-mono text-muted-foreground/60 tracking-wider">
+                {p.n}
+              </div>
+              <h3 className="text-lg font-semibold tracking-tight pr-8">{p.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* CTA outcome */}
+      {/* Closing CTA */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
         <div className="glass-card p-8 md:p-10 text-center">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Dein Ergebnis</div>
@@ -157,17 +221,6 @@ function Landing() {
           <span>Made in Germany · DSGVO-konform · Hosting Frankfurt</span>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function Step({ n, title, text }: { n: string; title: string; text: string }) {
-  return (
-    <div className="glass-card p-6 relative overflow-hidden">
-      <div className="absolute top-4 right-5 text-[11px] font-mono text-muted-foreground/60 tracking-wider">{n}</div>
-      <div className="h-10 w-10 rounded-lg bg-accent grid place-items-center text-primary text-xs font-bold">S</div>
-      <h3 className="mt-4 text-lg font-semibold tracking-tight">{title}</h3>
-      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{text}</p>
     </div>
   );
 }
