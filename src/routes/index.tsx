@@ -127,13 +127,19 @@ function Landing() {
           <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
           Enterprise · IT Spend Intelligence
         </span>
-        <div className="mt-8 text-6xl md:text-8xl font-bold tracking-tighter leading-[1.0]">
+        <div className="mt-6 text-6xl md:text-8xl font-bold tracking-tighter leading-[1.0]">
+          <span className="text-foreground">Core</span>
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-            CoreSpend
+            Spend
           </span>
         </div>
-        <p className="mt-8 text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed tracking-tight">
-          Built to serve IT and procurement teams by reinventing the way they work.
+        <div className="mt-6 text-2xl md:text-4xl font-semibold tracking-tight leading-[1.15] max-w-4xl mx-auto">
+          <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+            Built to serve IT and procurement teams by reinventing the way they work.
+          </span>
+        </div>
+        <p className="mt-8 text-[15px] text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
+          Unternehmen teilen anonymisierte IT-Daten, erhalten über den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit absolute Kostentransparenz — und senken ihre Lizenz-, Provider- und Vertragskosten datenbasiert auf das absolute Marktminimum.
         </p>
 
         {/* CoreSpend-Prinzip */}
