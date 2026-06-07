@@ -28,7 +28,7 @@ const STEPS = [
   {
     n: "02",
     title: "Potenziale identifizieren",
-    text: "Erkenne Überzahlungen, ungenutzte Lizenzen und Benchmark-Abweichungen — präzise aufbereitet für dein nächstes Management-Update.",
+    text: "Erkenne Überzahlungen, ungenutzte Lizenzen und Benchmark-Abweichungen durch den Abgleich mit hunderten von Live-Benchmarks — präzise aufbereitet für dein nächstes Management-Update.",
   },
   {
     n: "03",
