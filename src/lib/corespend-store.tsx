@@ -3,6 +3,23 @@ import { createContext, useContext, useState, useCallback, useMemo, type ReactNo
 export type Category = "telco" | "office" | "saas" | "cloud" | "hardware";
 export type SubKey = "mobilfunk" | "festnetz" | "daten";
 export type UploadStatus = "idle" | "processing" | "pending" | "analyzed";
+export type MobilfunkStage = "cockpit" | "wizard" | "mandate";
+
+export type NegotiationStrategy = {
+  approach: "renegotiate" | "tender" | null;
+  termMonths: 12 | 24 | 36 | null;
+  payment: { net60: boolean; net90: boolean; consolidated: boolean };
+  clauses: { flexStaff: boolean; techExit: boolean };
+  fleet: { esimMdm: boolean; multiSim: boolean; network: "any" | "telekom" | "vodafone" | "o2" };
+};
+
+const DEFAULT_STRATEGY: NegotiationStrategy = {
+  approach: null,
+  termMonths: null,
+  payment: { net60: false, net90: false, consolidated: false },
+  clauses: { flexStaff: false, techExit: false },
+  fleet: { esimMdm: false, multiSim: false, network: "any" },
+};
 
 /** Top-level activeView. */
 export type ActiveView = "dashboard" | "mobilfunk" | "locked" | "ai";
