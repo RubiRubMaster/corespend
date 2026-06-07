@@ -331,7 +331,7 @@ function StateB() {
 
 /* -------------------- STATE C -------------------- */
 function StateC() {
-  const { metrics, resetAll } = useCoreSpend();
+  const { metrics, resetAll, setMobilfunkStage } = useCoreSpend();
   const arpuOver = metrics.arpuActual > metrics.arpuTarget
     ? Math.round(((metrics.arpuActual - metrics.arpuTarget) / metrics.arpuTarget) * 100)
     : 0;
