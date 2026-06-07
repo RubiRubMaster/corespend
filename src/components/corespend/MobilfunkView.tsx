@@ -2,6 +2,12 @@ import { useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
+import { toast } from "sonner";
+
+const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
 export function MobilfunkView() {
   const { mobilfunkStatus } = useCoreSpend();
