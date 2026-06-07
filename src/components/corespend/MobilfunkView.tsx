@@ -6,18 +6,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
 import { toast } from "sonner";
+import { MobilfunkStrategyWizard } from "./MobilfunkStrategyWizard";
+import { MobilfunkMandate } from "./MobilfunkMandate";
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
 export function MobilfunkView() {
-  const { mobilfunkStatus } = useCoreSpend();
+  const { mobilfunkStatus, mobilfunkStage } = useCoreSpend();
 
   return (
     <div className="space-y-6">
       <Header />
       {mobilfunkStatus === "idle" && <StateA />}
       {(mobilfunkStatus === "processing" || mobilfunkStatus === "pending") && <StateB />}
-      {mobilfunkStatus === "analyzed" && <StateC />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "cockpit" && <StateC />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkStrategyWizard />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkMandate />}
     </div>
   );
 }
