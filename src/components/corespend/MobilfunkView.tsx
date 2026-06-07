@@ -59,9 +59,13 @@ function Header() {
 /* -------------------- STATE A -------------------- */
 function StateA() {
   const { startMobilfunkUpload } = useCoreSpend();
-  const [fileName, setFileName] = useState<string | undefined>();
+  const [file, setFile] = useState<File | undefined>();
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerCompany, setCustomerCompany] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recordUpload = useServerFn(recordMobilfunkUpload);
 
   const checklist = [
     "Mobilfunk-Rahmenvertrag (PDF)",
@@ -69,6 +73,58 @@ function StateA() {
     "Einzelverbindungsnachweis (EVN, PDF/CSV)",
     "Optional: SIM-/Nutzerliste (XLSX)",
   ];
+
+  function pickFile(f: File | undefined) {
+    if (!f) return;
+    if (f.size > MAX_UPLOAD_BYTES) {
+      toast.error("Datei zu groß", { description: "Maximale Größe: 50 MB." });
+      return;
+    }
+    setFile(f);
+  }
+
+  async function handleSubmit() {
+    if (!file) {
+      toast.error("Bitte Datei auswählen");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() ?? "bin";
+      const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+      const path = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("mobilfunk-uploads")
+        .upload(path, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: false,
+        });
+
+      if (uploadError) throw uploadError;
+
+      await recordUpload({
+        data: {
+          originalFilename: file.name,
+          mimeType: file.type || undefined,
+          sizeBytes: file.size,
+          storagePath: path,
+          customerEmail: customerEmail.trim() || undefined,
+          customerCompany: customerCompany.trim() || undefined,
+        },
+      });
+
+      toast.success("Dokument sicher übertragen", {
+        description: "Wir haben deine Datei erhalten und benachrichtigen das CoreSpend-Team.",
+      });
+      startMobilfunkUpload(file.name);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      toast.error("Upload fehlgeschlagen", { description: msg });
+    } finally {
+      setUploading(false);
+    }
+  }
 
   return (
     <Tabs defaultValue="manual" className="space-y-5">
@@ -89,8 +145,7 @@ function StateA() {
               onDrop={(e) => {
                 e.preventDefault();
                 setDragging(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) setFileName(f.name);
+                pickFile(e.dataTransfer.files?.[0]);
               }}
               onClick={() => inputRef.current?.click()}
               className={cn(
@@ -100,7 +155,7 @@ function StateA() {
             >
               <div className="text-3xl text-muted-foreground">↑</div>
               <p className="text-sm mt-3">
-                {fileName ? <span className="text-foreground">{fileName}</span> : (
+                {file ? <span className="text-foreground">{file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB</span> : (
                   <>Dateien hierher ziehen oder <span className="text-primary">durchsuchen</span></>
                 )}
               </p>
@@ -111,17 +166,38 @@ function StateA() {
               <input
                 ref={inputRef}
                 type="file"
+                accept=".pdf,.csv,.xlsx,.xls,.zip,application/pdf,text/csv"
                 className="hidden"
-                onChange={(e) => setFileName(e.target.files?.[0]?.name)}
+                onChange={(e) => pickFile(e.target.files?.[0])}
               />
             </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input
+                type="email"
+                placeholder="Deine E-Mail (optional)"
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
+                className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+              />
+              <input
+                type="text"
+                placeholder="Unternehmen (optional)"
+                value={customerCompany}
+                onChange={(e) => setCustomerCompany(e.target.value)}
+                className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+              />
+            </div>
+
             <button
-              onClick={() => startMobilfunkUpload(fileName)}
-              className="w-full rounded-lg bg-success text-success-foreground px-4 py-3.5 text-sm font-semibold hover:brightness-110 transition shadow-[0_10px_40px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"
+              onClick={handleSubmit}
+              disabled={uploading || !file}
+              className="w-full rounded-lg bg-success text-success-foreground px-4 py-3.5 text-sm font-semibold hover:brightness-110 transition shadow-[0_10px_40px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              📤 Dokumente sicher übertragen & Analyse starten
+              {uploading ? "⏳ Übertrage sicher …" : "📤 Dokumente sicher übertragen & Analyse starten"}
             </button>
           </div>
+
 
           <div className="glass-card p-6">
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-3">
