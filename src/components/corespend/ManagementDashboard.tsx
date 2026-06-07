@@ -66,27 +66,27 @@ export function ManagementDashboard() {
           </div>
           <div
             className={cn(
-              "rounded-lg border px-4 py-3 flex flex-col leading-tight min-w-[300px]",
+              "rounded-xl border px-6 py-5 flex flex-col leading-tight min-w-[320px] justify-center",
               totalDiscount > 0
                 ? "border-success/40 bg-gradient-to-br from-success/15 to-primary/10"
                 : "border-border bg-surface/50",
             )}
           >
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">
               CoreSpend Enterprise Lizenz
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className={cn("text-lg font-semibold tabular-nums leading-tight", flash && "animate-flash-success")}>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className={cn("text-2xl font-semibold tabular-nums leading-tight", flash && "animate-flash-success")}>
                 {formatEUR(currentPrice)}
-                <span className="text-xs font-normal text-muted-foreground"> / Monat</span>
+                <span className="text-sm font-normal text-muted-foreground"> / Monat</span>
               </span>
               {totalDiscount > 0 && (
-                <span className="text-xs text-muted-foreground line-through tabular-nums">
+                <span className="text-sm text-muted-foreground line-through tabular-nums">
                   {formatEUR(PRICING.BASE_PRICE)}
                 </span>
               )}
             </div>
-            <span className="text-[10px] text-muted-foreground mt-0.5">
+            <span className="text-xs text-muted-foreground mt-1">
               Basis {formatEUR(PRICING.BASE_PRICE)} · Data-Contribution Bonus −{formatEUR(PRICING.DISCOUNT_PER_AREA)} pro geteiltem Bereich
             </span>
           </div>
@@ -485,14 +485,14 @@ function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?
   return (
     <div
       className={cn(
-        "rounded-lg border px-3.5 py-2.5 flex flex-col leading-tight bg-surface/40",
+        "rounded-xl border px-5 py-4 flex flex-col justify-center leading-tight bg-surface/40",
         tone === "success" ? "border-success/30" : "border-border",
       )}
     >
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
       <span
         className={cn(
-          "text-sm font-semibold tabular-nums mt-1",
+          "text-xl font-semibold tabular-nums mt-1.5",
           tone === "success" && "text-success",
           tone === "muted" && "text-foreground/80",
         )}
