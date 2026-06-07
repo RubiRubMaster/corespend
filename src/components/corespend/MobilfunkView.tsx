@@ -27,11 +27,16 @@ export function MobilfunkView() {
 }
 
 function Header() {
-  const { mobilfunkStatus, goDashboard } = useCoreSpend();
+  const { mobilfunkStatus, mobilfunkStage, goDashboard } = useCoreSpend();
   const stateLabel =
     mobilfunkStatus === "idle" ? "State A · Core DataUpload" :
-    mobilfunkStatus === "analyzed" ? "State C · Unlocked Cockpit" :
-    "State B · Enterprise Waiting";
+    mobilfunkStatus === "analyzed"
+      ? mobilfunkStage === "wizard"
+        ? "State D · Strategie-Assistent"
+        : mobilfunkStage === "mandate"
+        ? "State E · Verhandlungsmandat"
+        : "State C · Unlocked Cockpit"
+      : "State B · Enterprise Waiting";
 
   return (
     <div>
