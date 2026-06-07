@@ -6,8 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
 import { toast } from "sonner";
-import { MobilfunkStrategyWizard } from "./MobilfunkStrategyWizard";
-import { MobilfunkMandate } from "./MobilfunkMandate";
+import { MobilfunkConsultantChat } from "./MobilfunkConsultantChat";
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 MB
 
@@ -20,8 +19,8 @@ export function MobilfunkView() {
       {mobilfunkStatus === "idle" && <StateA />}
       {(mobilfunkStatus === "processing" || mobilfunkStatus === "pending") && <StateB />}
       {mobilfunkStatus === "analyzed" && mobilfunkStage === "cockpit" && <StateC />}
-      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkStrategyWizard />}
-      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkMandate />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "wizard" && <MobilfunkConsultantChat />}
+      {mobilfunkStatus === "analyzed" && mobilfunkStage === "mandate" && <MobilfunkConsultantChat />}
     </div>
   );
 }
@@ -31,10 +30,8 @@ function Header() {
   const stateLabel =
     mobilfunkStatus === "idle" ? "State A · Core DataUpload" :
     mobilfunkStatus === "analyzed"
-      ? mobilfunkStage === "wizard"
-        ? "State D · Strategie-Assistent"
-        : mobilfunkStage === "mandate"
-        ? "State E · Verhandlungsmandat"
+      ? mobilfunkStage === "wizard" || mobilfunkStage === "mandate"
+        ? "State D · AI Consultant Briefing"
         : "State C · Unlocked Cockpit"
       : "State B · Enterprise Waiting";
 
@@ -427,7 +424,7 @@ function StateC() {
           onClick={() => setMobilfunkStage("wizard")}
           className="mt-2 w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"
         >
-          🔥 Verhandlungsstrategie konfigurieren · 5 Schritte zum Mandat →
+          💬 Anforderungen im Detail mit AI Consultant besprechen →
         </button>
       </div>
 
