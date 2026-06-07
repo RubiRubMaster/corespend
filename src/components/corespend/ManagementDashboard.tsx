@@ -480,3 +480,25 @@ function LockedAction() {
     </div>
   );
 }
+
+function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?: "success" | "muted" }) {
+  return (
+    <div
+      className={cn(
+        "rounded-lg border px-3.5 py-2.5 flex flex-col leading-tight bg-surface/40",
+        tone === "success" ? "border-success/30" : "border-border",
+      )}
+    >
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span
+        className={cn(
+          "text-sm font-semibold tabular-nums mt-1",
+          tone === "success" && "text-success",
+          tone === "muted" && "text-foreground/80",
+        )}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
