@@ -19,6 +19,24 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+const STEPS = [
+  {
+    n: "01",
+    title: "Daten analysieren",
+    text: "Lade Verträge, Rechnungen und Nutzungsdaten hoch. Unsere KI extrahiert alle relevanten Kennzahlen innerhalb weniger Minuten.",
+  },
+  {
+    n: "02",
+    title: "Potenziale identifizieren",
+    text: "Erkenne Überzahlungen, ungenutzte Lizenzen und Benchmark-Abweichungen — präzise aufbereitet für dein nächstes Management-Update.",
+  },
+  {
+    n: "03",
+    title: "Verhandlungsmacht sichern",
+    text: "Erhalte datenbasierte Argumentationsketten, Drohkulissen und einen maßgeschneiderten Verhandlungsleitfaden für maximale Einsparungen.",
+  },
+];
+
 const BADGES = [
   { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Daten vor der Analyse" },
   { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard" },
