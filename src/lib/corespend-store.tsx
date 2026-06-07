@@ -79,6 +79,8 @@ export const PRICING = {
 type Ctx = {
   mobilfunkStatus: UploadStatus;
   mobilfunkFile?: string;
+  mobilfunkStage: MobilfunkStage;
+  strategy: NegotiationStrategy;
   activeView: ActiveView;
   lockedHint: Category | null;
   metrics: MobilfunkMetrics;
@@ -97,6 +99,9 @@ type Ctx = {
   startMobilfunkUpload: (fileName?: string) => void;
   demoUnlock: () => void;
   setMobilfunkStatus: (s: UploadStatus) => void;
+  setMobilfunkStage: (s: MobilfunkStage) => void;
+  updateStrategy: (s: Partial<NegotiationStrategy>) => void;
+  resetStrategy: () => void;
   updateMetrics: (m: Partial<MobilfunkMetrics>) => void;
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
