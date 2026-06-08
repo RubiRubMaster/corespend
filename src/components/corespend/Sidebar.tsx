@@ -61,7 +61,7 @@ export function Sidebar() {
         >
           <span className="text-base w-5 text-center">📊</span>
           <span className="flex-1 text-left">Core Analytics</span>
-          <span className="text-[9px] uppercase tracking-wider text-accent">Controlling</span>
+          <span className="text-[9px] uppercase tracking-wider text-fuchsia-500">Controlling</span>
         </button>
 
         <div className="px-2 pt-5 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
