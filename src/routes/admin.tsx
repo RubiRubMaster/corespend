@@ -143,9 +143,9 @@ function AdminInner() {
         </div>
       </Section>
 
-      {/* === Daten für „Validierte IT-Ausgaben" === */}
+      {/* === Daten fuer Validierte IT-Ausgaben === */}
       <Section
-        title={`Daten für „Validierte IT-Ausgaben" (Detailseite)`}
+        title="Daten fuer 'Validierte IT-Ausgaben' (Detailseite)"
         subtitle="5 Kernbereiche · Summe der Monatskosten = Haupt-KPI im Cockpit"
       >
         <div className="space-y-3">
@@ -163,11 +163,12 @@ function AdminInner() {
         </div>
       </Section>
 
-      {/* === Daten für „Vertragsrisiko" === */}
+      {/* === Daten fuer Vertragsrisiko === */}
       <Section
-        title={`Daten für „Vertragsrisiko" (Detailseite)`}
+        title="Daten fuer 'Vertragsrisiko' (Detailseite)"
         subtitle="Bis zu 3 Risiko-Zeilen · Summe Restvolumen = Haupt-KPI im Cockpit"
       >
+
         <div className="space-y-3">
           {riskItems.map((r, i) => (
             <div key={i} className="grid gap-2 md:grid-cols-[1.2fr_1.2fr_1fr_160px] items-end rounded-lg border border-border bg-background/40 p-3">
