@@ -24,14 +24,27 @@ const DEFAULT_STRATEGY: NegotiationStrategy = {
 /** Top-level activeView. */
 export type ActiveView =
   | "cockpit"
+  | "corestart"
   | "dashboard"
   | "mobilfunk"
+  | "officeupload"
   | "locked"
   | "ai"
   | "deadlines"
   | "optimizations"
   | "spend"
   | "risk";
+
+/** Status for each Core Start tile. */
+export type CoreStartStatus = "analyzed" | "pending" | "comingsoon";
+export type CoreStartStatuses = Record<Category, CoreStartStatus>;
+const DEFAULT_CORESTART_STATUSES: CoreStartStatuses = {
+  telco: "analyzed",
+  office: "pending",
+  saas: "comingsoon",
+  cloud: "comingsoon",
+  hardware: "comingsoon",
+};
 
 /** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
