@@ -291,10 +291,17 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
   const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
+  const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
+
+  const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
+    setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
+  }, []);
 
   const goCockpit = useCallback(() => { setActiveView("cockpit"); setLockedHint(null); }, []);
+  const goCoreStart = useCallback(() => { setActiveView("corestart"); setLockedHint(null); }, []);
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
+  const goOfficeUpload = useCallback(() => { setActiveView("officeupload"); setLockedHint(null); }, []);
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
   const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
   const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
