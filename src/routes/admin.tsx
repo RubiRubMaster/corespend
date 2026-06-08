@@ -165,7 +165,7 @@ function AdminInner() {
 
       {/* === Daten für „Vertragsrisiko" === */}
       <Section
-        title="Daten für „Vertragsrisiko" (Detailseite)"
+        title={`Daten für „Vertragsrisiko" (Detailseite)`}
         subtitle="Bis zu 3 Risiko-Zeilen · Summe Restvolumen = Haupt-KPI im Cockpit"
       >
         <div className="space-y-3">
