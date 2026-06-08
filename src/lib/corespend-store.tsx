@@ -240,6 +240,8 @@ type Ctx = {
   spendBreakdown: SpendAreaItem[];
   riskItems: RiskItem[];
   tickerItems: TickerItem[];
+  coreStartStatuses: CoreStartStatuses;
+  updateCoreStartStatus: (c: Category, s: CoreStartStatus) => void;
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
   updateNoUsage: (index: number, patch: Partial<NoUsageItem>) => void;
@@ -248,8 +250,10 @@ type Ctx = {
   updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
   goCockpit: () => void;
+  goCoreStart: () => void;
   goDashboard: () => void;
   goMobilfunk: () => void;
+  goOfficeUpload: () => void;
   goLocked: (c: Category) => void;
   goDeadlines: () => void;
   goOptimizations: () => void;
