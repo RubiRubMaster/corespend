@@ -133,6 +133,34 @@ function AdminInner() {
         </div>
       </Section>
 
+      {/* Core Start Status Tiles */}
+      <Section title="Daten für Core Start (Launchpad-Kacheln)" subtitle="Status-Badges der 5 IT-Bereiche · live im Core Start sichtbar">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {(["telco", "office", "saas", "cloud", "hardware"] as const).map((key) => {
+            const labels: Record<typeof key, string> = {
+              telco: "📞 Telekommunikation",
+              office: "💻 Office Suites",
+              saas: "☁️ SaaS",
+              cloud: "🌐 Cloud",
+              hardware: "🔌 Hardware",
+            };
+            return (
+              <SelectField
+                key={key}
+                label={labels[key]}
+                value={coreStartStatuses[key]}
+                onChange={(v) => updateCoreStartStatus(key, v as "analyzed" | "pending" | "comingsoon")}
+                options={[
+                  { value: "analyzed", label: "🟢 Analysiert (Aktiv)" },
+                  { value: "pending", label: "⚪ Daten ausstehend" },
+                  { value: "comingsoon", label: "🔒 Coming Soon" },
+                ]}
+              />
+            );
+          })}
+        </div>
+      </Section>
+
       {/* === Daten für Management Cockpit === */}
       <Section title="Daten für Management Cockpit" subtitle="Executive KPIs · live im Cockpit sichtbar">
         <div className="grid gap-4 md:grid-cols-3">
