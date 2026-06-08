@@ -76,14 +76,50 @@ const DEFAULT_DEADLINES: DeadlineItem[] = [
 ];
 
 /** Optimizations driving the savings KPI + danger briefing row. */
+export type NoUsageItem = {
+  label: string;
+  area: string;
+  count: number;
+  unit: string;
+  yearlyCost: number;
+  action: string;
+};
+export type TariffItem = {
+  label: string;
+  area: string;
+  yearlyCost: number;
+  lever: string;
+};
 export type Optimizations = {
-  inactiveSims: { count: number; yearlyCost: number };
-  duplicateLicenses: { count: number; yearlyCost: number };
+  noUsage: NoUsageItem[];
+  tariffMismatches: TariffItem[];
 };
 
 const DEFAULT_OPTIMIZATIONS: Optimizations = {
-  inactiveSims: { count: 14, yearlyCost: 4200 },
-  duplicateLicenses: { count: 27, yearlyCost: 20120 },
+  noUsage: [
+    {
+      label: "Inaktive SIM-Karten (0 KB Datenverbrauch seit 6 Mon.)",
+      area: "Telekommunikation",
+      count: 14,
+      unit: "SIMs",
+      yearlyCost: 4200,
+      action: "Sofortige Deaktivierung / Abschaltung",
+    },
+  ],
+  tariffMismatches: [
+    {
+      label: "Auslands-Roaming ohne passende Tarif-Option (USA/CH)",
+      area: "Telekommunikation",
+      yearlyCost: 11720,
+      lever: "Umstellung auf zentriertes Business-Roaming-Paket",
+    },
+    {
+      label: "Überdimensionierte Datenpässe (Ungenutzte Flatrates)",
+      area: "Telekommunikation",
+      yearlyCost: 8400,
+      lever: "Downgrade auf volumenbasierte Pools",
+    },
+  ],
 };
 
 /** Spend breakdown by 5 IT core areas (Detail page „Validierte IT-Ausgaben"). */
