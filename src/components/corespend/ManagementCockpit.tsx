@@ -131,12 +131,11 @@ export function ManagementCockpit() {
         </div>
         <ul className="flex flex-col divide-y divide-border/60">
           {sortedTicker.map((t) => {
-            const isMobilfunkLink = t.originalIndex === 0;
-            const interactive = live && isMobilfunkLink;
+            const interactive = live && !!t.target;
             return (
               <li key={t.originalIndex}>
                 <button
-                  onClick={interactive ? goMobilfunk : undefined}
+                  onClick={interactive ? () => navTo(t.target) : undefined}
                   disabled={!interactive}
                   className={cn(
                     "w-full flex items-center gap-3 py-2.5 text-left text-[13px] tabular-nums",
