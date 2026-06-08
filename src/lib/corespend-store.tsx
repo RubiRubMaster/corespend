@@ -355,7 +355,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
       items.push({
         tone: "warning",
         text: `${top.vendor} ${top.contractType} ${top.endLabel.toLowerCase().startsWith("endet") ? top.endLabel.toLowerCase() : "endet " + top.endLabel} (Verhandlungsfenster geöffnet)`,
-        target: "deadlines",
+        target: "risk",
       });
     }
     const sims = optimizations.inactiveSims;
