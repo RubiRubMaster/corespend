@@ -239,7 +239,7 @@ function AdminInner() {
             <div key={i} className="grid gap-2 md:grid-cols-[1fr_1.3fr_1.3fr_140px] items-end rounded-lg border border-border bg-background/40 p-3">
               <TextField label={`Vertrag ${i + 1} · Anbieter`} value={d.vendor} onChange={(v) => setDeadlineField(i, "vendor", v)} />
               <TextField label="Vertragsart" value={d.contractType} onChange={(v) => setDeadlineField(i, "contractType", v)} />
-              <TextField label="Enddatum / Frist (Text)" value={d.endLabel} onChange={(v) => setDeadlineField(i, "endLabel", v)} placeholder="z.B. Endet in 5 Monaten" />
+              <TextField label="Enddatum / Frist (Text)" value={d.endLabel} onChange={(v) => setDeadlineField(i, "endLabel", v)} placeholder="z.B. Strategisches Verhandlungsfenster: endet in 5 Monaten" />
               <MetricField label="Verbleibend (Monate)" value={d.remainingMonths} onChange={(v) => setDeadlineField(i, "remainingMonths", v)} />
             </div>
           ))}
