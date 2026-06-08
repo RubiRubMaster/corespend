@@ -328,7 +328,11 @@ function StateB() {
 
 /* -------------------- STATE C -------------------- */
 function StateC() {
-  const { metrics, resetAll, setMobilfunkStage } = useCoreSpend();
+  const { metrics, resetAll, setMobilfunkStage, timeMode } = useCoreSpend();
+  const yearly = timeMode === "yearly";
+  const unit = yearly ? "/ Jahr" : "/ Mo.";
+  const cost = yearly ? metrics.costMonthly * 12 : metrics.costMonthly;
+  const savings = yearly ? metrics.savingsYearly : Math.floor(metrics.savingsYearly / 12);
   const arpuOver = metrics.arpuActual > metrics.arpuTarget
     ? Math.round(((metrics.arpuActual - metrics.arpuTarget) / metrics.arpuTarget) * 100)
     : 0;
@@ -336,11 +340,15 @@ function StateC() {
   const actualPct = Math.min((metrics.arpuActual / (metrics.arpuTarget * 1.6)) * 100, 100);
   const targetPct = Math.min((metrics.arpuTarget / (metrics.arpuTarget * 1.6)) * 100, 100);
 
-  const findings = [
+  const findingsYearly = [
     { label: "14 verwaiste SIM-Karten (Null-Nutzung > 180 Tage)", saving: 4200 },
     { label: "Überdimensionierte Datenpässe & ungenutzte Auslands-Optionen", saving: 8400 },
     { label: "Fehlende Großkunden-Rabattierung auf Basis-Grundgebühren", saving: 11720 },
   ];
+  const findings = findingsYearly.map((f) => ({
+    label: f.label,
+    saving: yearly ? f.saving : Math.floor(f.saving / 12),
+  }));
 
   return (
     <div className="space-y-6">
