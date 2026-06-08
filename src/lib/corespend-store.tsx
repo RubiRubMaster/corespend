@@ -188,10 +188,14 @@ type Ctx = {
   cockpit: CockpitView;
   deadlines: DeadlineItem[];
   optimizations: Optimizations;
+  spendBreakdown: SpendAreaItem[];
+  riskItems: RiskItem[];
   tickerItems: TickerItem[];
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
   updateOptimizations: (patch: Partial<Optimizations>) => void;
+  updateSpendArea: (index: number, patch: Partial<SpendAreaItem>) => void;
+  updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
   goCockpit: () => void;
   goDashboard: () => void;
@@ -199,6 +203,8 @@ type Ctx = {
   goLocked: (c: Category) => void;
   goDeadlines: () => void;
   goOptimizations: () => void;
+  goSpend: () => void;
+  goRisk: () => void;
   startMobilfunkUpload: (fileName?: string) => void;
   demoUnlock: () => void;
   setMobilfunkStatus: (s: UploadStatus) => void;
