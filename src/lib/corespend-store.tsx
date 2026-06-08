@@ -467,6 +467,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     mobilfunkStatus,
     mobilfunkFile,
     mobilfunkStage,
+    timeMode,
+    setTimeMode,
     strategy,
     activeView,
     lockedHint,
