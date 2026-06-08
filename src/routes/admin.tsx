@@ -8,6 +8,9 @@ import {
   type MobilfunkMetrics,
   type CockpitMetrics,
   type DeadlineItem,
+  type SpendAreaItem,
+  type RiskItem,
+  type RiskStatus,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 
