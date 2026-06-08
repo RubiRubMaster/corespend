@@ -1,4 +1,4 @@
-import { useCoreSpend, formatEUR, type TickerTone } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
 
@@ -6,10 +6,12 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 
 export function ManagementCockpit() {
   const {
-    mobilfunkStatus, cockpitMetrics: m, tickerItems,
-    goDashboard, goMobilfunk,
+    mobilfunkStatus, cockpit: m, tickerItems,
+    goDashboard, goDeadlines, goOptimizations, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
+
+  const navTo = (v?: ActiveView) => { if (v) setActiveView(v); };
 
   const sortedTicker = tickerItems
     .map((t, i) => ({ ...t, originalIndex: i }))
@@ -62,6 +64,7 @@ export function ManagementCockpit() {
           valueTone="warning"
           sub={live ? `Handlungsbedarf innerhalb der nächsten ${m.deadlineWindowDays} Tage` : "Vertragsfristen werden überwacht"}
           locked={!live}
+          onClick={live ? goDeadlines : undefined}
         />
         <KpiCard
           label="Vertragsrisiko"
@@ -128,12 +131,11 @@ export function ManagementCockpit() {
         </div>
         <ul className="flex flex-col divide-y divide-border/60">
           {sortedTicker.map((t) => {
-            const isMobilfunkLink = t.originalIndex === 0;
-            const interactive = live && isMobilfunkLink;
+            const interactive = live && !!t.target;
             return (
               <li key={t.originalIndex}>
                 <button
-                  onClick={interactive ? goMobilfunk : undefined}
+                  onClick={interactive ? () => navTo(t.target) : undefined}
                   disabled={!interactive}
                   className={cn(
                     "w-full flex items-center gap-3 py-2.5 text-left text-[13px] tabular-nums",
@@ -165,7 +167,7 @@ export function ManagementCockpit() {
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
           desc="Direkter Zugriff auf Konsolidierungen, No-Usage-Warnungen und Einsparpotenziale."
-          onClick={live ? goDashboard : undefined}
+          onClick={live ? goOptimizations : undefined}
           tone="primary"
         />
         <CtaTile
