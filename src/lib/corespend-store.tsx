@@ -270,6 +270,8 @@ type Ctx = {
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
   setSavingsOverride: (n: number | null) => void;
+  timeMode: TimeMode;
+  setTimeMode: (m: TimeMode) => void;
   resetAll: () => void;
 };
 
