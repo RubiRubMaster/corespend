@@ -352,10 +352,11 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const mobilfunkLive = mobilfunkStatus === "analyzed";
 
   // Derived savings (round UP per requirement)
-  const derivedSavings = useMemo(
-    () => Math.ceil(optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost),
-    [optimizations],
-  );
+  const derivedSavings = useMemo(() => {
+    const a = optimizations.noUsage.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
+    const b = optimizations.tariffMismatches.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
+    return Math.ceil(a + b);
+  }, [optimizations]);
 
   // Derived spendMonthly = Summe der 5 Kernbereiche
   const derivedSpendMonthly = useMemo(
