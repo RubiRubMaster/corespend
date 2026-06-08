@@ -3,7 +3,7 @@ import { useCoreSpend, CATEGORIES_META, type Category } from "@/lib/corespend-st
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
 
   return (
     <aside className="hidden md:flex w-[272px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
@@ -34,6 +34,20 @@ export function Sidebar() {
           <span className="text-base w-5 text-center">💼</span>
           <span className="flex-1 text-left">Management Cockpit</span>
           <span className="text-[9px] uppercase tracking-wider text-success">C-Level</span>
+        </button>
+
+        <button
+          onClick={goCoreStart}
+          className={cn(
+            "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
+            activeView === "corestart"
+              ? "bg-gradient-to-r from-primary/15 to-success/10 text-foreground border border-primary/30 shadow-sm"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+          )}
+        >
+          <span className="text-base w-5 text-center">🚀</span>
+          <span className="flex-1 text-left">Core Start</span>
+          <span className="text-[9px] uppercase tracking-wider text-primary">Launchpad</span>
         </button>
 
         <button

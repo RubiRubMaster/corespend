@@ -24,14 +24,27 @@ const DEFAULT_STRATEGY: NegotiationStrategy = {
 /** Top-level activeView. */
 export type ActiveView =
   | "cockpit"
+  | "corestart"
   | "dashboard"
   | "mobilfunk"
+  | "officeupload"
   | "locked"
   | "ai"
   | "deadlines"
   | "optimizations"
   | "spend"
   | "risk";
+
+/** Status for each Core Start tile. */
+export type CoreStartStatus = "analyzed" | "pending" | "comingsoon";
+export type CoreStartStatuses = Record<Category, CoreStartStatus>;
+const DEFAULT_CORESTART_STATUSES: CoreStartStatuses = {
+  telco: "analyzed",
+  office: "pending",
+  saas: "comingsoon",
+  cloud: "comingsoon",
+  hardware: "comingsoon",
+};
 
 /** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
@@ -227,6 +240,8 @@ type Ctx = {
   spendBreakdown: SpendAreaItem[];
   riskItems: RiskItem[];
   tickerItems: TickerItem[];
+  coreStartStatuses: CoreStartStatuses;
+  updateCoreStartStatus: (c: Category, s: CoreStartStatus) => void;
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
   updateNoUsage: (index: number, patch: Partial<NoUsageItem>) => void;
@@ -235,8 +250,10 @@ type Ctx = {
   updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
   goCockpit: () => void;
+  goCoreStart: () => void;
   goDashboard: () => void;
   goMobilfunk: () => void;
+  goOfficeUpload: () => void;
   goLocked: (c: Category) => void;
   goDeadlines: () => void;
   goOptimizations: () => void;
@@ -274,10 +291,17 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
   const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
+  const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
+
+  const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
+    setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
+  }, []);
 
   const goCockpit = useCallback(() => { setActiveView("cockpit"); setLockedHint(null); }, []);
+  const goCoreStart = useCallback(() => { setActiveView("corestart"); setLockedHint(null); }, []);
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
+  const goOfficeUpload = useCallback(() => { setActiveView("officeupload"); setLockedHint(null); }, []);
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
   const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
   const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
@@ -348,6 +372,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
+    setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
@@ -457,6 +482,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     spendBreakdown,
     riskItems,
     tickerItems,
+    coreStartStatuses,
+    updateCoreStartStatus,
     updateCockpitMetrics,
     updateDeadline,
     updateNoUsage,
@@ -465,8 +492,10 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     updateRiskItem,
     setActiveView,
     goCockpit,
+    goCoreStart,
     goDashboard,
     goMobilfunk,
+    goOfficeUpload,
     goLocked,
     goDeadlines,
     goOptimizations,
