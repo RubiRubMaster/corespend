@@ -22,7 +22,41 @@ const DEFAULT_STRATEGY: NegotiationStrategy = {
 };
 
 /** Top-level activeView. */
-export type ActiveView = "dashboard" | "mobilfunk" | "locked" | "ai";
+export type ActiveView = "cockpit" | "dashboard" | "mobilfunk" | "locked" | "ai";
+
+export type CockpitMetrics = {
+  spendMonthly: number;        // 18420
+  spendYoyPercent: number;     // 8.4 (positive = up vs Vorjahr)
+  savingsYearly: number;       // 24320
+  savingsPercent: number;      // 17.3
+  criticalDeadlines: number;   // 3
+  deadlineWindowDays: number;  // 180
+  riskExposure: number;        // 312000
+  impactRealized: number;      // 58400
+  roi: number;                 // 7.3
+};
+
+const DEFAULT_COCKPIT: CockpitMetrics = {
+  spendMonthly: 18420,
+  spendYoyPercent: 8.4,
+  savingsYearly: 24320,
+  savingsPercent: 17.3,
+  criticalDeadlines: 3,
+  deadlineWindowDays: 180,
+  riskExposure: 312000,
+  impactRealized: 58400,
+  roi: 7.3,
+};
+
+export type TickerTone = "success" | "warning" | "danger";
+export type TickerItem = { tone: TickerTone; text: string };
+
+const DEFAULT_TICKER: TickerItem[] = [
+  { tone: "success", text: "Mobilfunk erfolgreich analysiert" },
+  { tone: "warning", text: "Vodafone-Rahmenvertrag endet in 5 Monaten (Verhandlungsfenster geöffnet)" },
+  { tone: "danger", text: "14 ungenutzte SIM-Karten verursachen aktuell 4.200 € unnötige Kosten" },
+  { tone: "success", text: "Gesamtes Sparpotenzial von 24.320 € sofort realisierbar" },
+];
 
 export type CategoryMeta = {
   key: Category;
@@ -92,7 +126,12 @@ type Ctx = {
   currentPrice: number;
   totalDiscount: number;
   activatedAreas: number;
+  cockpitMetrics: CockpitMetrics;
+  tickerItems: TickerItem[];
+  updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
+  updateTickerItem: (index: number, item: Partial<TickerItem>) => void;
   setActiveView: (v: ActiveView) => void;
+  goCockpit: () => void;
   goDashboard: () => void;
   goMobilfunk: () => void;
   goLocked: (c: Category) => void;
@@ -115,15 +154,18 @@ const CoreSpendContext = createContext<Ctx | null>(null);
 export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [mobilfunkStatus, setMobilfunkStatus] = useState<UploadStatus>("idle");
   const [mobilfunkFile, setMobilfunkFile] = useState<string | undefined>();
-  const [activeView, setActiveView] = useState<ActiveView>("dashboard");
+  const [activeView, setActiveView] = useState<ActiveView>("cockpit");
   const [lockedHint, setLockedHint] = useState<Category | null>(null);
   const [metrics, setMetrics] = useState<MobilfunkMetrics>(DEFAULT_MOBILFUNK);
+  const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(DEFAULT_COCKPIT);
+  const [tickerItems, setTickerItems] = useState<TickerItem[]>(DEFAULT_TICKER);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
   const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
 
+  const goCockpit = useCallback(() => { setActiveView("cockpit"); setLockedHint(null); }, []);
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
@@ -142,6 +184,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMetrics((prev) => ({ ...prev, ...m }));
   }, []);
 
+  const updateCockpitMetrics = useCallback((m: Partial<CockpitMetrics>) => {
+    setCockpitMetrics((prev) => ({ ...prev, ...m }));
+  }, []);
+
+  const updateTickerItem = useCallback((index: number, item: Partial<TickerItem>) => {
+    setTickerItems((prev) => prev.map((t, i) => (i === index ? { ...t, ...item } : t)));
+  }, []);
+
   const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
     setStrategy((prev) => ({ ...prev, ...s }));
   }, []);
@@ -154,6 +204,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setMobilfunkStage("cockpit");
     setStrategy(DEFAULT_STRATEGY);
     setMetrics(DEFAULT_MOBILFUNK);
+    setCockpitMetrics(DEFAULT_COCKPIT);
+    setTickerItems(DEFAULT_TICKER);
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
@@ -192,7 +244,12 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     currentPrice,
     totalDiscount,
     activatedAreas,
+    cockpitMetrics,
+    tickerItems,
+    updateCockpitMetrics,
+    updateTickerItem,
     setActiveView,
+    goCockpit,
     goDashboard,
     goMobilfunk,
     goLocked,
