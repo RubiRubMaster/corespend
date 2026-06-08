@@ -22,41 +22,69 @@ const DEFAULT_STRATEGY: NegotiationStrategy = {
 };
 
 /** Top-level activeView. */
-export type ActiveView = "cockpit" | "dashboard" | "mobilfunk" | "locked" | "ai";
+export type ActiveView =
+  | "cockpit"
+  | "dashboard"
+  | "mobilfunk"
+  | "locked"
+  | "ai"
+  | "deadlines"
+  | "optimizations";
 
+/** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
-  spendMonthly: number;        // 18420
-  spendYoyPercent: number;     // 8.4 (positive = up vs Vorjahr)
-  savingsYearly: number;       // 24320
-  savingsPercent: number;      // 17.3
-  criticalDeadlines: number;   // 3
-  deadlineWindowDays: number;  // 180
-  riskExposure: number;        // 312000
-  impactRealized: number;      // 58400
-  roi: number;                 // 7.3
+  spendMonthly: number;
+  spendYoyPercent: number;
+  savingsPercent: number;
+  deadlineWindowDays: number;
+  riskExposure: number;
+  impactRealized: number;
+  roi: number;
 };
 
 const DEFAULT_COCKPIT: CockpitMetrics = {
   spendMonthly: 18420,
   spendYoyPercent: 8.4,
-  savingsYearly: 24320,
   savingsPercent: 17.3,
-  criticalDeadlines: 3,
   deadlineWindowDays: 180,
   riskExposure: 312000,
   impactRealized: 58400,
   roi: 7.3,
 };
 
-export type TickerTone = "success" | "warning" | "danger";
-export type TickerItem = { tone: TickerTone; text: string };
+/** Derived cockpit view (what UIs consume). */
+export type CockpitView = CockpitMetrics & {
+  savingsYearly: number;
+  criticalDeadlines: number;
+};
 
-const DEFAULT_TICKER: TickerItem[] = [
-  { tone: "success", text: "Mobilfunk erfolgreich analysiert" },
-  { tone: "warning", text: "Vodafone-Rahmenvertrag endet in 5 Monaten (Verhandlungsfenster geöffnet)" },
-  { tone: "danger", text: "14 ungenutzte SIM-Karten verursachen aktuell 4.200 € unnötige Kosten" },
-  { tone: "success", text: "Gesamtes Sparpotenzial von 24.320 € sofort realisierbar" },
+export type TickerTone = "success" | "warning" | "danger";
+export type TickerItem = { tone: TickerTone; text: string; target?: ActiveView };
+
+/** Deadline (contract) item shown on the Fristen detail page + Briefing. */
+export type DeadlineItem = {
+  vendor: string;          // "Vodafone"
+  contractType: string;    // "Mobilfunk-Rahmenvertrag"
+  endLabel: string;        // "Endet in 5 Monaten" / "30.11.2026"
+  remainingMonths: number; // 5
+};
+
+const DEFAULT_DEADLINES: DeadlineItem[] = [
+  { vendor: "Vodafone", contractType: "Mobilfunk-Rahmenvertrag", endLabel: "Endet in 5 Monaten", remainingMonths: 5 },
+  { vendor: "Microsoft", contractType: "M365 E5 Enterprise", endLabel: "Endet in 9 Monaten", remainingMonths: 9 },
+  { vendor: "AWS", contractType: "Reserved Instances Q1", endLabel: "Endet in 11 Monaten", remainingMonths: 11 },
 ];
+
+/** Optimizations driving the savings KPI + danger briefing row. */
+export type Optimizations = {
+  inactiveSims: { count: number; yearlyCost: number };
+  duplicateLicenses: { count: number; yearlyCost: number };
+};
+
+const DEFAULT_OPTIMIZATIONS: Optimizations = {
+  inactiveSims: { count: 14, yearlyCost: 4200 },
+  duplicateLicenses: { count: 27, yearlyCost: 20120 },
+};
 
 export type CategoryMeta = {
   key: Category;
@@ -84,14 +112,13 @@ export const CATEGORIES_META: CategoryMeta[] = [
   { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", available: false, subs: [] },
 ];
 
-/** Default Mobilfunk metrics for State C (overridable in Admin). */
 export type MobilfunkMetrics = {
-  costMonthly: number;        // 18420
-  usagePercent: number;       // 84
-  runtimeMonths: number;      // 14
-  savingsYearly: number;      // 24320
-  arpuActual: number;         // 23.02
-  arpuTarget: number;         // 14.50
+  costMonthly: number;
+  usagePercent: number;
+  runtimeMonths: number;
+  savingsYearly: number;
+  arpuActual: number;
+  arpuTarget: number;
 };
 
 const DEFAULT_MOBILFUNK: MobilfunkMetrics = {
@@ -127,14 +154,20 @@ type Ctx = {
   totalDiscount: number;
   activatedAreas: number;
   cockpitMetrics: CockpitMetrics;
+  cockpit: CockpitView;
+  deadlines: DeadlineItem[];
+  optimizations: Optimizations;
   tickerItems: TickerItem[];
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
-  updateTickerItem: (index: number, item: Partial<TickerItem>) => void;
+  updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
+  updateOptimizations: (patch: Partial<Optimizations>) => void;
   setActiveView: (v: ActiveView) => void;
   goCockpit: () => void;
   goDashboard: () => void;
   goMobilfunk: () => void;
   goLocked: (c: Category) => void;
+  goDeadlines: () => void;
+  goOptimizations: () => void;
   startMobilfunkUpload: (fileName?: string) => void;
   demoUnlock: () => void;
   setMobilfunkStatus: (s: UploadStatus) => void;
@@ -158,7 +191,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [lockedHint, setLockedHint] = useState<Category | null>(null);
   const [metrics, setMetrics] = useState<MobilfunkMetrics>(DEFAULT_MOBILFUNK);
   const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(DEFAULT_COCKPIT);
-  const [tickerItems, setTickerItems] = useState<TickerItem[]>(DEFAULT_TICKER);
+  const [deadlines, setDeadlines] = useState<DeadlineItem[]>(DEFAULT_DEADLINES);
+  const [optimizations, setOptimizations] = useState<Optimizations>(DEFAULT_OPTIMIZATIONS);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
@@ -169,6 +203,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
+  const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
+  const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
 
   const startMobilfunkUpload = useCallback((fileName?: string) => {
     setMobilfunkFile(fileName);
@@ -188,8 +224,15 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setCockpitMetrics((prev) => ({ ...prev, ...m }));
   }, []);
 
-  const updateTickerItem = useCallback((index: number, item: Partial<TickerItem>) => {
-    setTickerItems((prev) => prev.map((t, i) => (i === index ? { ...t, ...item } : t)));
+  const updateDeadline = useCallback((index: number, patch: Partial<DeadlineItem>) => {
+    setDeadlines((prev) => prev.map((d, i) => (i === index ? { ...d, ...patch } : d)));
+  }, []);
+
+  const updateOptimizations = useCallback((patch: Partial<Optimizations>) => {
+    setOptimizations((prev) => ({
+      inactiveSims: { ...prev.inactiveSims, ...(patch.inactiveSims ?? {}) },
+      duplicateLicenses: { ...prev.duplicateLicenses, ...(patch.duplicateLicenses ?? {}) },
+    }));
   }, []);
 
   const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
@@ -205,7 +248,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setStrategy(DEFAULT_STRATEGY);
     setMetrics(DEFAULT_MOBILFUNK);
     setCockpitMetrics(DEFAULT_COCKPIT);
-    setTickerItems(DEFAULT_TICKER);
+    setDeadlines(DEFAULT_DEADLINES);
+    setOptimizations(DEFAULT_OPTIMIZATIONS);
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
@@ -213,12 +257,64 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
 
+  // Derived savings (round UP per requirement)
+  const derivedSavings = useMemo(
+    () => Math.ceil(optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost),
+    [optimizations],
+  );
+
+  // Derived critical-deadline count (any contract with months <= deadlineWindowDays/30)
+  const derivedCriticalCount = useMemo(() => {
+    const windowMonths = Math.max(1, Math.round(cockpitMetrics.deadlineWindowDays / 30));
+    return deadlines.filter((d) => d.remainingMonths > 0 && d.remainingMonths <= windowMonths).length;
+  }, [deadlines, cockpitMetrics.deadlineWindowDays]);
+
+  const cockpit: CockpitView = useMemo(
+    () => ({
+      ...cockpitMetrics,
+      savingsYearly: derivedSavings,
+      criticalDeadlines: derivedCriticalCount,
+    }),
+    [cockpitMetrics, derivedSavings, derivedCriticalCount],
+  );
+
+  // Derived ticker / briefing
+  const tickerItems: TickerItem[] = useMemo(() => {
+    const items: TickerItem[] = [
+      { tone: "success", text: "Mobilfunk erfolgreich analysiert", target: "mobilfunk" },
+    ];
+    const windowMonths = Math.max(1, Math.round(cockpitMetrics.deadlineWindowDays / 30));
+    const upcoming = deadlines.filter((d) => d.remainingMonths > 0 && d.remainingMonths <= windowMonths);
+    const top = (upcoming[0] ?? deadlines[0]);
+    if (top) {
+      items.push({
+        tone: "warning",
+        text: `${top.vendor} ${top.contractType} ${top.endLabel.toLowerCase().startsWith("endet") ? top.endLabel.toLowerCase() : "endet " + top.endLabel} (Verhandlungsfenster geöffnet)`,
+        target: "deadlines",
+      });
+    }
+    const sims = optimizations.inactiveSims;
+    if (sims.count > 0) {
+      items.push({
+        tone: "danger",
+        text: `${sims.count} ungenutzte SIM-Karten verursachen aktuell ${formatEUR(sims.yearlyCost)} unnötige Kosten`,
+        target: "optimizations",
+      });
+    }
+    items.push({
+      tone: "success",
+      text: `Gesamtes Sparpotenzial von ${formatEUR(derivedSavings)} sofort realisierbar`,
+      target: "optimizations",
+    });
+    return items;
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays]);
+
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
     const areas = mobilfunkLive ? 1 : 0;
     const discount = areas * PRICING.DISCOUNT_PER_AREA;
     const price = priceOverride ?? Math.max(PRICING.BASE_PRICE - discount, PRICING.MIN_PRICE);
     const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
-    const savings = savingsOverride ?? (mobilfunkLive ? metrics.savingsYearly : 0);
+    const savings = savingsOverride ?? (mobilfunkLive ? derivedSavings : 0);
     return {
       activatedAreas: areas,
       totalDiscount: discount,
@@ -226,7 +322,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
       effectiveSpendMonthly: spend,
       effectiveSavingsYearly: savings,
     };
-  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, metrics.savingsYearly]);
+  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings]);
 
   const value: Ctx = {
     mobilfunkStatus,
@@ -245,14 +341,20 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     totalDiscount,
     activatedAreas,
     cockpitMetrics,
+    cockpit,
+    deadlines,
+    optimizations,
     tickerItems,
     updateCockpitMetrics,
-    updateTickerItem,
+    updateDeadline,
+    updateOptimizations,
     setActiveView,
     goCockpit,
     goDashboard,
     goMobilfunk,
     goLocked,
+    goDeadlines,
+    goOptimizations,
     startMobilfunkUpload,
     demoUnlock,
     setMobilfunkStatus,
