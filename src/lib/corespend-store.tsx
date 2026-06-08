@@ -276,6 +276,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const updateSpendArea = useCallback((index: number, patch: Partial<SpendAreaItem>) => {
+    setSpendBreakdown((prev) => prev.map((a, i) => (i === index ? { ...a, ...patch } : a)));
+  }, []);
+
+  const updateRiskItem = useCallback((index: number, patch: Partial<RiskItem>) => {
+    setRiskItems((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+  }, []);
+
   const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
     setStrategy((prev) => ({ ...prev, ...s }));
   }, []);
