@@ -3,7 +3,7 @@ import { useCoreSpend, CATEGORIES_META, type Category } from "@/lib/corespend-st
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
-  const { activeView, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
 
   return (
     <aside className="hidden md:flex w-[272px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
@@ -23,6 +23,20 @@ export function Sidebar() {
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <button
+          onClick={goCockpit}
+          className={cn(
+            "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
+            activeView === "cockpit"
+              ? "bg-gradient-to-r from-success/15 to-primary/10 text-foreground border border-success/30 shadow-sm"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+          )}
+        >
+          <span className="text-base w-5 text-center">💼</span>
+          <span className="flex-1 text-left">Management Cockpit</span>
+          <span className="text-[9px] uppercase tracking-wider text-success">C-Level</span>
+        </button>
+
+        <button
           onClick={goDashboard}
           className={cn(
             "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
@@ -32,7 +46,7 @@ export function Sidebar() {
           )}
         >
           <span className="text-base w-5 text-center">📊</span>
-          <span className="flex-1 text-left">Management Dashboard</span>
+          <span className="flex-1 text-left">Core Dashboard</span>
         </button>
 
         <div className="px-2 pt-5 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
