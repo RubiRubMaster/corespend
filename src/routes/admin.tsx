@@ -145,7 +145,7 @@ function AdminInner() {
 
       {/* === Daten für „Validierte IT-Ausgaben" === */}
       <Section
-        title="Daten für „Validierte IT-Ausgaben" (Detailseite)"
+        title={`Daten für „Validierte IT-Ausgaben" (Detailseite)`}
         subtitle="5 Kernbereiche · Summe der Monatskosten = Haupt-KPI im Cockpit"
       >
         <div className="space-y-3">
