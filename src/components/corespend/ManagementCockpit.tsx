@@ -64,6 +64,7 @@ export function ManagementCockpit() {
           valueTone="warning"
           sub={live ? `Handlungsbedarf innerhalb der nächsten ${m.deadlineWindowDays} Tage` : "Vertragsfristen werden überwacht"}
           locked={!live}
+          onClick={live ? goDeadlines : undefined}
         />
         <KpiCard
           label="Vertragsrisiko"
