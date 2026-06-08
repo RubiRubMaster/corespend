@@ -229,7 +229,8 @@ type Ctx = {
   tickerItems: TickerItem[];
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
-  updateOptimizations: (patch: Partial<Optimizations>) => void;
+  updateNoUsage: (index: number, patch: Partial<NoUsageItem>) => void;
+  updateTariff: (index: number, patch: Partial<TariffItem>) => void;
   updateSpendArea: (index: number, patch: Partial<SpendAreaItem>) => void;
   updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
