@@ -114,7 +114,53 @@ function AdminInner() {
       <div className="glass-card p-6">
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
           Mobilfunk Kennzahlen (Management Dashboard & Cockpit)
+      </div>
+
+      {/* Management Cockpit Kennzahlen */}
+      <div className="glass-card p-6">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
+          💼 Management Cockpit · Executive KPIs
         </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          <MetricField label="Validierte IT-Ausgaben / Monat (€)" value={cockpitMetrics.spendMonthly} onChange={(v) => setCockpit("spendMonthly", v)} />
+          <MetricField label="Spend YoY (%)" value={cockpitMetrics.spendYoyPercent} step="0.1" onChange={(v) => setCockpit("spendYoyPercent", v)} />
+          <MetricField label="Sparpotenzial / Jahr (€)" value={cockpitMetrics.savingsYearly} onChange={(v) => setCockpit("savingsYearly", v)} />
+          <MetricField label="Optimierungspotenzial (%)" value={cockpitMetrics.savingsPercent} step="0.1" onChange={(v) => setCockpit("savingsPercent", v)} />
+          <MetricField label="Kritische Fristen (#)" value={cockpitMetrics.criticalDeadlines} onChange={(v) => setCockpit("criticalDeadlines", v)} />
+          <MetricField label="Fristen-Fenster (Tage)" value={cockpitMetrics.deadlineWindowDays} onChange={(v) => setCockpit("deadlineWindowDays", v)} />
+          <MetricField label="Risk Exposure (€)" value={cockpitMetrics.riskExposure} onChange={(v) => setCockpit("riskExposure", v)} />
+          <MetricField label="CoreSpend Impact (€)" value={cockpitMetrics.impactRealized} onChange={(v) => setCockpit("impactRealized", v)} />
+          <MetricField label="ROI (x)" value={cockpitMetrics.roi} step="0.1" onChange={(v) => setCockpit("roi", v)} />
+        </div>
+      </div>
+
+      {/* CEO/CFO Briefing Ticker */}
+      <div className="glass-card p-6">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
+          📊 CEO/CFO Briefing · Ticker-Zeilen
+        </div>
+        <div className="space-y-3">
+          {tickerItems.map((t, i) => (
+            <div key={i} className="grid gap-2 md:grid-cols-[140px_1fr] items-center">
+              <select
+                value={t.tone}
+                onChange={(e) => updateTickerItem(i, { tone: e.target.value as TickerTone })}
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
+              >
+                <option value="success">🟢 success</option>
+                <option value="warning">🟠 warning</option>
+                <option value="danger">🔴 danger</option>
+              </select>
+              <input
+                type="text"
+                value={t.text}
+                onChange={(e) => updateTickerItem(i, { text: e.target.value })}
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
         <div className="grid gap-4 md:grid-cols-3">
           <MetricField label="Kosten / Monat (€)" value={metrics.costMonthly} onChange={(v) => setMetric("costMonthly", v)} />
           <MetricField label="Nutzung (%)" value={metrics.usagePercent} onChange={(v) => setMetric("usagePercent", v)} />
