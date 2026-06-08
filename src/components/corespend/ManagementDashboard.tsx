@@ -33,7 +33,7 @@ export function ManagementDashboard() {
               CoreSpend · Controlling Layer
             </div>
             <h1 className="text-3xl font-semibold tracking-tight mt-1">
-              📊 Core Analytics
+              📊 Core Analytics (Controlling)
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
               Die detaillierte Analyse- und Controlling-Zentrale für alle Segmente Ihres IT-Stacks.

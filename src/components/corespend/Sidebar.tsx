@@ -32,8 +32,7 @@ export function Sidebar() {
           )}
         >
           <span className="text-base w-5 text-center">💼</span>
-          <span className="flex-1 text-left">Core Cockpit</span>
-          <span className="text-[9px] uppercase tracking-wider text-success">C-Level</span>
+          <span className="flex-1 text-left">Core Cockpit (C-Level)</span>
         </button>
 
         <button
@@ -46,8 +45,7 @@ export function Sidebar() {
           )}
         >
           <span className="text-base w-5 text-center">🚀</span>
-          <span className="flex-1 text-left">Core Start</span>
-          <span className="text-[9px] uppercase tracking-wider text-primary">Launchpad</span>
+          <span className="flex-1 text-left">Core Start (Launchpad)</span>
         </button>
 
         <button
@@ -60,7 +58,7 @@ export function Sidebar() {
           )}
         >
           <span className="text-base w-5 text-center">📊</span>
-          <span className="flex-1 text-left">Core Analytics</span>
+          <span className="flex-1 text-left">Core Analytics (Controlling)</span>
         </button>
 
         <div className="px-2 pt-5 pb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
