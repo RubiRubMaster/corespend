@@ -10,7 +10,7 @@ export function OptimizationsView() {
     <div className="space-y-8">
       <header>
         <button onClick={goCockpit} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-          ← Zurück zum Management Cockpit
+          ← Zurück zum Core Cockpit
         </button>
         <div className="mt-3 flex items-end justify-between flex-wrap gap-4">
           <div>
@@ -114,7 +114,7 @@ export function OptimizationsView() {
       </div>
 
       <p className="text-[11px] text-muted-foreground">
-        Werte werden live aus den Admin-Eingaben gespeist und aktualisieren das Management Cockpit automatisch.
+        Werte werden live aus den Admin-Eingaben gespeist und aktualisieren das Core Cockpit automatisch.
       </p>
     </div>
   );

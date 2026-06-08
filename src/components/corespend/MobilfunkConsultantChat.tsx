@@ -142,7 +142,7 @@ export function MobilfunkConsultantChat() {
                 onClick={goDashboard}
                 className="text-xs text-muted-foreground hover:text-foreground underline"
               >
-                Zurück zum Dashboard
+                Zurück zu Core Analytics
               </button>
               <button
                 onClick={resetAll}

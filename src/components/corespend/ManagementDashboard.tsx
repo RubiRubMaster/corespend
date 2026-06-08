@@ -30,14 +30,13 @@ export function ManagementDashboard() {
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
             <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              CoreSpend · Enterprise Cockpit
+              CoreSpend · Controlling Layer
             </div>
             <h1 className="text-3xl font-semibold tracking-tight mt-1">
-              Management Dashboard
+              📊 Core Analytics
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
-              Globale Übersicht aller 5 Kern-IT-Bereiche. Jede Kachel ist identisch aufgebaut:
-              Top-Level KPIs, bereichs-spezifische Kennzahlen und Procure-Actions.
+              Die detaillierte Analyse- und Controlling-Zentrale für alle Segmente Ihres IT-Stacks.
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
