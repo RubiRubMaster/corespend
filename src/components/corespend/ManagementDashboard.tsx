@@ -8,10 +8,18 @@ export function ManagementDashboard() {
   const {
     mobilfunkStatus, metrics, goMobilfunk,
     currentPrice, totalDiscount, activatedAreas,
-    effectiveSpendMonthly, effectiveSavingsYearly,
+    effectiveSpendMonthly, effectiveSavingsYearly, timeMode,
   } = useCoreSpend();
   const mobilfunkLive = mobilfunkStatus === "analyzed";
   const live = mobilfunkLive;
+  const yearly = timeMode === "yearly";
+  const unit = yearly ? "/ Jahr" : "/ Monat";
+  const unitShort = yearly ? "/ Jahr" : "/ Mo.";
+  const spendDisplay = yearly ? effectiveSpendMonthly * 12 : effectiveSpendMonthly;
+  const savingsDisplay = yearly ? effectiveSavingsYearly : Math.floor(effectiveSavingsYearly / 12);
+  const spendLabel = yearly ? "Validierte Jahresausgaben (Gesamt)" : "Validierte Monatsausgaben (Gesamt)";
+  const telcoCost = yearly ? metrics.costMonthly * 12 : metrics.costMonthly;
+  const telcoSavings = yearly ? metrics.savingsYearly : Math.floor(metrics.savingsYearly / 12);
 
   const prev = useRef(currentPrice);
   const [flash, setFlash] = useState(false);
@@ -49,12 +57,12 @@ export function ManagementDashboard() {
         <div className="grid gap-3 lg:grid-cols-[1fr_auto] items-stretch">
           <div className="grid grid-cols-3 gap-3">
             <GlobalKpi
-              label="Validierte IT-Ausgaben (Gesamt)"
-              value={live || effectiveSpendMonthly > 0 ? `${formatEUR(effectiveSpendMonthly)} / Monat` : "— / Monat"}
+              label={spendLabel}
+              value={live || effectiveSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
             />
             <GlobalKpi
               label="Identifiziertes Einsparpotenzial"
-              value={live || effectiveSavingsYearly > 0 ? `${formatEUR(effectiveSavingsYearly)} / Jahr` : "— / Jahr"}
+              value={live || effectiveSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
               tone="success"
             />
             <GlobalKpi
@@ -100,9 +108,9 @@ export function ManagementDashboard() {
         subtitle="Mobilfunk · Festnetz · Daten / Standortvernetzung"
         statusBadge={mobilfunkLive ? { label: "Aktiv", tone: "success" } : { label: "Teil-aktiv", tone: "primary" }}
         kpis={[
-          { label: "Ist-Kosten (kumuliert)", value: mobilfunkLive ? `${formatEUR(metrics.costMonthly)} / Mo.` : "—" },
+          { label: "Ist-Kosten (kumuliert)", value: mobilfunkLive ? `${formatEUR(telcoCost)} ${unitShort}` : "—" },
           { label: "Benchmark-Abweichung", value: mobilfunkLive ? "+37 % (Überzahlung)" : "—", tone: mobilfunkLive ? "destructive" : "muted" },
-          { label: "Einsparpotenzial", value: mobilfunkLive ? `${formatEUR(metrics.savingsYearly)} / Jahr` : "—", tone: "success" },
+          { label: "Einsparpotenzial", value: mobilfunkLive ? `${formatEUR(telcoSavings)} ${unit}` : "—", tone: "success" },
         ]}
       >
         <div className="grid gap-3 lg:grid-cols-3">
