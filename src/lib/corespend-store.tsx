@@ -35,29 +35,27 @@ export type ActiveView =
 
 /** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
-  spendMonthly: number;
   spendYoyPercent: number;
   savingsPercent: number;
   deadlineWindowDays: number;
-  riskExposure: number;
   impactRealized: number;
   roi: number;
 };
 
 const DEFAULT_COCKPIT: CockpitMetrics = {
-  spendMonthly: 18420,
   spendYoyPercent: 8.4,
   savingsPercent: 17.3,
   deadlineWindowDays: 180,
-  riskExposure: 312000,
   impactRealized: 58400,
   roi: 7.3,
 };
 
 /** Derived cockpit view (what UIs consume). */
 export type CockpitView = CockpitMetrics & {
+  spendMonthly: number;
   savingsYearly: number;
   criticalDeadlines: number;
+  riskExposure: number;
 };
 
 export type TickerTone = "success" | "warning" | "danger";
