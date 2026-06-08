@@ -8,6 +8,9 @@ import {
   type MobilfunkMetrics,
   type CockpitMetrics,
   type DeadlineItem,
+  type SpendAreaItem,
+  type RiskItem,
+  type RiskStatus,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 
@@ -47,6 +50,10 @@ function AdminInner() {
     updateDeadline,
     optimizations,
     updateOptimizations,
+    spendBreakdown,
+    updateSpendArea,
+    riskItems,
+    updateRiskItem,
     priceOverride,
     setPriceOverride,
     currentPrice,
@@ -124,17 +131,69 @@ function AdminInner() {
       {/* === Daten für Management Cockpit === */}
       <Section title="Daten für Management Cockpit" subtitle="Executive KPIs · live im Cockpit sichtbar">
         <div className="grid gap-4 md:grid-cols-3">
-          <MetricField label="Validierte IT-Ausgaben / Monat (€)" value={cockpitMetrics.spendMonthly} onChange={(v) => setCockpit("spendMonthly", v)} />
           <MetricField label="Spend YoY (%)" value={cockpitMetrics.spendYoyPercent} step="0.1" onChange={(v) => setCockpit("spendYoyPercent", v)} />
           <MetricField label="Optimierungspotenzial (%)" value={cockpitMetrics.savingsPercent} step="0.1" onChange={(v) => setCockpit("savingsPercent", v)} />
           <MetricField label="Fristen-Fenster (Tage)" value={cockpitMetrics.deadlineWindowDays} onChange={(v) => setCockpit("deadlineWindowDays", v)} />
-          <MetricField label="Vertragsrisiko / Risk Exposure (€)" value={cockpitMetrics.riskExposure} onChange={(v) => setCockpit("riskExposure", v)} />
           <MetricField label="CoreSpend Impact (€)" value={cockpitMetrics.impactRealized} onChange={(v) => setCockpit("impactRealized", v)} />
           <MetricField label="ROI (x)" value={cockpitMetrics.roi} step="0.1" onChange={(v) => setCockpit("roi", v)} />
+          <ReadOnlyField label="Validierte IT-Ausgaben / Monat (€) · derived" value={formatEUR(cockpit.spendMonthly)} hint="Summe aus Spend-Breakdown (5 Kernbereiche)" />
+          <ReadOnlyField label="Vertragsrisiko / Risk Exposure (€) · derived" value={formatEUR(cockpit.riskExposure)} hint="Summe aus Risiko-Detailseite" />
           <ReadOnlyField label="Sparpotenzial / Jahr (€) · derived" value={formatEUR(cockpit.savingsYearly)} hint="Summe aus Optimierungs-Detailseite" />
           <ReadOnlyField label="Kritische Fristen (#) · derived" value={`${cockpit.criticalDeadlines}`} hint="Verträge innerhalb Fristen-Fenster" />
         </div>
       </Section>
+
+      {/* === Daten für „Validierte IT-Ausgaben" === */}
+      <Section
+        title={`Daten für „Validierte IT-Ausgaben" (Detailseite)`}
+        subtitle="5 Kernbereiche · Summe der Monatskosten = Haupt-KPI im Cockpit"
+      >
+        <div className="space-y-3">
+          {spendBreakdown.map((a, i) => (
+            <div key={a.key} className="grid gap-2 md:grid-cols-[1.4fr_1fr_1fr] items-end rounded-lg border border-border bg-background/40 p-3">
+              <TextField label={`Bereich ${i + 1}`} value={`${a.emoji} ${a.label}`} onChange={(v) => updateSpendArea(i, { label: v.replace(/^\S+\s*/, "") })} />
+              <MetricField label="Kosten / Monat (€)" value={a.monthly} onChange={(v) => updateSpendArea(i, { monthly: Number(v) || 0 })} />
+              <MetricField label="Trend vs. Vorjahr (%)" value={a.yoyPercent} step="0.1" onChange={(v) => updateSpendArea(i, { yoyPercent: Number(v) || 0 })} />
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Summe → Cockpit „Validierte IT-Ausgaben"</span>
+          <span className="text-xl font-semibold tabular-nums">{formatEUR(cockpit.spendMonthly)} / Monat</span>
+        </div>
+      </Section>
+
+      {/* === Daten für „Vertragsrisiko" === */}
+      <Section
+        title={`Daten für „Vertragsrisiko" (Detailseite)`}
+        subtitle="Bis zu 3 Risiko-Zeilen · Summe Restvolumen = Haupt-KPI im Cockpit"
+      >
+        <div className="space-y-3">
+          {riskItems.map((r, i) => (
+            <div key={i} className="grid gap-2 md:grid-cols-[1.2fr_1.2fr_1fr_160px] items-end rounded-lg border border-border bg-background/40 p-3">
+              <TextField label={`Risiko ${i + 1} · Vendor`} value={r.vendor} onChange={(v) => updateRiskItem(i, { vendor: v })} />
+              <TextField label="Bereich" value={r.area} onChange={(v) => updateRiskItem(i, { area: v })} />
+              <MetricField label="Restvolumen (€)" value={r.remainingVolume} onChange={(v) => updateRiskItem(i, { remainingVolume: Number(v) || 0 })} />
+              <SelectField
+                label="Status"
+                value={r.status}
+                onChange={(v) => updateRiskItem(i, { status: v as RiskStatus })}
+                options={[
+                  { value: "akut", label: "Akuter Handlungsbedarf" },
+                  { value: "verhandlung", label: "In Verhandlung" },
+                  { value: "sicher", label: "Sicher" },
+                ]}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Summe → Cockpit „Vertragsrisiko"</span>
+          <span className="text-xl font-semibold tabular-nums text-destructive">{formatEUR(cockpit.riskExposure)}</span>
+        </div>
+      </Section>
+
+
 
       {/* === Daten für Fristen-Detailseite === */}
       <Section
@@ -310,5 +369,29 @@ function ReadOnlyField({ label, value, hint }: { label: string; value: string; h
       </div>
       {hint && <div className="text-[10px] text-muted-foreground/70 mt-1">{hint}</div>}
     </div>
+  );
+}
+
+function SelectField({
+  label, value, onChange, options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <label className="block">
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </label>
   );
 }

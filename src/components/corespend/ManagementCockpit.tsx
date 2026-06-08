@@ -7,7 +7,7 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 export function ManagementCockpit() {
   const {
     mobilfunkStatus, cockpit: m, tickerItems,
-    goDashboard, goDeadlines, goOptimizations, setActiveView,
+    goDashboard, goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
 
@@ -47,6 +47,7 @@ export function ManagementCockpit() {
           sub={live ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr` : "Datenbasis wird geladen"}
           subTone="destructive"
           locked={!live}
+          onClick={live ? goSpend : undefined}
         />
         <KpiCard
           label="Identifiziertes Sparpotenzial"
@@ -56,7 +57,7 @@ export function ManagementCockpit() {
           subTone="success"
           valueTone="success"
           locked={!live}
-          onClick={live ? goDashboard : undefined}
+          onClick={live ? goOptimizations : undefined}
         />
         <KpiCard
           label="Kritische Fristen"
@@ -71,6 +72,7 @@ export function ManagementCockpit() {
           value={live ? formatEUR(m.riskExposure) : "—"}
           sub={live ? "Vertragsvolumen in Verhandlung / mit Handlungsbedarf" : "Risk-Exposure-Modell inaktiv"}
           locked={!live}
+          onClick={live ? goRisk : undefined}
         />
 
         {/* Highlight Card */}

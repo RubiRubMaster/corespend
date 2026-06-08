@@ -29,33 +29,33 @@ export type ActiveView =
   | "locked"
   | "ai"
   | "deadlines"
-  | "optimizations";
+  | "optimizations"
+  | "spend"
+  | "risk";
 
 /** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
-  spendMonthly: number;
   spendYoyPercent: number;
   savingsPercent: number;
   deadlineWindowDays: number;
-  riskExposure: number;
   impactRealized: number;
   roi: number;
 };
 
 const DEFAULT_COCKPIT: CockpitMetrics = {
-  spendMonthly: 18420,
   spendYoyPercent: 8.4,
   savingsPercent: 17.3,
   deadlineWindowDays: 180,
-  riskExposure: 312000,
   impactRealized: 58400,
   roi: 7.3,
 };
 
 /** Derived cockpit view (what UIs consume). */
 export type CockpitView = CockpitMetrics & {
+  spendMonthly: number;
   savingsYearly: number;
   criticalDeadlines: number;
+  riskExposure: number;
 };
 
 export type TickerTone = "success" | "warning" | "danger";
@@ -85,6 +85,37 @@ const DEFAULT_OPTIMIZATIONS: Optimizations = {
   inactiveSims: { count: 14, yearlyCost: 4200 },
   duplicateLicenses: { count: 27, yearlyCost: 20120 },
 };
+
+/** Spend breakdown by 5 IT core areas (Detail page „Validierte IT-Ausgaben"). */
+export type SpendArea = "telco" | "office" | "saas" | "cloud" | "hardware";
+export type SpendAreaItem = {
+  key: SpendArea;
+  label: string;
+  emoji: string;
+  monthly: number;
+  yoyPercent: number;
+};
+const DEFAULT_SPEND_BREAKDOWN: SpendAreaItem[] = [
+  { key: "telco", label: "Telekommunikation", emoji: "📞", monthly: 7820, yoyPercent: 8.4 },
+  { key: "office", label: "Office Suites", emoji: "💻", monthly: 3450, yoyPercent: 4.1 },
+  { key: "saas", label: "SaaS Plattformen", emoji: "☁️", monthly: 3200, yoyPercent: 12.5 },
+  { key: "cloud", label: "Cloud Infrastruktur", emoji: "🌐", monthly: 2700, yoyPercent: 9.8 },
+  { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", monthly: 1250, yoyPercent: -2.3 },
+];
+
+/** Risk-Exposure rows (Detail page „Vertragsrisiko"). */
+export type RiskStatus = "akut" | "verhandlung" | "sicher";
+export type RiskItem = {
+  vendor: string;
+  area: string;
+  remainingVolume: number;
+  status: RiskStatus;
+};
+const DEFAULT_RISK_ITEMS: RiskItem[] = [
+  { vendor: "Vodafone", area: "Mobilfunk", remainingVolume: 312000, status: "akut" },
+  { vendor: "Microsoft", area: "Office / M365", remainingVolume: 198000, status: "verhandlung" },
+  { vendor: "AWS", area: "Cloud Infrastruktur", remainingVolume: 145000, status: "sicher" },
+];
 
 export type CategoryMeta = {
   key: Category;
@@ -157,10 +188,14 @@ type Ctx = {
   cockpit: CockpitView;
   deadlines: DeadlineItem[];
   optimizations: Optimizations;
+  spendBreakdown: SpendAreaItem[];
+  riskItems: RiskItem[];
   tickerItems: TickerItem[];
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
   updateOptimizations: (patch: Partial<Optimizations>) => void;
+  updateSpendArea: (index: number, patch: Partial<SpendAreaItem>) => void;
+  updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
   goCockpit: () => void;
   goDashboard: () => void;
@@ -168,6 +203,8 @@ type Ctx = {
   goLocked: (c: Category) => void;
   goDeadlines: () => void;
   goOptimizations: () => void;
+  goSpend: () => void;
+  goRisk: () => void;
   startMobilfunkUpload: (fileName?: string) => void;
   demoUnlock: () => void;
   setMobilfunkStatus: (s: UploadStatus) => void;
@@ -193,6 +230,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(DEFAULT_COCKPIT);
   const [deadlines, setDeadlines] = useState<DeadlineItem[]>(DEFAULT_DEADLINES);
   const [optimizations, setOptimizations] = useState<Optimizations>(DEFAULT_OPTIMIZATIONS);
+  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(DEFAULT_SPEND_BREAKDOWN);
+  const [riskItems, setRiskItems] = useState<RiskItem[]>(DEFAULT_RISK_ITEMS);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
@@ -205,6 +244,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
   const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
   const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
+  const goSpend = useCallback(() => { setActiveView("spend"); setLockedHint(null); }, []);
+  const goRisk = useCallback(() => { setActiveView("risk"); setLockedHint(null); }, []);
 
   const startMobilfunkUpload = useCallback((fileName?: string) => {
     setMobilfunkFile(fileName);
@@ -235,6 +276,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const updateSpendArea = useCallback((index: number, patch: Partial<SpendAreaItem>) => {
+    setSpendBreakdown((prev) => prev.map((a, i) => (i === index ? { ...a, ...patch } : a)));
+  }, []);
+
+  const updateRiskItem = useCallback((index: number, patch: Partial<RiskItem>) => {
+    setRiskItems((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+  }, []);
+
   const updateStrategy = useCallback((s: Partial<NegotiationStrategy>) => {
     setStrategy((prev) => ({ ...prev, ...s }));
   }, []);
@@ -250,6 +299,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setCockpitMetrics(DEFAULT_COCKPIT);
     setDeadlines(DEFAULT_DEADLINES);
     setOptimizations(DEFAULT_OPTIMIZATIONS);
+    setSpendBreakdown(DEFAULT_SPEND_BREAKDOWN);
+    setRiskItems(DEFAULT_RISK_ITEMS);
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
@@ -263,6 +314,18 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     [optimizations],
   );
 
+  // Derived spendMonthly = Summe der 5 Kernbereiche
+  const derivedSpendMonthly = useMemo(
+    () => spendBreakdown.reduce((sum, a) => sum + (Number(a.monthly) || 0), 0),
+    [spendBreakdown],
+  );
+
+  // Derived riskExposure = Summe aller Risiko-Volumen
+  const derivedRiskExposure = useMemo(
+    () => riskItems.reduce((sum, r) => sum + (Number(r.remainingVolume) || 0), 0),
+    [riskItems],
+  );
+
   // Derived critical-deadline count (any contract with months <= deadlineWindowDays/30)
   const derivedCriticalCount = useMemo(() => {
     const windowMonths = Math.max(1, Math.round(cockpitMetrics.deadlineWindowDays / 30));
@@ -272,10 +335,12 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const cockpit: CockpitView = useMemo(
     () => ({
       ...cockpitMetrics,
+      spendMonthly: derivedSpendMonthly,
+      riskExposure: derivedRiskExposure,
       savingsYearly: derivedSavings,
       criticalDeadlines: derivedCriticalCount,
     }),
-    [cockpitMetrics, derivedSavings, derivedCriticalCount],
+    [cockpitMetrics, derivedSpendMonthly, derivedRiskExposure, derivedSavings, derivedCriticalCount],
   );
 
   // Derived ticker / briefing
@@ -290,7 +355,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
       items.push({
         tone: "warning",
         text: `${top.vendor} ${top.contractType} ${top.endLabel.toLowerCase().startsWith("endet") ? top.endLabel.toLowerCase() : "endet " + top.endLabel} (Verhandlungsfenster geöffnet)`,
-        target: "deadlines",
+        target: "risk",
       });
     }
     const sims = optimizations.inactiveSims;
@@ -344,10 +409,14 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     cockpit,
     deadlines,
     optimizations,
+    spendBreakdown,
+    riskItems,
     tickerItems,
     updateCockpitMetrics,
     updateDeadline,
     updateOptimizations,
+    updateSpendArea,
+    updateRiskItem,
     setActiveView,
     goCockpit,
     goDashboard,
@@ -355,6 +424,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     goLocked,
     goDeadlines,
     goOptimizations,
+    goSpend,
+    goRisk,
     startMobilfunkUpload,
     demoUnlock,
     setMobilfunkStatus,
