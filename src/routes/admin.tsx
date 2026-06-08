@@ -7,7 +7,7 @@ import {
   type UploadStatus,
   type MobilfunkMetrics,
   type CockpitMetrics,
-  type TickerTone,
+  type DeadlineItem,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 
@@ -40,10 +40,13 @@ function AdminInner() {
     setMobilfunkStatus,
     metrics,
     updateMetrics,
+    cockpit,
     cockpitMetrics,
     updateCockpitMetrics,
-    tickerItems,
-    updateTickerItem,
+    deadlines,
+    updateDeadline,
+    optimizations,
+    updateOptimizations,
     priceOverride,
     setPriceOverride,
     currentPrice,
@@ -60,6 +63,17 @@ function AdminInner() {
     if (!Number.isNaN(n)) updateCockpitMetrics({ [k]: n } as Partial<CockpitMetrics>);
   };
 
+  const setDeadlineField = (i: number, k: keyof DeadlineItem, v: string) => {
+    if (k === "remainingMonths") {
+      const n = Number(v);
+      if (!Number.isNaN(n)) updateDeadline(i, { remainingMonths: n });
+    } else {
+      updateDeadline(i, { [k]: v } as Partial<DeadlineItem>);
+    }
+  };
+
+  const totalOptSavings = optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -73,7 +87,7 @@ function AdminInner() {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">Präsentations-Steuerung</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Steuere die Mobilfunk-Pipeline (State A/B/C), überschreibe Kennzahlen und Preis in Echtzeit.
+            Alle Eingaben synchronisieren live mit Management Cockpit, Briefing und Detailseiten.
           </p>
         </div>
         <button
@@ -85,10 +99,7 @@ function AdminInner() {
       </div>
 
       {/* Mobilfunk Pipeline State */}
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          Mobilfunk Pipeline · State
-        </div>
+      <Section title="Mobilfunk Pipeline · State">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="text-sm">
             Aktuell: <span className="text-foreground font-medium">{STATUS_LABEL[mobilfunkStatus]}</span>
@@ -108,59 +119,93 @@ function AdminInner() {
             ))}
           </div>
         </div>
-      </div>
+      </Section>
 
-      {/* Mobilfunk Metrics override */}
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          Mobilfunk Kennzahlen (Management Dashboard & Cockpit)
-      </div>
-
-      {/* Management Cockpit Kennzahlen */}
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          💼 Management Cockpit · Executive KPIs
-        </div>
+      {/* === Daten für Management Cockpit === */}
+      <Section title="Daten für Management Cockpit" subtitle="Executive KPIs · live im Cockpit sichtbar">
         <div className="grid gap-4 md:grid-cols-3">
           <MetricField label="Validierte IT-Ausgaben / Monat (€)" value={cockpitMetrics.spendMonthly} onChange={(v) => setCockpit("spendMonthly", v)} />
           <MetricField label="Spend YoY (%)" value={cockpitMetrics.spendYoyPercent} step="0.1" onChange={(v) => setCockpit("spendYoyPercent", v)} />
-          <MetricField label="Sparpotenzial / Jahr (€)" value={cockpitMetrics.savingsYearly} onChange={(v) => setCockpit("savingsYearly", v)} />
           <MetricField label="Optimierungspotenzial (%)" value={cockpitMetrics.savingsPercent} step="0.1" onChange={(v) => setCockpit("savingsPercent", v)} />
-          <MetricField label="Kritische Fristen (#)" value={cockpitMetrics.criticalDeadlines} onChange={(v) => setCockpit("criticalDeadlines", v)} />
           <MetricField label="Fristen-Fenster (Tage)" value={cockpitMetrics.deadlineWindowDays} onChange={(v) => setCockpit("deadlineWindowDays", v)} />
-          <MetricField label="Risk Exposure (€)" value={cockpitMetrics.riskExposure} onChange={(v) => setCockpit("riskExposure", v)} />
+          <MetricField label="Vertragsrisiko / Risk Exposure (€)" value={cockpitMetrics.riskExposure} onChange={(v) => setCockpit("riskExposure", v)} />
           <MetricField label="CoreSpend Impact (€)" value={cockpitMetrics.impactRealized} onChange={(v) => setCockpit("impactRealized", v)} />
           <MetricField label="ROI (x)" value={cockpitMetrics.roi} step="0.1" onChange={(v) => setCockpit("roi", v)} />
+          <ReadOnlyField label="Sparpotenzial / Jahr (€) · derived" value={formatEUR(cockpit.savingsYearly)} hint="Summe aus Optimierungs-Detailseite" />
+          <ReadOnlyField label="Kritische Fristen (#) · derived" value={`${cockpit.criticalDeadlines}`} hint="Verträge innerhalb Fristen-Fenster" />
         </div>
-      </div>
+      </Section>
 
-      {/* CEO/CFO Briefing Ticker */}
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          📊 CEO/CFO Briefing · Ticker-Zeilen
-        </div>
+      {/* === Daten für Fristen-Detailseite === */}
+      <Section
+        title="Daten für Fristen-Detailseite"
+        subtitle="3 Vertragseinträge · speisen Detailtabelle UND orange Briefing-Zeile"
+      >
         <div className="space-y-3">
-          {tickerItems.map((t, i) => (
-            <div key={i} className="grid gap-2 md:grid-cols-[140px_1fr] items-center">
-              <select
-                value={t.tone}
-                onChange={(e) => updateTickerItem(i, { tone: e.target.value as TickerTone })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
-              >
-                <option value="success">🟢 success</option>
-                <option value="warning">🟠 warning</option>
-                <option value="danger">🔴 danger</option>
-              </select>
-              <input
-                type="text"
-                value={t.text}
-                onChange={(e) => updateTickerItem(i, { text: e.target.value })}
-                className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
-              />
+          {deadlines.map((d, i) => (
+            <div key={i} className="grid gap-2 md:grid-cols-[1fr_1.3fr_1.3fr_140px] items-end rounded-lg border border-border bg-background/40 p-3">
+              <TextField label={`Vertrag ${i + 1} · Anbieter`} value={d.vendor} onChange={(v) => setDeadlineField(i, "vendor", v)} />
+              <TextField label="Vertragsart" value={d.contractType} onChange={(v) => setDeadlineField(i, "contractType", v)} />
+              <TextField label="Enddatum / Frist (Text)" value={d.endLabel} onChange={(v) => setDeadlineField(i, "endLabel", v)} placeholder="z.B. Endet in 5 Monaten" />
+              <MetricField label="Verbleibend (Monate)" value={d.remainingMonths} onChange={(v) => setDeadlineField(i, "remainingMonths", v)} />
             </div>
           ))}
         </div>
-      </div>
+        <p className="text-[11px] text-muted-foreground mt-3">
+          Der erste fällige Vertrag erscheint automatisch als orange Zeile im Management Briefing.
+        </p>
+      </Section>
+
+      {/* === Daten für Optimierungs-Detailseite === */}
+      <Section
+        title="Daten für Optimierungs-Detailseite"
+        subtitle="No-Usage & Doppelungen · Summe → Karte „Identifiziertes Sparpotenzial"
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-border bg-background/40 p-4 space-y-3">
+            <div className="text-sm font-medium">Inaktive SIM-Karten</div>
+            <div className="grid gap-3 grid-cols-2">
+              <MetricField
+                label="Anzahl SIMs"
+                value={optimizations.inactiveSims.count}
+                onChange={(v) => updateOptimizations({ inactiveSims: { ...optimizations.inactiveSims, count: Number(v) || 0 } })}
+              />
+              <MetricField
+                label="Kosten / Jahr (€)"
+                value={optimizations.inactiveSims.yearlyCost}
+                onChange={(v) => updateOptimizations({ inactiveSims: { ...optimizations.inactiveSims, yearlyCost: Number(v) || 0 } })}
+              />
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              Erscheint als rote Briefing-Zeile: „{optimizations.inactiveSims.count} ungenutzte SIM-Karten ..."
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-background/40 p-4 space-y-3">
+            <div className="text-sm font-medium">Doppelte Lizenzen / Optionen</div>
+            <div className="grid gap-3 grid-cols-2">
+              <MetricField
+                label="Anzahl Lizenzen"
+                value={optimizations.duplicateLicenses.count}
+                onChange={(v) => updateOptimizations({ duplicateLicenses: { ...optimizations.duplicateLicenses, count: Number(v) || 0 } })}
+              />
+              <MetricField
+                label="Kosten / Jahr (€)"
+                value={optimizations.duplicateLicenses.yearlyCost}
+                onChange={(v) => updateOptimizations({ duplicateLicenses: { ...optimizations.duplicateLicenses, yearlyCost: Number(v) || 0 } })}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-lg border border-success/30 bg-success/5 px-4 py-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Summe → Cockpit „Identifiziertes Sparpotenzial"</span>
+          <span className="text-xl font-semibold tabular-nums text-success">{formatEUR(totalOptSavings)} / Jahr</span>
+        </div>
+      </Section>
+
+      {/* === Mobilfunk Detailseite === */}
+      <Section title="Mobilfunk Kennzahlen (Detailseite)">
         <div className="grid gap-4 md:grid-cols-3">
           <MetricField label="Kosten / Monat (€)" value={metrics.costMonthly} onChange={(v) => setMetric("costMonthly", v)} />
           <MetricField label="Nutzung (%)" value={metrics.usagePercent} onChange={(v) => setMetric("usagePercent", v)} />
@@ -169,13 +214,10 @@ function AdminInner() {
           <MetricField label="ARPU Ist (€)" value={metrics.arpuActual} step="0.01" onChange={(v) => setMetric("arpuActual", v)} />
           <MetricField label="ARPU Markt-Target (€)" value={metrics.arpuTarget} step="0.01" onChange={(v) => setMetric("arpuTarget", v)} />
         </div>
-      </div>
+      </Section>
 
       {/* Pricing override */}
-      <div className="glass-card p-6">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-          Pricing-Override
-        </div>
+      <Section title="Pricing-Override">
         <div className="flex items-center gap-4 flex-wrap">
           <div>
             <div className="text-xs text-muted-foreground">Effektiver Preis</div>
@@ -208,7 +250,19 @@ function AdminInner() {
           Basis {formatEUR(PRICING.BASE_PRICE)} − {formatEUR(PRICING.DISCOUNT_PER_AREA)} je aktiviertem Bereich
           (max. {PRICING.TOTAL_AREAS} Bereiche · Minimum {formatEUR(PRICING.MIN_PRICE)}).
         </p>
+      </Section>
+    </div>
+  );
+}
+
+function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <div className="glass-card p-6">
+      <div className="mb-4">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{title}</div>
+        {subtitle && <div className="text-[11px] text-muted-foreground/80 mt-0.5">{subtitle}</div>}
       </div>
+      {children}
     </div>
   );
 }
@@ -227,5 +281,34 @@ function MetricField({
         className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-success"
       />
     </label>
+  );
+}
+
+function TextField({
+  label, value, onChange, placeholder,
+}: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <input
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-success"
+      />
+    </label>
+  );
+}
+
+function ReadOnlyField({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="block">
+      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className="mt-1 w-full rounded-md border border-border bg-background/40 px-3 py-2 text-sm tabular-nums text-muted-foreground">
+        {value}
+      </div>
+      {hint && <div className="text-[10px] text-muted-foreground/70 mt-1">{hint}</div>}
+    </div>
   );
 }
