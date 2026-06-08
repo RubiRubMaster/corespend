@@ -1,4 +1,4 @@
-import { useCoreSpend, formatEUR, type TickerTone } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
 
@@ -6,10 +6,12 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 
 export function ManagementCockpit() {
   const {
-    mobilfunkStatus, cockpitMetrics: m, tickerItems,
-    goDashboard, goMobilfunk,
+    mobilfunkStatus, cockpit: m, tickerItems,
+    goDashboard, goDeadlines, goOptimizations, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
+
+  const navTo = (v?: ActiveView) => { if (v) setActiveView(v); };
 
   const sortedTicker = tickerItems
     .map((t, i) => ({ ...t, originalIndex: i }))
