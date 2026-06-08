@@ -58,6 +58,8 @@ function AdminInner() {
     priceOverride,
     setPriceOverride,
     currentPrice,
+    coreStartStatuses,
+    updateCoreStartStatus,
     resetAll,
   } = useCoreSpend();
 
