@@ -230,6 +230,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(DEFAULT_COCKPIT);
   const [deadlines, setDeadlines] = useState<DeadlineItem[]>(DEFAULT_DEADLINES);
   const [optimizations, setOptimizations] = useState<Optimizations>(DEFAULT_OPTIMIZATIONS);
+  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(DEFAULT_SPEND_BREAKDOWN);
+  const [riskItems, setRiskItems] = useState<RiskItem[]>(DEFAULT_RISK_ITEMS);
   const [priceOverride, setPriceOverride] = useState<number | null>(null);
   const [spendOverride, setSpendOverride] = useState<number | null>(null);
   const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
