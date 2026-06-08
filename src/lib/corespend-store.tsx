@@ -299,6 +299,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setCockpitMetrics(DEFAULT_COCKPIT);
     setDeadlines(DEFAULT_DEADLINES);
     setOptimizations(DEFAULT_OPTIMIZATIONS);
+    setSpendBreakdown(DEFAULT_SPEND_BREAKDOWN);
+    setRiskItems(DEFAULT_RISK_ITEMS);
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
@@ -312,6 +314,18 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     [optimizations],
   );
 
+  // Derived spendMonthly = Summe der 5 Kernbereiche
+  const derivedSpendMonthly = useMemo(
+    () => spendBreakdown.reduce((sum, a) => sum + (Number(a.monthly) || 0), 0),
+    [spendBreakdown],
+  );
+
+  // Derived riskExposure = Summe aller Risiko-Volumen
+  const derivedRiskExposure = useMemo(
+    () => riskItems.reduce((sum, r) => sum + (Number(r.remainingVolume) || 0), 0),
+    [riskItems],
+  );
+
   // Derived critical-deadline count (any contract with months <= deadlineWindowDays/30)
   const derivedCriticalCount = useMemo(() => {
     const windowMonths = Math.max(1, Math.round(cockpitMetrics.deadlineWindowDays / 30));
@@ -321,10 +335,12 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const cockpit: CockpitView = useMemo(
     () => ({
       ...cockpitMetrics,
+      spendMonthly: derivedSpendMonthly,
+      riskExposure: derivedRiskExposure,
       savingsYearly: derivedSavings,
       criticalDeadlines: derivedCriticalCount,
     }),
-    [cockpitMetrics, derivedSavings, derivedCriticalCount],
+    [cockpitMetrics, derivedSpendMonthly, derivedRiskExposure, derivedSavings, derivedCriticalCount],
   );
 
   // Derived ticker / briefing
