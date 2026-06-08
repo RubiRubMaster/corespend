@@ -244,6 +244,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
   const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
   const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
+  const goSpend = useCallback(() => { setActiveView("spend"); setLockedHint(null); }, []);
+  const goRisk = useCallback(() => { setActiveView("risk"); setLockedHint(null); }, []);
 
   const startMobilfunkUpload = useCallback((fileName?: string) => {
     setMobilfunkFile(fileName);
