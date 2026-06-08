@@ -4,6 +4,7 @@ export type Category = "telco" | "office" | "saas" | "cloud" | "hardware";
 export type SubKey = "mobilfunk" | "festnetz" | "daten";
 export type UploadStatus = "idle" | "processing" | "pending" | "analyzed";
 export type MobilfunkStage = "cockpit" | "wizard" | "mandate";
+export type TimeMode = "monthly" | "yearly";
 
 export type NegotiationStrategy = {
   approach: "renegotiate" | "tender" | null;
