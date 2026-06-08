@@ -49,7 +49,8 @@ function AdminInner() {
     deadlines,
     updateDeadline,
     optimizations,
-    updateOptimizations,
+    updateNoUsage,
+    updateTariff,
     spendBreakdown,
     updateSpendArea,
     riskItems,
@@ -79,7 +80,9 @@ function AdminInner() {
     }
   };
 
-  const totalOptSavings = optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost;
+  const totalOptSavings =
+    optimizations.noUsage.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0) +
+    optimizations.tariffMismatches.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
 
   return (
     <div className="space-y-6">
@@ -216,53 +219,48 @@ function AdminInner() {
         </p>
       </Section>
 
-      {/* === Daten für Optimierungs-Detailseite === */}
+      {/* === Daten fuer Optimierungsvorschlaege === */}
       <Section
-        title="Daten für Optimierungs-Detailseite"
-        subtitle="No-Usage & Doppelungen · Summe → Karte „Identifiziertes Sparpotenzial"
+        title="Daten fuer 'Optimierungsvorschlaege' (Detailseite)"
+        subtitle="No-Usage + Tarif-Mismatches · Summe → Karte 'Identifiziertes Sparpotenzial'"
       >
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-border bg-background/40 p-4 space-y-3">
-            <div className="text-sm font-medium">Inaktive SIM-Karten</div>
-            <div className="grid gap-3 grid-cols-2">
-              <MetricField
-                label="Anzahl SIMs"
-                value={optimizations.inactiveSims.count}
-                onChange={(v) => updateOptimizations({ inactiveSims: { ...optimizations.inactiveSims, count: Number(v) || 0 } })}
-              />
-              <MetricField
-                label="Kosten / Jahr (€)"
-                value={optimizations.inactiveSims.yearlyCost}
-                onChange={(v) => updateOptimizations({ inactiveSims: { ...optimizations.inactiveSims, yearlyCost: Number(v) || 0 } })}
-              />
-            </div>
-            <div className="text-[11px] text-muted-foreground">
-              Erscheint als rote Briefing-Zeile: „{optimizations.inactiveSims.count} ungenutzte SIM-Karten ..."
-            </div>
+        {/* No-Usage rows */}
+        <div className="space-y-3">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Sektion A · No-Usage (Karteileichen)
           </div>
+          {optimizations.noUsage.map((it, i) => (
+            <div key={i} className="grid gap-2 md:grid-cols-[1.6fr_1fr_90px_120px_1fr] items-end rounded-lg border border-border bg-background/40 p-3">
+              <TextField label={`Asset ${i + 1}`} value={it.label} onChange={(v) => updateNoUsage(i, { label: v })} />
+              <TextField label="IT-Bereich" value={it.area} onChange={(v) => updateNoUsage(i, { area: v })} />
+              <MetricField label={`Anzahl (${it.unit})`} value={it.count} onChange={(v) => updateNoUsage(i, { count: Number(v) || 0 })} />
+              <MetricField label="Verlust / Jahr (€)" value={it.yearlyCost} onChange={(v) => updateNoUsage(i, { yearlyCost: Number(v) || 0 })} />
+              <TextField label="Sofortmaßnahme" value={it.action} onChange={(v) => updateNoUsage(i, { action: v })} />
+            </div>
+          ))}
+        </div>
 
-          <div className="rounded-lg border border-border bg-background/40 p-4 space-y-3">
-            <div className="text-sm font-medium">Doppelte Lizenzen / Optionen</div>
-            <div className="grid gap-3 grid-cols-2">
-              <MetricField
-                label="Anzahl Lizenzen"
-                value={optimizations.duplicateLicenses.count}
-                onChange={(v) => updateOptimizations({ duplicateLicenses: { ...optimizations.duplicateLicenses, count: Number(v) || 0 } })}
-              />
-              <MetricField
-                label="Kosten / Jahr (€)"
-                value={optimizations.duplicateLicenses.yearlyCost}
-                onChange={(v) => updateOptimizations({ duplicateLicenses: { ...optimizations.duplicateLicenses, yearlyCost: Number(v) || 0 } })}
-              />
-            </div>
+        {/* Tariff rows */}
+        <div className="space-y-3 mt-6">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Sektion B · Tarif-Mismatches &amp; Options-Konsolidierung
           </div>
+          {optimizations.tariffMismatches.map((it, i) => (
+            <div key={i} className="grid gap-2 md:grid-cols-[1.6fr_1fr_140px_1.4fr] items-end rounded-lg border border-border bg-background/40 p-3">
+              <TextField label={`Vertrag / Option ${i + 1}`} value={it.label} onChange={(v) => updateTariff(i, { label: v })} />
+              <TextField label="IT-Bereich" value={it.area} onChange={(v) => updateTariff(i, { area: v })} />
+              <MetricField label="Potenzial / Jahr (€)" value={it.yearlyCost} onChange={(v) => updateTariff(i, { yearlyCost: Number(v) || 0 })} />
+              <TextField label="Erklärung / Hebel" value={it.lever} onChange={(v) => updateTariff(i, { lever: v })} />
+            </div>
+          ))}
         </div>
 
         <div className="mt-4 rounded-lg border border-success/30 bg-success/5 px-4 py-3 flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Summe → Cockpit „Identifiziertes Sparpotenzial"</span>
+          <span className="text-sm text-muted-foreground">Summe → Cockpit 'Identifiziertes Sparpotenzial'</span>
           <span className="text-xl font-semibold tabular-nums text-success">{formatEUR(totalOptSavings)} / Jahr</span>
         </div>
       </Section>
+
 
       {/* === Mobilfunk Detailseite === */}
       <Section title="Mobilfunk Kennzahlen (Detailseite)">

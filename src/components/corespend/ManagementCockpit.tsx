@@ -7,7 +7,7 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 export function ManagementCockpit() {
   const {
     mobilfunkStatus, cockpit: m, tickerItems,
-    goDashboard, goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
+    goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
 
@@ -156,27 +156,22 @@ export function ManagementCockpit() {
         </ul>
       </section>
 
-      {/* CTA Strip */}
-      <section className="grid gap-4 md:grid-cols-3">
-        <CtaTile
-          emoji="📊"
-          title="Core Dashboard öffnen"
-          desc="Detail-Analyse aller 5 IT-Bereiche, KPIs und Sourcing-Aktionen."
-          onClick={goDashboard}
-          tone="default"
-        />
+      {/* CTA Strip · 2 large actions */}
+      <section className="grid gap-5 md:grid-cols-2">
         <CtaTile
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
           desc="Direkter Zugriff auf Konsolidierungen, No-Usage-Warnungen und Einsparpotenziale."
           onClick={live ? goOptimizations : undefined}
           tone="primary"
+          size="lg"
         />
         <CtaTile
           emoji="📄"
           title="Management Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
           tone="default"
+          size="lg"
         />
       </section>
     </div>
@@ -249,28 +244,41 @@ function BriefingIcon({ tone }: { tone: TickerTone }) {
 }
 
 function CtaTile({
-  emoji, title, desc, onClick, tone,
+  emoji, title, desc, onClick, tone, size = "md",
 }: {
   emoji: string; title: string; desc: string; onClick?: () => void;
   tone: "primary" | "default";
+  size?: "md" | "lg";
 }) {
   const isPrimary = tone === "primary";
+  const isLarge = size === "lg";
   return (
     <button
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "rounded-xl border px-5 py-5 text-left transition-all flex flex-col gap-2",
+        "rounded-xl border text-left transition-all flex flex-col",
+        isLarge ? "px-7 py-7 gap-3" : "px-5 py-5 gap-2",
         isPrimary
-          ? "border-primary/50 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 shadow-[0_0_30px_-10px_hsl(var(--primary)/0.5)] hover:from-primary/25 hover:to-primary/10 hover:border-primary/70"
+          ? "border-primary/60 bg-gradient-to-br from-primary/35 via-primary/20 to-primary/10 shadow-[0_0_50px_-12px_hsl(var(--primary)/0.6)] hover:from-primary/45 hover:via-primary/25 hover:to-primary/15 hover:border-primary/80"
           : "border-border bg-surface/40 hover:bg-surface/60 hover:border-primary/30",
         !onClick && "cursor-not-allowed opacity-70",
       )}
     >
-      <div className={cn("flex items-center gap-2 text-sm font-semibold", isPrimary && "text-primary-foreground/95")}>
-        <span className="text-base">{emoji}</span> {title}
+      <div className={cn(
+        "flex items-center gap-2 font-semibold tracking-tight",
+        isLarge ? "text-lg" : "text-sm",
+        isPrimary && "text-foreground",
+      )}>
+        <span className={cn(isLarge ? "text-2xl" : "text-base")}>{emoji}</span> {title}
       </div>
-      <div className={cn("text-[11px] leading-snug", isPrimary ? "text-foreground/75" : "text-muted-foreground")}>{desc}</div>
+      <div className={cn(
+        "leading-snug",
+        isLarge ? "text-xs" : "text-[11px]",
+        isPrimary ? "text-foreground/80" : "text-muted-foreground",
+      )}>
+        {desc}
+      </div>
     </button>
   );
 }

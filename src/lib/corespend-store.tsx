@@ -76,14 +76,50 @@ const DEFAULT_DEADLINES: DeadlineItem[] = [
 ];
 
 /** Optimizations driving the savings KPI + danger briefing row. */
+export type NoUsageItem = {
+  label: string;
+  area: string;
+  count: number;
+  unit: string;
+  yearlyCost: number;
+  action: string;
+};
+export type TariffItem = {
+  label: string;
+  area: string;
+  yearlyCost: number;
+  lever: string;
+};
 export type Optimizations = {
-  inactiveSims: { count: number; yearlyCost: number };
-  duplicateLicenses: { count: number; yearlyCost: number };
+  noUsage: NoUsageItem[];
+  tariffMismatches: TariffItem[];
 };
 
 const DEFAULT_OPTIMIZATIONS: Optimizations = {
-  inactiveSims: { count: 14, yearlyCost: 4200 },
-  duplicateLicenses: { count: 27, yearlyCost: 20120 },
+  noUsage: [
+    {
+      label: "Inaktive SIM-Karten (0 KB Datenverbrauch seit 6 Mon.)",
+      area: "Telekommunikation",
+      count: 14,
+      unit: "SIMs",
+      yearlyCost: 4200,
+      action: "Sofortige Deaktivierung / Abschaltung",
+    },
+  ],
+  tariffMismatches: [
+    {
+      label: "Auslands-Roaming ohne passende Tarif-Option (USA/CH)",
+      area: "Telekommunikation",
+      yearlyCost: 11720,
+      lever: "Umstellung auf zentriertes Business-Roaming-Paket",
+    },
+    {
+      label: "Überdimensionierte Datenpässe (Ungenutzte Flatrates)",
+      area: "Telekommunikation",
+      yearlyCost: 8400,
+      lever: "Downgrade auf volumenbasierte Pools",
+    },
+  ],
 };
 
 /** Spend breakdown by 5 IT core areas (Detail page „Validierte IT-Ausgaben"). */
@@ -193,7 +229,8 @@ type Ctx = {
   tickerItems: TickerItem[];
   updateCockpitMetrics: (m: Partial<CockpitMetrics>) => void;
   updateDeadline: (index: number, patch: Partial<DeadlineItem>) => void;
-  updateOptimizations: (patch: Partial<Optimizations>) => void;
+  updateNoUsage: (index: number, patch: Partial<NoUsageItem>) => void;
+  updateTariff: (index: number, patch: Partial<TariffItem>) => void;
   updateSpendArea: (index: number, patch: Partial<SpendAreaItem>) => void;
   updateRiskItem: (index: number, patch: Partial<RiskItem>) => void;
   setActiveView: (v: ActiveView) => void;
@@ -269,10 +306,17 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setDeadlines((prev) => prev.map((d, i) => (i === index ? { ...d, ...patch } : d)));
   }, []);
 
-  const updateOptimizations = useCallback((patch: Partial<Optimizations>) => {
+  const updateNoUsage = useCallback((index: number, patch: Partial<NoUsageItem>) => {
     setOptimizations((prev) => ({
-      inactiveSims: { ...prev.inactiveSims, ...(patch.inactiveSims ?? {}) },
-      duplicateLicenses: { ...prev.duplicateLicenses, ...(patch.duplicateLicenses ?? {}) },
+      ...prev,
+      noUsage: prev.noUsage.map((it, i) => (i === index ? { ...it, ...patch } : it)),
+    }));
+  }, []);
+
+  const updateTariff = useCallback((index: number, patch: Partial<TariffItem>) => {
+    setOptimizations((prev) => ({
+      ...prev,
+      tariffMismatches: prev.tariffMismatches.map((it, i) => (i === index ? { ...it, ...patch } : it)),
     }));
   }, []);
 
@@ -309,10 +353,11 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const mobilfunkLive = mobilfunkStatus === "analyzed";
 
   // Derived savings (round UP per requirement)
-  const derivedSavings = useMemo(
-    () => Math.ceil(optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost),
-    [optimizations],
-  );
+  const derivedSavings = useMemo(() => {
+    const a = optimizations.noUsage.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
+    const b = optimizations.tariffMismatches.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
+    return Math.ceil(a + b);
+  }, [optimizations]);
 
   // Derived spendMonthly = Summe der 5 Kernbereiche
   const derivedSpendMonthly = useMemo(
@@ -358,8 +403,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
         target: "risk",
       });
     }
-    const sims = optimizations.inactiveSims;
-    if (sims.count > 0) {
+    const sims = optimizations.noUsage[0];
+    if (sims && sims.count > 0) {
       items.push({
         tone: "danger",
         text: `${sims.count} ungenutzte SIM-Karten verursachen aktuell ${formatEUR(sims.yearlyCost)} unnötige Kosten`,
@@ -414,7 +459,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     tickerItems,
     updateCockpitMetrics,
     updateDeadline,
-    updateOptimizations,
+    updateNoUsage,
+    updateTariff,
     updateSpendArea,
     updateRiskItem,
     setActiveView,
