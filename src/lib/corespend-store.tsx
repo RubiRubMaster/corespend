@@ -4,6 +4,7 @@ export type Category = "telco" | "office" | "saas" | "cloud" | "hardware";
 export type SubKey = "mobilfunk" | "festnetz" | "daten";
 export type UploadStatus = "idle" | "processing" | "pending" | "analyzed";
 export type MobilfunkStage = "cockpit" | "wizard" | "mandate";
+export type TimeMode = "monthly" | "yearly";
 
 export type NegotiationStrategy = {
   approach: "renegotiate" | "tender" | null;
@@ -269,6 +270,8 @@ type Ctx = {
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
   setSavingsOverride: (n: number | null) => void;
+  timeMode: TimeMode;
+  setTimeMode: (m: TimeMode) => void;
   resetAll: () => void;
 };
 
@@ -292,6 +295,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
   const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
+  const [timeMode, setTimeMode] = useState<TimeMode>("yearly");
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
@@ -463,6 +467,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     mobilfunkStatus,
     mobilfunkFile,
     mobilfunkStage,
+    timeMode,
+    setTimeMode,
     strategy,
     activeView,
     lockedHint,

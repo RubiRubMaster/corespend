@@ -328,7 +328,11 @@ function StateB() {
 
 /* -------------------- STATE C -------------------- */
 function StateC() {
-  const { metrics, resetAll, setMobilfunkStage } = useCoreSpend();
+  const { metrics, resetAll, setMobilfunkStage, timeMode } = useCoreSpend();
+  const yearly = timeMode === "yearly";
+  const unit = yearly ? "/ Jahr" : "/ Mo.";
+  const cost = yearly ? metrics.costMonthly * 12 : metrics.costMonthly;
+  const savings = yearly ? metrics.savingsYearly : Math.floor(metrics.savingsYearly / 12);
   const arpuOver = metrics.arpuActual > metrics.arpuTarget
     ? Math.round(((metrics.arpuActual - metrics.arpuTarget) / metrics.arpuTarget) * 100)
     : 0;
@@ -336,11 +340,15 @@ function StateC() {
   const actualPct = Math.min((metrics.arpuActual / (metrics.arpuTarget * 1.6)) * 100, 100);
   const targetPct = Math.min((metrics.arpuTarget / (metrics.arpuTarget * 1.6)) * 100, 100);
 
-  const findings = [
+  const findingsYearly = [
     { label: "14 verwaiste SIM-Karten (Null-Nutzung > 180 Tage)", saving: 4200 },
     { label: "Überdimensionierte Datenpässe & ungenutzte Auslands-Optionen", saving: 8400 },
     { label: "Fehlende Großkunden-Rabattierung auf Basis-Grundgebühren", saving: 11720 },
   ];
+  const findings = findingsYearly.map((f) => ({
+    label: f.label,
+    saving: yearly ? f.saving : Math.floor(f.saving / 12),
+  }));
 
   return (
     <div className="space-y-6">
@@ -348,8 +356,8 @@ function StateC() {
       <div className="grid gap-4 md:grid-cols-3">
         <KpiBig
           label="Validierte Ist-Kosten · Mobilfunk"
-          value={`${formatEUR(metrics.costMonthly)} / Mo.`}
-          sub={`${formatEUR(metrics.costMonthly * 12)} pro Jahr · ${metrics.usagePercent}% Auslastung`}
+          value={`${formatEUR(cost)} ${unit}`}
+          sub={`${yearly ? `${formatEUR(metrics.costMonthly)} pro Monat` : `${formatEUR(metrics.costMonthly * 12)} pro Jahr`} · ${metrics.usagePercent}% Auslastung`}
         />
         <div className="glass-card p-5 relative overflow-hidden">
           <div className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">CoreSpend ARPU-Benchmark</div>
@@ -382,7 +390,7 @@ function StateC() {
         </div>
         <KpiBig
           label="Sofort realisierbares Einsparpotenzial"
-          value={`${formatEUR(metrics.savingsYearly)} / Jahr`}
+          value={`${formatEUR(savings)} ${unit}`}
           sub="KI-validiert · marktbenchmarked"
           accent
         />
@@ -392,13 +400,13 @@ function StateC() {
       <div className="glass-card overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold uppercase tracking-wide">Identifizierte Ineffizienzen</h3>
-          <span className="text-[11px] text-muted-foreground">3 Hauptfelder · {formatEUR(findings.reduce((a,f)=>a+f.saving,0))} / Jahr</span>
+          <span className="text-[11px] text-muted-foreground">3 Hauptfelder · {formatEUR(findings.reduce((a,f)=>a+f.saving,0))} {unit}</span>
         </div>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border">
               <th className="px-6 py-3 font-medium">Befund</th>
-              <th className="px-6 py-3 font-medium text-right">Potenzial / Jahr</th>
+              <th className="px-6 py-3 font-medium text-right">Potenzial {unit}</th>
             </tr>
           </thead>
           <tbody>

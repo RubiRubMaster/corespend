@@ -6,10 +6,15 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 
 export function ManagementCockpit() {
   const {
-    mobilfunkStatus, cockpit: m, tickerItems,
+    mobilfunkStatus, cockpit: m, tickerItems, timeMode,
     goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
+  const yearly = timeMode === "yearly";
+  const spendValue = yearly ? m.spendMonthly * 12 : m.spendMonthly;
+  const savingsValue = yearly ? m.savingsYearly : Math.floor(m.savingsYearly / 12);
+  const unit = yearly ? "/ Jahr" : "/ Monat";
+  const spendLabel = yearly ? "Validierte Jahresausgaben" : "Validierte Monatsausgaben";
 
   const navTo = (v?: ActiveView) => { if (v) setActiveView(v); };
 
@@ -41,9 +46,9 @@ export function ManagementCockpit() {
       {/* KPI Row */}
       <section className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
         <KpiCard
-          label="Validierte IT-Ausgaben"
-          value={live ? `${formatEUR(m.spendMonthly)}` : "—"}
-          unit="/ Monat"
+          label={spendLabel}
+          value={live ? `${formatEUR(spendValue)}` : "—"}
+          unit={unit}
           sub={live ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr` : "Datenbasis wird geladen"}
           subTone="destructive"
           locked={!live}
@@ -51,8 +56,8 @@ export function ManagementCockpit() {
         />
         <KpiCard
           label="Identifiziertes Sparpotenzial"
-          value={live ? `${formatEUR(m.savingsYearly)}` : "—"}
-          unit="/ Jahr"
+          value={live ? `${formatEUR(savingsValue)}` : "—"}
+          unit={unit}
           sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial im bestehenden Stack` : "Wird nach Analyse berechnet"}
           subTone="success"
           valueTone="success"
