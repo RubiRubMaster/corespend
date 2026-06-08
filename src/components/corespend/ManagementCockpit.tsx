@@ -1,6 +1,5 @@
 import { useCoreSpend, formatEUR, type TickerTone } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
 
 export function ManagementCockpit() {
   const {
