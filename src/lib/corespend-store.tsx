@@ -29,7 +29,9 @@ export type ActiveView =
   | "locked"
   | "ai"
   | "deadlines"
-  | "optimizations";
+  | "optimizations"
+  | "spend"
+  | "risk";
 
 /** Editable raw cockpit metrics (those not derived from detail data). */
 export type CockpitMetrics = {
