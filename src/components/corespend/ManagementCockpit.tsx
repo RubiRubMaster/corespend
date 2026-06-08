@@ -167,7 +167,7 @@ export function ManagementCockpit() {
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
           desc="Direkter Zugriff auf Konsolidierungen, No-Usage-Warnungen und Einsparpotenziale."
-          onClick={live ? goDashboard : undefined}
+          onClick={live ? goOptimizations : undefined}
           tone="primary"
         />
         <CtaTile
