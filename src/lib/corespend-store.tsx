@@ -86,6 +86,37 @@ const DEFAULT_OPTIMIZATIONS: Optimizations = {
   duplicateLicenses: { count: 27, yearlyCost: 20120 },
 };
 
+/** Spend breakdown by 5 IT core areas (Detail page „Validierte IT-Ausgaben"). */
+export type SpendArea = "telco" | "office" | "saas" | "cloud" | "hardware";
+export type SpendAreaItem = {
+  key: SpendArea;
+  label: string;
+  emoji: string;
+  monthly: number;
+  yoyPercent: number;
+};
+const DEFAULT_SPEND_BREAKDOWN: SpendAreaItem[] = [
+  { key: "telco", label: "Telekommunikation", emoji: "📞", monthly: 7820, yoyPercent: 8.4 },
+  { key: "office", label: "Office Suites", emoji: "💻", monthly: 3450, yoyPercent: 4.1 },
+  { key: "saas", label: "SaaS Plattformen", emoji: "☁️", monthly: 3200, yoyPercent: 12.5 },
+  { key: "cloud", label: "Cloud Infrastruktur", emoji: "🌐", monthly: 2700, yoyPercent: 9.8 },
+  { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", monthly: 1250, yoyPercent: -2.3 },
+];
+
+/** Risk-Exposure rows (Detail page „Vertragsrisiko"). */
+export type RiskStatus = "akut" | "verhandlung" | "sicher";
+export type RiskItem = {
+  vendor: string;
+  area: string;
+  remainingVolume: number;
+  status: RiskStatus;
+};
+const DEFAULT_RISK_ITEMS: RiskItem[] = [
+  { vendor: "Vodafone", area: "Mobilfunk", remainingVolume: 312000, status: "akut" },
+  { vendor: "Microsoft", area: "Office / M365", remainingVolume: 198000, status: "verhandlung" },
+  { vendor: "AWS", area: "Cloud Infrastruktur", remainingVolume: 145000, status: "sicher" },
+];
+
 export type CategoryMeta = {
   key: Category;
   label: string;
