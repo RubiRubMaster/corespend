@@ -305,10 +305,17 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setDeadlines((prev) => prev.map((d, i) => (i === index ? { ...d, ...patch } : d)));
   }, []);
 
-  const updateOptimizations = useCallback((patch: Partial<Optimizations>) => {
+  const updateNoUsage = useCallback((index: number, patch: Partial<NoUsageItem>) => {
     setOptimizations((prev) => ({
-      inactiveSims: { ...prev.inactiveSims, ...(patch.inactiveSims ?? {}) },
-      duplicateLicenses: { ...prev.duplicateLicenses, ...(patch.duplicateLicenses ?? {}) },
+      ...prev,
+      noUsage: prev.noUsage.map((it, i) => (i === index ? { ...it, ...patch } : it)),
+    }));
+  }, []);
+
+  const updateTariff = useCallback((index: number, patch: Partial<TariffItem>) => {
+    setOptimizations((prev) => ({
+      ...prev,
+      tariffMismatches: prev.tariffMismatches.map((it, i) => (i === index ? { ...it, ...patch } : it)),
     }));
   }, []);
 
