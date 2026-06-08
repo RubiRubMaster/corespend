@@ -402,8 +402,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
         target: "risk",
       });
     }
-    const sims = optimizations.inactiveSims;
-    if (sims.count > 0) {
+    const sims = optimizations.noUsage[0];
+    if (sims && sims.count > 0) {
       items.push({
         tone: "danger",
         text: `${sims.count} ungenutzte SIM-Karten verursachen aktuell ${formatEUR(sims.yearlyCost)} unnötige Kosten`,
