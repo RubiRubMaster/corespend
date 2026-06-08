@@ -40,6 +40,10 @@ function AdminInner() {
     setMobilfunkStatus,
     metrics,
     updateMetrics,
+    cockpitMetrics,
+    updateCockpitMetrics,
+    tickerItems,
+    updateTickerItem,
     priceOverride,
     setPriceOverride,
     currentPrice,
@@ -49,6 +53,11 @@ function AdminInner() {
   const setMetric = (k: keyof MobilfunkMetrics, v: string) => {
     const n = Number(v);
     if (!Number.isNaN(n)) updateMetrics({ [k]: n } as Partial<MobilfunkMetrics>);
+  };
+
+  const setCockpit = (k: keyof CockpitMetrics, v: string) => {
+    const n = Number(v);
+    if (!Number.isNaN(n)) updateCockpitMetrics({ [k]: n } as Partial<CockpitMetrics>);
   };
 
   return (
