@@ -372,6 +372,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setPriceOverride(null);
     setSpendOverride(null);
     setSavingsOverride(null);
+    setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
