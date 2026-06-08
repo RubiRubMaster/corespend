@@ -7,7 +7,7 @@ const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success:
 export function ManagementCockpit() {
   const {
     mobilfunkStatus, cockpit: m, tickerItems,
-    goDashboard, goDeadlines, goOptimizations, setActiveView,
+    goDashboard, goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
 
