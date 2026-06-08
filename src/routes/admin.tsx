@@ -80,7 +80,9 @@ function AdminInner() {
     }
   };
 
-  const totalOptSavings = optimizations.inactiveSims.yearlyCost + optimizations.duplicateLicenses.yearlyCost;
+  const totalOptSavings =
+    optimizations.noUsage.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0) +
+    optimizations.tariffMismatches.reduce((s, it) => s + (Number(it.yearlyCost) || 0), 0);
 
   return (
     <div className="space-y-6">
