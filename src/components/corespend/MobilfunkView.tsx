@@ -41,7 +41,7 @@ function Header() {
         onClick={goDashboard}
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-3"
       >
-        <span>←</span> Zurück zum Management Dashboard
+        <span>←</span> Zurück zu Core Analytics
       </button>
       <div className="flex items-center gap-4 flex-wrap">
         <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/25 to-success/25 grid place-items-center border border-border text-2xl">

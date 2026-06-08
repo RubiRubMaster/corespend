@@ -99,7 +99,7 @@ function AdminInner() {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">Präsentations-Steuerung</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Alle Eingaben synchronisieren live mit Management Cockpit, Briefing und Detailseiten.
+            Alle Eingaben synchronisieren live mit Core Cockpit, Briefing und Detailseiten.
           </p>
         </div>
         <button
@@ -161,8 +161,8 @@ function AdminInner() {
         </div>
       </Section>
 
-      {/* === Daten für Management Cockpit === */}
-      <Section title="Daten für Management Cockpit" subtitle="Executive KPIs · live im Cockpit sichtbar">
+      {/* === Daten für Core Cockpit === */}
+      <Section title="Daten für Core Cockpit" subtitle="Executive KPIs · live im Cockpit sichtbar">
         <div className="grid gap-4 md:grid-cols-3">
           <MetricField label="Spend YoY (%)" value={cockpitMetrics.spendYoyPercent} step="0.1" onChange={(v) => setCockpit("spendYoyPercent", v)} />
           <MetricField label="Optimierungspotenzial (%)" value={cockpitMetrics.savingsPercent} step="0.1" onChange={(v) => setCockpit("savingsPercent", v)} />
@@ -292,8 +292,8 @@ function AdminInner() {
       </Section>
 
 
-      {/* === Mobilfunk Detailseite === */}
-      <Section title="Mobilfunk Kennzahlen (Detailseite)">
+      {/* === Daten für Core Analytics === */}
+      <Section title="Daten für Core Analytics · Mobilfunk Kennzahlen" subtitle="Operatives Controlling · speist die Mobilfunk-Detailseite und Core Analytics">
         <div className="grid gap-4 md:grid-cols-3">
           <MetricField label="Kosten / Monat (€)" value={metrics.costMonthly} onChange={(v) => setMetric("costMonthly", v)} />
           <MetricField label="Nutzung (%)" value={metrics.usagePercent} onChange={(v) => setMetric("usagePercent", v)} />

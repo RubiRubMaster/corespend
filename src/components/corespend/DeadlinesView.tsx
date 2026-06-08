@@ -10,7 +10,7 @@ export function DeadlinesView() {
     <div className="space-y-6">
       <header>
         <button onClick={goCockpit} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-          ← Zurück zum Management Cockpit
+          ← Zurück zum Core Cockpit
         </button>
         <h1 className="text-2xl font-semibold tracking-tight mt-2">Kritische Fristen</h1>
         <p className="text-sm text-muted-foreground mt-1">
