@@ -5,6 +5,8 @@ import { MobilfunkView } from "./MobilfunkView";
 import { LockedView } from "./LockedView";
 import { DeadlinesView } from "./DeadlinesView";
 import { OptimizationsView } from "./OptimizationsView";
+import { SpendView } from "./SpendView";
+import { RiskView } from "./RiskView";
 
 export function Dashboard() {
   const { activeView } = useCoreSpend();
@@ -13,5 +15,8 @@ export function Dashboard() {
   if (activeView === "dashboard") return <ManagementDashboard />;
   if (activeView === "deadlines") return <DeadlinesView />;
   if (activeView === "optimizations") return <OptimizationsView />;
+  if (activeView === "spend") return <SpendView />;
+  if (activeView === "risk") return <RiskView />;
   return <ManagementCockpit />;
 }
+
