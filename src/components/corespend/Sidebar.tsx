@@ -3,7 +3,7 @@ import { useCoreSpend, CATEGORIES_META, type Category } from "@/lib/corespend-st
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
 
   return (
     <aside className="hidden md:flex w-[272px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
