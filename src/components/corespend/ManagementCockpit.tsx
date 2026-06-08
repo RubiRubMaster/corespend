@@ -156,27 +156,22 @@ export function ManagementCockpit() {
         </ul>
       </section>
 
-      {/* CTA Strip */}
-      <section className="grid gap-4 md:grid-cols-3">
-        <CtaTile
-          emoji="📊"
-          title="Core Dashboard öffnen"
-          desc="Detail-Analyse aller 5 IT-Bereiche, KPIs und Sourcing-Aktionen."
-          onClick={goDashboard}
-          tone="default"
-        />
+      {/* CTA Strip · 2 large actions */}
+      <section className="grid gap-5 md:grid-cols-2">
         <CtaTile
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
           desc="Direkter Zugriff auf Konsolidierungen, No-Usage-Warnungen und Einsparpotenziale."
           onClick={live ? goOptimizations : undefined}
           tone="primary"
+          size="lg"
         />
         <CtaTile
           emoji="📄"
           title="Management Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
           tone="default"
+          size="lg"
         />
       </section>
     </div>
