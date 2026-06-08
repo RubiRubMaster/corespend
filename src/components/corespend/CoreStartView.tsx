@@ -55,8 +55,8 @@ export function CoreStartView() {
   return (
     <div className="space-y-8">
       <header className="space-y-2">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">CoreSpend · Launchpad Layer</div>
-        <h1 className="text-3xl font-semibold tracking-tight">🚀 Core Start (Launchpad)</h1>
+        <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">🚀 Core Start</div>
+        <h1 className="text-3xl font-semibold tracking-tight">Launchpad · 5 IT-Bereiche</h1>
         <p className="text-sm text-muted-foreground max-w-2xl">
           Dein zentrales Einstiegsportal. Wähle einen Bereich, um direkt in das jeweilige Cockpit
           oder in die Datenaufnahme zu springen.
