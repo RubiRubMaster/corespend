@@ -295,6 +295,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
   const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
+  const [timeMode, setTimeMode] = useState<TimeMode>("yearly");
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
