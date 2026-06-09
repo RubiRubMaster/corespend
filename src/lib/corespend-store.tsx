@@ -380,6 +380,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setSpendOverride(null);
     setSavingsOverride(null);
     setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
+    setConsultantBriefing("");
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
