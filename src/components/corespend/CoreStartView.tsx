@@ -3,6 +3,7 @@ import { useCoreSpend, type Category, type CoreStartStatus } from "@/lib/corespe
 import { cn } from "@/lib/utils";
 import { Phone, Laptop, Cloud, Globe, Cable, Lock, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { TimeModeToggle } from "./TimeModeToggle";
 
 type Tile = {
   key: Category;
