@@ -520,6 +520,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setPriceOverride,
     setSpendOverride,
     setSavingsOverride,
+    consultantBriefing,
+    setConsultantBriefing,
     resetAll,
   };
 
