@@ -38,10 +38,10 @@ const STEPS = [
 ];
 
 const BADGES = [
-  { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Daten vor der Analyse" },
-  { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard" },
-  { emoji: "🇩🇪", label: "Hosting in Frankfurt", sub: "ISO 27001 Rechenzentren" },
-  { emoji: "📝", label: "Automatischer NDA-Schutz", sub: "Aktiv ab dem ersten Upload" },
+  { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Vertrags- und Nutzerdaten vor der Analyse." },
+  { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard für Ihre sensiblen Dokumente." },
+  { emoji: "🇩🇪", label: "Hosting in Frankfurt", sub: "ISO 27001 Rechenzentren für maximale Data-Compliance." },
+  { emoji: "📝", label: "Automatischer NDA-Schutz", sub: "Aktiv ab dem ersten Upload Ihrer IT-Vertragsdaten." },
 ];
 
 const WHAT_ITEMS = [
