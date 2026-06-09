@@ -73,6 +73,21 @@ export function AdminPanel() {
           >
             Demo zurücksetzen
           </button>
+
+          <div className="md:col-span-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
+            <div className="text-[10px] uppercase tracking-wider text-primary mb-1.5 flex items-center gap-1.5">
+              🤖 AI Consultant · Kundenbriefing (Mobilfunk-Nebenabreden)
+            </div>
+            {consultantBriefing.trim() ? (
+              <pre className="text-xs whitespace-pre-wrap font-sans text-foreground/90 leading-relaxed max-h-40 overflow-y-auto">
+                {consultantBriefing}
+              </pre>
+            ) : (
+              <div className="text-xs text-muted-foreground italic">
+                Noch keine Eingabe — wird sichtbar, sobald der Kunde im Mobilfunk-Onboarding das Consultant-Textfeld ausgefüllt hat.
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
