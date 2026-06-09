@@ -298,6 +298,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
   const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
   const [timeMode, setTimeMode] = useState<TimeMode>("yearly");
+  const [consultantBriefing, setConsultantBriefing] = useState<string>("");
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
