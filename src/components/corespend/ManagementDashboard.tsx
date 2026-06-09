@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
+import { TimeModeToggle } from "./TimeModeToggle";
 
 export function ManagementDashboard() {
   const {

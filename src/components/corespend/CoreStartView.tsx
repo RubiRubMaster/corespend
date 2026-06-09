@@ -62,6 +62,7 @@ export function CoreStartView() {
           Dein zentrales Einstiegsportal. Wähle einen Bereich, um direkt in das jeweilige Cockpit
           oder in die Datenaufnahme zu springen.
         </p>
+        <TimeModeToggle />
       </header>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
