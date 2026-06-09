@@ -40,8 +40,8 @@ export type ActiveView =
 export type CoreStartStatus = "analyzed" | "pending" | "comingsoon";
 export type CoreStartStatuses = Record<Category, CoreStartStatus>;
 const DEFAULT_CORESTART_STATUSES: CoreStartStatuses = {
-  telco: "analyzed",
-  office: "pending",
+  telco: "pending",
+  office: "comingsoon",
   saas: "comingsoon",
   cloud: "comingsoon",
   hardware: "comingsoon",
