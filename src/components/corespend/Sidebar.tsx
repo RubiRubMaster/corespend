@@ -72,35 +72,52 @@ export function Sidebar() {
           Core Kategorien
         </div>
 
-        {/* Telekommunikation (expanded) */}
-        <div className="rounded-lg">
-          <div className="flex items-center gap-3 px-3 py-2.5 text-sm text-foreground">
-            <span className="text-base w-5 text-center">📞</span>
-            <span className="flex-1">Telekommunikation</span>
-            <span className="text-[9px] uppercase tracking-wider text-success">Aktiv</span>
-          </div>
-          <div className="ml-3 pl-3 border-l border-border space-y-1 mt-1 mb-2">
+        {/* Telekommunikation (collapsible) */}
+        <Collapsible open={telcoOpen} onOpenChange={setTelcoOpen} className="rounded-lg">
+          <CollapsibleTrigger asChild>
             <button
-              onClick={goMobilfunk}
               className={cn(
-                "w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all relative",
+                "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all cursor-pointer",
                 activeView === "mobilfunk"
-                  ? "bg-success/15 text-foreground border border-success/40"
-                  : "text-foreground/90 hover:bg-success/10 border border-transparent",
+                  ? "bg-success/10 text-foreground border border-success/20"
+                  : "text-foreground hover:bg-accent/50",
               )}
             >
-              <span className="text-sm w-4 text-center">📱</span>
-              <span className="flex-1 text-left">Mobilfunk</span>
-              {mobilfunkStatus === "analyzed" ? (
-                <span className="text-[9px] uppercase tracking-wider text-success">Live</span>
-              ) : (
-                <span className="text-[9px] uppercase tracking-wider text-success/90">MVP</span>
-              )}
+              <span className="text-base w-5 text-center">📞</span>
+              <span className="flex-1 text-left">Telekommunikation</span>
+              <span className="text-[9px] uppercase tracking-wider text-success">Aktiv</span>
+              <ChevronDown
+                className={cn(
+                  "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                  telcoOpen && "rotate-180",
+                )}
+              />
             </button>
-            <LockedSub label="Festnetz" emoji="☎️" />
-            <LockedSub label="Datenleitungen" emoji="🌐" />
-          </div>
-        </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="ml-3 pl-3 border-l border-border space-y-1 mt-1 mb-2">
+              <button
+                onClick={goMobilfunk}
+                className={cn(
+                  "w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all relative",
+                  activeView === "mobilfunk"
+                    ? "bg-success/15 text-foreground border border-success/40"
+                    : "text-foreground/90 hover:bg-success/10 border border-transparent",
+                )}
+              >
+                <span className="text-sm w-4 text-center">📱</span>
+                <span className="flex-1 text-left">Mobilfunk</span>
+                {mobilfunkStatus === "analyzed" ? (
+                  <span className="text-[9px] uppercase tracking-wider text-success">Live</span>
+                ) : (
+                  <span className="text-[9px] uppercase tracking-wider text-success/90">MVP</span>
+                )}
+              </button>
+              <LockedSub label="Festnetz" emoji="☎️" />
+              <LockedSub label="Datenleitungen" emoji="🌐" />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         {CATEGORIES_META.filter((c) => !c.available).map((c) => (
           <LockedRow key={c.key} cat={c.key} label={c.label} emoji={c.emoji} onClick={() => goLocked(c.key)} />
