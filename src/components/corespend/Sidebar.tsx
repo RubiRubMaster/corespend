@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
   const [telcoOpen, setTelcoOpen] = useState(activeView === "mobilfunk");
 
   return (
