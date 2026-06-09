@@ -162,7 +162,7 @@ function Landing() {
 
         {/* CoreSpend-Prinzip */}
         <div className="mt-14">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">DAS CORESPEND-PRINZIP</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
             Drei Schritte zu absoluter Kostentransparenz
           </h2>
@@ -190,7 +190,7 @@ function Landing() {
             <span className="transition group-hover:translate-x-0.5">→</span>
           </Link>
           <span className="text-xs text-muted-foreground">
-            48h Onboarding · keine Provider-Kündigung notwendig
+            24h von Onboarding zu maximaler Transparenz
           </span>
         </div>
       </section>
