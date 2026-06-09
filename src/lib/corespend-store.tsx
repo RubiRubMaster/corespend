@@ -272,6 +272,8 @@ type Ctx = {
   setSavingsOverride: (n: number | null) => void;
   timeMode: TimeMode;
   setTimeMode: (m: TimeMode) => void;
+  consultantBriefing: string;
+  setConsultantBriefing: (s: string) => void;
   resetAll: () => void;
 };
 
