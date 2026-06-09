@@ -1,6 +1,7 @@
 import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
+import { TimeModeToggle } from "./TimeModeToggle";
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
 
@@ -36,6 +37,7 @@ export function ManagementCockpit() {
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
             Die zentrale Steuerungseinheit für maximale Kostentransparenz, proaktives Fristenmanagement und messbaren ROI Ihres gesamten IT-Stacks.
           </p>
+          <TimeModeToggle />
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className={cn("h-2 w-2 rounded-full animate-pulse", live ? "bg-success" : "bg-muted-foreground/40")} />
