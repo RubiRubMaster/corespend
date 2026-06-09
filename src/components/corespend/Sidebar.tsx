@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useCoreSpend, CATEGORIES_META, type Category } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
   const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
