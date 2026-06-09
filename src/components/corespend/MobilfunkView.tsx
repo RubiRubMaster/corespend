@@ -63,7 +63,7 @@ function Header() {
 
 /* -------------------- STATE A -------------------- */
 function StateA() {
-  const { startMobilfunkUpload } = useCoreSpend();
+  const { startMobilfunkUpload, consultantBriefing, setConsultantBriefing } = useCoreSpend();
   const [file, setFile] = useState<File | undefined>();
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerCompany, setCustomerCompany] = useState("");
@@ -73,10 +73,9 @@ function StateA() {
   const recordUpload = useServerFn(recordMobilfunkUpload);
 
   const checklist = [
-    "Mobilfunk-Rahmenvertrag (PDF)",
-    "Die letzten 3 Monatsrechnungen (PDF)",
-    "Einzelverbindungsnachweis (EVN, PDF/CSV)",
-    "Optional: SIM-/Nutzerliste (XLSX)",
+    "Aktueller Mobilfunk-Rahmenvertrag (PDF)",
+    "Die letzten 3 bis 6 Monatsrechnungen (PDF)",
+    "Aktueller Einzelverbindungsnachweis / SIM-Listen (CSV/Excel)",
   ];
 
   function pickFile(f: File | undefined) {
@@ -90,14 +89,14 @@ function StateA() {
 
   async function handleSubmit() {
     if (!file) {
-      toast.error("Bitte Datei auswählen");
+      toast.error("Bitte zuerst ein Mobilfunk-Dokument hochladen");
       return;
     }
     setUploading(true);
     try {
       const ext = file.name.split(".").pop() ?? "bin";
       const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
-      const path = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}`;
+      const path = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}-${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("mobilfunk-uploads")
@@ -116,11 +115,12 @@ function StateA() {
           storagePath: path,
           customerEmail: customerEmail.trim() || undefined,
           customerCompany: customerCompany.trim() || undefined,
+          customerNote: consultantBriefing.trim() || undefined,
         },
       });
 
-      toast.success("Dokument sicher übertragen", {
-        description: "Wir haben deine Datei erhalten und benachrichtigen das CoreSpend-Team.",
+      toast.success("Strategische Mobilfunk-Analyse gestartet", {
+        description: "Daten und Consultant-Briefing erfolgreich erfasst.",
       });
       startMobilfunkUpload(file.name);
     } catch (err) {
@@ -132,157 +132,162 @@ function StateA() {
   }
 
   return (
-    <Tabs defaultValue="manual" className="space-y-5">
-      <TabsList className="bg-surface border border-border h-auto p-1">
-        <TabsTrigger value="manual" className="gap-2 px-4 py-2">📄 Sichere Dokumenten-Übergabe</TabsTrigger>
-        <TabsTrigger value="auto" className="gap-2 px-4 py-2">⚙ Automatisierte Enterprise-Schnittstelle</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="manual" className="mt-0">
-        <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-          <div className="glass-card p-6 flex flex-col gap-5">
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              Drag-and-Drop · Mobilfunk-Dokumente
-            </div>
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragging(false);
-                pickFile(e.dataTransfer.files?.[0]);
-              }}
-              onClick={() => inputRef.current?.click()}
-              className={cn(
-                "rounded-xl border-2 border-dashed border-border bg-background/40 px-6 py-14 text-center cursor-pointer transition-colors",
-                dragging && "border-success bg-success/10",
-              )}
-            >
-              <div className="text-3xl text-muted-foreground">↑</div>
-              <p className="text-sm mt-3">
-                {file ? <span className="text-foreground">{file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB</span> : (
-                  <>Dateien hierher ziehen oder <span className="text-primary">durchsuchen</span></>
-                )}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">PDF · CSV · XLSX · ZIP — max. 50 MB</p>
-              <p className="text-[10px] text-muted-foreground mt-3">
-                🛡 AES-256 · DSGVO-konform · ISO 27001 RZ Frankfurt · automatischer NDA-Schutz
-              </p>
-              <input
-                ref={inputRef}
-                type="file"
-                accept=".pdf,.csv,.xlsx,.xls,.zip,application/pdf,text/csv"
-                className="hidden"
-                onChange={(e) => pickFile(e.target.files?.[0])}
-              />
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <input
-                type="email"
-                placeholder="Deine E-Mail (optional)"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
-              />
-              <input
-                type="text"
-                placeholder="Unternehmen (optional)"
-                value={customerCompany}
-                onChange={(e) => setCustomerCompany(e.target.value)}
-                className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
-              />
-            </div>
-
-            <button
-              onClick={handleSubmit}
-              disabled={uploading || !file}
-              className="w-full rounded-lg bg-success text-success-foreground px-4 py-3.5 text-sm font-semibold hover:brightness-110 transition shadow-[0_10px_40px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {uploading ? "⏳ Übertrage sicher …" : "📤 Dokumente sicher übertragen & Analyse starten"}
-            </button>
-          </div>
-
-
-          <div className="glass-card p-6">
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-3">
-              Empfohlene Dokumente
-            </div>
-            <ul className="space-y-2.5">
-              {checklist.map((c) => (
-                <li key={c} className="flex items-start gap-2 text-sm text-foreground/90">
-                  <span className="text-primary mt-0.5">☑</span>
-                  <span>{c}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-5 pt-5 border-t border-border/60 text-[11px] text-muted-foreground leading-relaxed">
-              Alle Dokumente werden serverseitig anonymisiert und ausschließlich für deine eigene
-              Benchmark-Analyse verwendet. NDA wird automatisch beim Upload erzeugt.
-            </div>
-          </div>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="auto" className="mt-0">
-        <div className="glass-card p-6 space-y-5">
+    <div className="space-y-6">
+      {/* Schritt A: Upload */}
+      <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+        <div className="glass-card p-6 flex flex-col gap-5">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold">🔑 REST API & n8n-Workflow</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Direkte Anbindung an dein Mobilfunk-Portal · 1-Klick-Setup
-              </p>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+              Schritt A · Dokumenten-Upload
             </div>
-            <span className="text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5">
-              Enterprise
+            <span className="text-[10px] uppercase tracking-wider text-primary border border-primary/40 bg-primary/10 rounded-full px-2 py-0.5">
+              Mobilfunk MVP · Aktiv
             </span>
           </div>
-
-          <div className="rounded-lg border border-border bg-background/50 p-3 text-[11px] font-mono text-muted-foreground leading-relaxed">
-            <span className="text-success">POST</span> https://api.corespend.io/v1/ingest/telco/mobilfunk<br />
-            <span className="text-primary">Authorization:</span> Bearer csk_live_telco_mobilfunk_•••<br />
-            <span className="text-primary">Content-Type:</span> application/json
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              pickFile(e.dataTransfer.files?.[0]);
+            }}
+            onClick={() => inputRef.current?.click()}
+            className={cn(
+              "rounded-xl border-2 border-dashed border-border bg-background/40 px-6 py-14 text-center cursor-pointer transition-colors",
+              dragging && "border-success bg-success/10",
+            )}
+          >
+            <div className="text-3xl text-muted-foreground">↑</div>
+            <p className="text-sm mt-3">
+              {file ? <span className="text-foreground">{file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB</span> : (
+                <>Mobilfunk-Dokumente hierher ziehen oder <span className="text-primary">durchsuchen</span></>
+              )}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">PDF · CSV · XLSX · ZIP — max. 50 MB</p>
+            <p className="text-[10px] text-muted-foreground mt-3">
+              🛡 AES-256 · DSGVO-konform · ISO 27001 RZ Frankfurt · automatischer NDA-Schutz
+            </p>
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".pdf,.csv,.xlsx,.xls,.zip,application/pdf,text/csv"
+              className="hidden"
+              onChange={(e) => pickFile(e.target.files?.[0])}
+            />
           </div>
 
-          <div className="rounded-lg border border-border bg-background/50 p-4">
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-3">
-              <span className="h-2 w-2 rounded-full bg-success" /> Workflow · CoreSpend · Mobilfunk Ingest
-            </div>
-            <div className="flex items-center justify-between gap-1 text-[10px]">
-              {["Provider-Portal", "Auth", "Transform", "CoreSpend"].map((n, i) => (
-                <div key={n} className="flex-1 flex items-center gap-1">
-                  <div className="flex-1 rounded-md bg-accent border border-border px-2 py-2 text-center font-medium">{n}</div>
-                  {i < 3 && <div className="text-muted-foreground">→</div>}
-                </div>
-              ))}
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <input
+              type="email"
+              placeholder="Deine E-Mail (optional)"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+            />
+            <input
+              type="text"
+              placeholder="Unternehmen (optional)"
+              value={customerCompany}
+              onChange={(e) => setCustomerCompany(e.target.value)}
+              className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
+            />
           </div>
         </div>
-      </TabsContent>
-    </Tabs>
+
+        <div className="glass-card p-6">
+          <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-3">
+            Benötigte Dokumente
+          </div>
+          <ul className="space-y-2.5">
+            {checklist.map((c) => (
+              <li key={c} className="flex items-start gap-2 text-sm text-foreground/90">
+                <span className="text-primary mt-0.5">☑</span>
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-5 pt-5 border-t border-border/60 text-[11px] text-muted-foreground leading-relaxed">
+            Alle Dokumente werden serverseitig anonymisiert und ausschließlich für deine eigene
+            Benchmark-Analyse verwendet. NDA wird automatisch beim Upload erzeugt.
+          </div>
+        </div>
+      </div>
+
+      {/* Schritt B: AI Consultant */}
+      <div className="glass-card p-6 space-y-4 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-success grid place-items-center text-xl shrink-0">
+            🤖
+          </div>
+          <div className="flex-1">
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+              Schritt B · CoreSpend AI Consultant
+            </div>
+            <h3 className="text-lg font-semibold tracking-tight mt-0.5">
+              AI Consultant: Vertragliche Besonderheiten & Nebenabreden
+            </h3>
+            <p className="text-sm text-muted-foreground mt-2 leading-relaxed max-w-3xl">
+              Um Ihre Preisuntergrenze exakt zu ermitteln, benötigt unsere KI Informationen über informelle Absprachen.
+              Gibt es in Ihrem aktuellen Mobilfunk-Vertrag Sonderzahlungen, verhandelte Nebenabreden, versteckte
+              SIM-Karten (z.B. in Aufzügen/IoT-Geräten) oder historische Rabattstufen mit Ihrem Provider?
+            </p>
+          </div>
+        </div>
+
+        <textarea
+          value={consultantBriefing}
+          onChange={(e) => setConsultantBriefing(e.target.value)}
+          rows={6}
+          placeholder="Z.B. 'Wir erhalten aktuell 40% Rabatt auf die Grundgebühr bei Vodafone Prime, zahlen aber für Datenpässe im USA-Roaming den vollen Preis...'"
+          className="w-full resize-none rounded-xl border border-border bg-background/60 px-4 py-3.5 text-sm leading-relaxed placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+        />
+
+        <button
+          onClick={handleSubmit}
+          disabled={uploading || !file}
+          className="w-full rounded-xl bg-gradient-to-r from-success to-primary text-success-foreground px-6 py-4 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {uploading ? "⏳ Übertrage sicher …" : "⚡ Strategische Mobilfunk-Analyse starten"}
+        </button>
+        {!file && (
+          <p className="text-[11px] text-center text-muted-foreground">
+            Bitte zuerst ein Mobilfunk-Dokument hochladen, um die Analyse zu starten.
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 
 /* -------------------- STATE B -------------------- */
 function StateB() {
   const { demoUnlock, mobilfunkFile } = useCoreSpend();
+  const [showInfo, setShowInfo] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowInfo(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+
   const lines = [
-    "Anonymisiere Mitarbeiterdaten nach DSGVO …",
-    "Scanne 1.200+ DACH-Vergleichsverträge …",
-    "Validiere SIM-Inventar und Nutzungs-Cluster …",
-    "Berechne ARPU-Benchmark und Einsparkorridor …",
+    "Analysiere Mobilfunk-Rahmenvertrag und Klauseln …",
+    "AI Consultant verarbeitet gemeldete Nebenabreden und Sonderkonditionen …",
+    "Berechne ungenutzte SIM-Karten (Karteileichen ohne Datenverbrauch) …",
+    "Generiere maßgeschneiderten Verhandlungsleitfaden auf Basis von 1.200+ DACH-Benchmarks …",
   ];
 
   return (
-    <div className="glass-card relative overflow-hidden min-h-[520px] p-10 flex flex-col items-center justify-center text-center gap-6">
+    <div className="glass-card relative overflow-hidden min-h-[560px] p-10 flex flex-col items-center justify-center text-center gap-6">
       <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-success to-transparent animate-shimmer" />
 
       <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-success grid place-items-center text-2xl font-bold text-background animate-pulse">
         ⟳
       </div>
       <div>
-        <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">State B · Enterprise Waiting Screen</div>
-        <h2 className="text-2xl font-semibold mt-2">Analyse läuft · sichere Verarbeitung</h2>
+        <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Magic Waiting · Enterprise-Verarbeitung</div>
+        <h2 className="text-2xl font-semibold mt-2">Rohdaten & Consultant-Briefing werden gemeinsam analysiert</h2>
         {mobilfunkFile && (
           <p className="text-xs text-muted-foreground mt-1.5">Eingegangen: <span className="text-foreground">{mobilfunkFile}</span></p>
         )}
@@ -298,22 +303,24 @@ function StateB() {
         ))}
       </div>
 
-      <div className="space-y-1.5 text-sm text-foreground/85 max-w-md">
+      <div className="space-y-1.5 text-sm text-foreground/85 max-w-xl">
         {lines.map((l) => (
-          <div key={l} className="flex items-center gap-2 justify-center">
+          <div key={l} className="flex items-center gap-2 justify-center animate-pulse">
             <span className="text-success text-xs">✓</span>{l}
           </div>
         ))}
       </div>
 
-      <div className="rounded-lg border border-success/30 bg-success/5 px-5 py-4 max-w-xl text-left">
-        <div className="text-sm font-medium">Dateneingang bestätigt.</div>
-        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-          Da wir jede KI-Analyse durch zertifizierte IT-Einkaufsexperten auditieren lassen, wird dein Dashboard
-          in <span className="text-foreground">24–48 Stunden</span> freigeschaltet. Dein Data-Bonus
-          (<span className="text-success">−{formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat</span>) wurde bereits vorgemerkt und ist live.
-        </p>
-      </div>
+      {showInfo && (
+        <div className="rounded-lg border border-success/30 bg-success/5 px-5 py-4 max-w-xl text-left animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="text-sm font-medium">Daten und Consultant-Briefing erfolgreich erfasst!</div>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+            Unsere Sourcing-Experten prüfen die KI-Ergebnisse doppelt. Ihr Cockpit und der Download des
+            Leitfadens werden in <span className="text-foreground">24–48 Stunden</span> freigeschaltet. Ihr
+            reduzierter Plattform-Tarif (<span className="text-success">{formatEUR(PRICING.MIN_PRICE)} / Monat</span>) ist ab jetzt aktiv.
+          </p>
+        </div>
+      )}
 
       <button
         onClick={demoUnlock}
