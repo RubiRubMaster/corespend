@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
-import { TimeModeToggle } from "./TimeModeToggle";
 
 export function ManagementDashboard() {
   const {
@@ -47,7 +46,6 @@ export function ManagementDashboard() {
             <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl">
               Die detaillierte Analyse- und Controlling-Zentrale für alle Segmente Ihres IT-Stacks.
             </p>
-            <TimeModeToggle />
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="h-2 w-2 rounded-full bg-success animate-pulse" />

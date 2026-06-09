@@ -3,7 +3,6 @@ import { useCoreSpend, type Category, type CoreStartStatus } from "@/lib/corespe
 import { cn } from "@/lib/utils";
 import { Phone, Laptop, Cloud, Globe, Cable, Lock, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { TimeModeToggle } from "./TimeModeToggle";
 
 type Tile = {
   key: Category;
@@ -62,7 +61,6 @@ export function CoreStartView() {
           Dein zentrales Einstiegsportal. Wähle einen Bereich, um direkt in das jeweilige Cockpit
           oder in die Datenaufnahme zu springen.
         </p>
-        <TimeModeToggle />
       </header>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
