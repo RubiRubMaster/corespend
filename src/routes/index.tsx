@@ -38,10 +38,10 @@ const STEPS = [
 ];
 
 const BADGES = [
-  { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Daten vor der Analyse" },
-  { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard" },
-  { emoji: "🇩🇪", label: "Hosting in Frankfurt", sub: "ISO 27001 Rechenzentren" },
-  { emoji: "📝", label: "Automatischer NDA-Schutz", sub: "Aktiv ab dem ersten Upload" },
+  { emoji: "🛡️", label: "DSGVO-konform", sub: "Anonymisierung aller Vertrags- und Nutzerdaten vor der Analyse." },
+  { emoji: "🔒", label: "AES-256 Verschlüsselung", sub: "Banken-Sicherheitsstandard für Ihre sensiblen Dokumente." },
+  { emoji: "🇩🇪", label: "Hosting in Frankfurt", sub: "ISO 27001 Rechenzentren für maximale Data-Compliance." },
+  { emoji: "📝", label: "Automatischer NDA-Schutz", sub: "Aktiv ab dem ersten Upload Ihrer IT-Vertragsdaten." },
 ];
 
 const WHAT_ITEMS = [
@@ -135,11 +135,14 @@ function Landing() {
         </div>
         <div className="mt-6 text-2xl md:text-4xl font-semibold tracking-tight leading-[1.15] max-w-4xl mx-auto">
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-            Built to serve IT and procurement teams by reinventing the way they work.
+            Made to serve IT & Procurement by changing the way you source your Core IT.
           </span>
         </div>
         <p className="mt-8 text-[15px] text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-          Unternehmen teilen anonymisierte IT-Daten, erhalten über den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit absolute Kostentransparenz — und senken ihre Lizenz-, Provider- und Vertragskosten datenbasiert auf das absolute Marktminimum.
+          Unternehmen teilen ihre IT-Vertragsdaten und erhalten durch den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit volle Kostentransparenz. CoreSpend analysiert den gesamten IT-Stack, macht Vertragsbedingungen, Verlängerungen und Ausgaben zentral sichtbar und navigiert Unternehmen datenbasiert zu den Preisuntergrenzen für ihre zentralen IT-Ausgaben.
+        </p>
+        <p className="mt-5 text-[14px] italic text-muted-foreground/70 max-w-2xl mx-auto leading-relaxed tracking-wide">
+          "It's like having your own dedicated IT procurement and expense management department—without the cost of building one."
         </p>
 
         {/* Trust badges */}
@@ -159,7 +162,7 @@ function Landing() {
 
         {/* CoreSpend-Prinzip */}
         <div className="mt-14">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Das CoreSpend-Prinzip</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">DAS CORESPEND-PRINZIP</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
             Drei Schritte zu absoluter Kostentransparenz
           </h2>
@@ -187,7 +190,7 @@ function Landing() {
             <span className="transition group-hover:translate-x-0.5">→</span>
           </Link>
           <span className="text-xs text-muted-foreground">
-            48h Onboarding · keine Provider-Kündigung notwendig
+            24h von Onboarding zu maximaler Transparenz
           </span>
         </div>
       </section>
