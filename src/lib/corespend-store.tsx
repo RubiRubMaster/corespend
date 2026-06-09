@@ -40,8 +40,8 @@ export type ActiveView =
 export type CoreStartStatus = "analyzed" | "pending" | "comingsoon";
 export type CoreStartStatuses = Record<Category, CoreStartStatus>;
 const DEFAULT_CORESTART_STATUSES: CoreStartStatuses = {
-  telco: "analyzed",
-  office: "pending",
+  telco: "pending",
+  office: "comingsoon",
   saas: "comingsoon",
   cloud: "comingsoon",
   hardware: "comingsoon",
@@ -272,6 +272,8 @@ type Ctx = {
   setSavingsOverride: (n: number | null) => void;
   timeMode: TimeMode;
   setTimeMode: (m: TimeMode) => void;
+  consultantBriefing: string;
+  setConsultantBriefing: (s: string) => void;
   resetAll: () => void;
 };
 
@@ -296,6 +298,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
   const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
   const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
   const [timeMode, setTimeMode] = useState<TimeMode>("yearly");
+  const [consultantBriefing, setConsultantBriefing] = useState<string>("");
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
@@ -377,6 +380,7 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setSpendOverride(null);
     setSavingsOverride(null);
     setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
+    setConsultantBriefing("");
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
@@ -517,6 +521,8 @@ export function CoreSpendProvider({ children }: { children: ReactNode }) {
     setPriceOverride,
     setSpendOverride,
     setSavingsOverride,
+    consultantBriefing,
+    setConsultantBriefing,
     resetAll,
   };
 
