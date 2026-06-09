@@ -135,13 +135,13 @@ function Landing() {
         </div>
         <div className="mt-6 text-2xl md:text-4xl font-semibold tracking-tight leading-[1.15] max-w-4xl mx-auto">
           <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
-            Made to serve IT & Procurement by changing the way you source your Core IT.
+            Built to serve IT, procurement and finance teams by reinventing the way they work.
           </span>
         </div>
         <p className="mt-8 text-[15px] text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
           Unternehmen teilen ihre IT-Vertragsdaten und erhalten durch den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit volle Kostentransparenz. CoreSpend analysiert den gesamten IT-Stack, macht Vertragsbedingungen, Verlängerungen und Ausgaben zentral sichtbar und navigiert Unternehmen datenbasiert zu den Preisuntergrenzen für ihre zentralen IT-Ausgaben.
         </p>
-        <p className="mt-5 text-[14px] italic text-muted-foreground/70 max-w-2xl mx-auto leading-relaxed tracking-wide">
+        <p className="mt-5 text-[14px] italic max-w-2xl mx-auto leading-relaxed tracking-wide bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
           "It's like having your own dedicated IT procurement and expense management department—without the cost of building one."
         </p>
 
