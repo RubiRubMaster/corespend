@@ -68,7 +68,7 @@ function StateA() {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recordUpload = useServerFn(recordMobilfunkUpload);
+  
 
   const checklist = [
     "Aktueller Mobilfunk-Rahmenvertrag (PDF)",
