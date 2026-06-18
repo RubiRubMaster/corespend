@@ -28,6 +28,7 @@ export function ContractsTable({ title = "Hochgeladene Verträge", compact = fal
             <thead>
               <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border">
                 <th className="text-left font-medium py-2">Bereich</th>
+                <th className="text-left font-medium py-2">Provider</th>
                 <th className="text-left font-medium py-2">Datei</th>
                 <th className="text-left font-medium py-2">Status</th>
                 {!compact && <th className="text-left font-medium py-2">Hochgeladen</th>}
