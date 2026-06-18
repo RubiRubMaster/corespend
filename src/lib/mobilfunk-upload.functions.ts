@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const NOTIFICATION_RECIPIENT = "rubonbeck@icloud.com";
@@ -15,11 +16,21 @@ const InputSchema = z.object({
 });
 
 export const recordMobilfunkUpload = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => InputSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { supabase: userSupabase, userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // 1. Insert DB row
+    // Resolve company_id for this user (via RLS-scoped client)
+    const { data: profile, error: pErr } = await userSupabase
+      .from("profiles")
+      .select("company_id")
+      .eq("id", userId)
+      .maybeSingle();
+    if (pErr || !profile) throw new Error("Profil nicht gefunden");
+
+    // 1. Insert DB row (admin client; we set user_id/company_id explicitly)
     const { data: row, error: insertError } = await supabaseAdmin
       .from("mobilfunk_uploads")
       .insert({
@@ -30,6 +41,8 @@ export const recordMobilfunkUpload = createServerFn({ method: "POST" })
         customer_email: data.customerEmail || null,
         customer_company: data.customerCompany || null,
         customer_note: data.customerNote || null,
+        user_id: userId,
+        company_id: profile.company_id,
       })
       .select("id, created_at")
       .single();
