@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback, useMemo, type ReactNode } from "react";
 
 export type Category = "telco" | "office" | "saas" | "cloud" | "hardware";
 export type SubKey = "mobilfunk" | "festnetz" | "daten";
@@ -280,25 +280,74 @@ type Ctx = {
 
 const CoreSpendContext = createContext<Ctx | null>(null);
 
-export function CoreSpendProvider({ children }: { children: ReactNode }) {
-  const [mobilfunkStatus, setMobilfunkStatus] = useState<UploadStatus>("idle");
-  const [mobilfunkFile, setMobilfunkFile] = useState<string | undefined>();
-  const [activeView, setActiveView] = useState<ActiveView>("cockpit");
+export type CoreSpendSnapshot = {
+  mobilfunkStatus?: UploadStatus;
+  mobilfunkFile?: string;
+  activeView?: ActiveView;
+  metrics?: MobilfunkMetrics;
+  cockpitMetrics?: CockpitMetrics;
+  deadlines?: DeadlineItem[];
+  optimizations?: Optimizations;
+  spendBreakdown?: SpendAreaItem[];
+  riskItems?: RiskItem[];
+  priceOverride?: number | null;
+  spendOverride?: number | null;
+  savingsOverride?: number | null;
+  mobilfunkStage?: MobilfunkStage;
+  strategy?: NegotiationStrategy;
+  coreStartStatuses?: CoreStartStatuses;
+  timeMode?: TimeMode;
+  consultantBriefing?: string;
+};
+
+export function CoreSpendProvider({
+  children,
+  initialSnapshot,
+  onPersist,
+}: {
+  children: ReactNode;
+  initialSnapshot?: CoreSpendSnapshot;
+  onPersist?: (snap: CoreSpendSnapshot) => void;
+}) {
+  const s = initialSnapshot ?? {};
+  const [mobilfunkStatus, setMobilfunkStatus] = useState<UploadStatus>(s.mobilfunkStatus ?? "idle");
+  const [mobilfunkFile, setMobilfunkFile] = useState<string | undefined>(s.mobilfunkFile);
+  const [activeView, setActiveView] = useState<ActiveView>(s.activeView ?? "cockpit");
   const [lockedHint, setLockedHint] = useState<Category | null>(null);
-  const [metrics, setMetrics] = useState<MobilfunkMetrics>(DEFAULT_MOBILFUNK);
-  const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(DEFAULT_COCKPIT);
-  const [deadlines, setDeadlines] = useState<DeadlineItem[]>(DEFAULT_DEADLINES);
-  const [optimizations, setOptimizations] = useState<Optimizations>(DEFAULT_OPTIMIZATIONS);
-  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(DEFAULT_SPEND_BREAKDOWN);
-  const [riskItems, setRiskItems] = useState<RiskItem[]>(DEFAULT_RISK_ITEMS);
-  const [priceOverride, setPriceOverride] = useState<number | null>(null);
-  const [spendOverride, setSpendOverride] = useState<number | null>(null);
-  const [savingsOverride, setSavingsOverride] = useState<number | null>(null);
-  const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>("cockpit");
-  const [strategy, setStrategy] = useState<NegotiationStrategy>(DEFAULT_STRATEGY);
-  const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(DEFAULT_CORESTART_STATUSES);
-  const [timeMode, setTimeMode] = useState<TimeMode>("yearly");
-  const [consultantBriefing, setConsultantBriefing] = useState<string>("");
+  const [metrics, setMetrics] = useState<MobilfunkMetrics>(s.metrics ?? DEFAULT_MOBILFUNK);
+  const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(s.cockpitMetrics ?? DEFAULT_COCKPIT);
+  const [deadlines, setDeadlines] = useState<DeadlineItem[]>(s.deadlines ?? DEFAULT_DEADLINES);
+  const [optimizations, setOptimizations] = useState<Optimizations>(s.optimizations ?? DEFAULT_OPTIMIZATIONS);
+  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(s.spendBreakdown ?? DEFAULT_SPEND_BREAKDOWN);
+  const [riskItems, setRiskItems] = useState<RiskItem[]>(s.riskItems ?? DEFAULT_RISK_ITEMS);
+  const [priceOverride, setPriceOverride] = useState<number | null>(s.priceOverride ?? null);
+  const [spendOverride, setSpendOverride] = useState<number | null>(s.spendOverride ?? null);
+  const [savingsOverride, setSavingsOverride] = useState<number | null>(s.savingsOverride ?? null);
+  const [mobilfunkStage, setMobilfunkStage] = useState<MobilfunkStage>(s.mobilfunkStage ?? "cockpit");
+  const [strategy, setStrategy] = useState<NegotiationStrategy>(s.strategy ?? DEFAULT_STRATEGY);
+  const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(s.coreStartStatuses ?? DEFAULT_CORESTART_STATUSES);
+  const [timeMode, setTimeMode] = useState<TimeMode>(s.timeMode ?? "yearly");
+  const [consultantBriefing, setConsultantBriefing] = useState<string>(s.consultantBriefing ?? "");
+
+  // Debounced persistence — fires whenever any persistable state changes
+  const persistRef = useRef(onPersist);
+  persistRef.current = onPersist;
+  const firstRun = useRef(true);
+  useEffect(() => {
+    if (firstRun.current) { firstRun.current = false; return; }
+    if (!persistRef.current) return;
+    const snap: CoreSpendSnapshot = {
+      mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
+      deadlines, optimizations, spendBreakdown, riskItems,
+      priceOverride, spendOverride, savingsOverride, mobilfunkStage,
+      strategy, coreStartStatuses, timeMode, consultantBriefing,
+    };
+    const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
+    return () => clearTimeout(t);
+  }, [mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
+      deadlines, optimizations, spendBreakdown, riskItems,
+      priceOverride, spendOverride, savingsOverride, mobilfunkStage,
+      strategy, coreStartStatuses, timeMode, consultantBriefing]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
