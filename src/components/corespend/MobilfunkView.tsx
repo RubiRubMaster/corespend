@@ -95,51 +95,12 @@ function StateA() {
     }
     setUploading(true);
     try {
-      // PRIMARY: real upload to corespend-documents + contracts insert
-      const cRes = await uploadContract({ file, area: "Mobilfunk" });
-      if (!cRes.ok) {
-        console.error("[MobilfunkView] uploadContract failed", cRes.error);
-        throw new Error(cRes.error);
+      const res = await uploadContract({ file });
+      if (!res.ok) {
+        // uploadContract already surfaces an error toast
+        return;
       }
-
-      // SECONDARY (best-effort): legacy mobilfunk-uploads + admin notification
-      try {
-        const ext = file.name.split(".").pop() ?? "bin";
-        const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
-        const legacyPath = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}-${ext}`;
-        const { error: legacyErr } = await supabase.storage
-          .from("mobilfunk-uploads")
-          .upload(legacyPath, file, {
-            contentType: file.type || "application/octet-stream",
-            upsert: false,
-          });
-        if (!legacyErr) {
-          await recordUpload({
-            data: {
-              originalFilename: file.name,
-              mimeType: file.type || undefined,
-              sizeBytes: file.size,
-              storagePath: legacyPath,
-              customerEmail: customerEmail.trim() || undefined,
-              customerCompany: customerCompany.trim() || undefined,
-              customerNote: consultantBriefing.trim() || undefined,
-            },
-          });
-        } else {
-          console.warn("[MobilfunkView] legacy mirror failed", legacyErr);
-        }
-      } catch (legacyErr) {
-        console.warn("[MobilfunkView] legacy notify failed", legacyErr);
-      }
-
-      toast.success("Strategische Mobilfunk-Analyse gestartet", {
-        description: "Vertrag wurde sicher gespeichert und steht in Core Cockpit & Analytics zur Verfügung.",
-      });
       startMobilfunkUpload(file.name);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Unbekannter Fehler";
-      console.error("[MobilfunkView] upload failed", err);
-      toast.error("Upload fehlgeschlagen", { description: msg });
     } finally {
       setUploading(false);
     }
