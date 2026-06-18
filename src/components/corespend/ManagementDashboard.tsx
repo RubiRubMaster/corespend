@@ -325,6 +325,8 @@ export function ManagementDashboard() {
           </div>
         ))}
       </div>
+
+      <ContractsTable title="📄 Verträge (Live aus Datenbank)" />
     </div>
   );
 }
