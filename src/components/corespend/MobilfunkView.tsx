@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
+import { uploadContract } from "@/lib/contracts";
 import { toast } from "sonner";
 import { MobilfunkConsultantChat } from "./MobilfunkConsultantChat";
 
@@ -118,6 +119,12 @@ function StateA() {
           customerNote: consultantBriefing.trim() || undefined,
         },
       });
+
+      // Also persist into contracts table + corespend-documents bucket
+      const cRes = await uploadContract({ file, area: "Mobilfunk" });
+      if (!cRes.ok) {
+        toast.warning("Vertrag-Eintrag fehlgeschlagen", { description: cRes.error });
+      }
 
       toast.success("Strategische Mobilfunk-Analyse gestartet", {
         description: "Daten und Consultant-Briefing erfolgreich erfasst.",

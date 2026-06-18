@@ -64,6 +64,47 @@ export type Database = {
           },
         ]
       }
+      contracts: {
+        Row: {
+          area: string
+          company_id: string | null
+          created_at: string
+          file_url: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          area: string
+          company_id?: string | null
+          created_at?: string
+          file_url: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          company_id?: string | null
+          created_at?: string
+          file_url?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mobilfunk_uploads: {
         Row: {
           company_id: string | null

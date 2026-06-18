@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
+import { ContractsTable } from "./ContractsTable";
 
 export function ManagementDashboard() {
   const {
@@ -325,6 +326,8 @@ export function ManagementDashboard() {
           </div>
         ))}
       </div>
+
+      <ContractsTable title="📄 Verträge (Live aus Datenbank)" />
     </div>
   );
 }
