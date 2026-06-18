@@ -1,14 +1,13 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { loadCompanyState, saveCompanyState } from "@/lib/company-state.functions";
 import { CoreSpendProvider, type CoreSpendSnapshot } from "@/lib/corespend-store";
 
 type Profile = { companyId: string; companyName: string | null; email: string | null; fullName: string | null };
-const ProfileContext = (await import("react")).createContext<Profile | null>(null);
+const ProfileContext = createContext<Profile | null>(null);
 
 export function useCompanyProfile() {
-  const ctx = (require("react") as typeof import("react")).useContext(ProfileContext);
-  return ctx;
+  return useContext(ProfileContext);
 }
 
 export function CoreSpendHydrator({ children }: { children: ReactNode }) {
@@ -20,17 +19,19 @@ export function CoreSpendHydrator({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    load().then((res) => {
-      if (cancelled) return;
-      setProfile({
-        companyId: res.companyId,
-        companyName: res.companyName,
-        email: res.email,
-        fullName: res.fullName,
-      });
-      setSnap((res.state ?? {}) as CoreSpendSnapshot);
-      setReady(true);
-    }).catch(() => setReady(true));
+    load()
+      .then((res) => {
+        if (cancelled) return;
+        setProfile({
+          companyId: res.companyId,
+          companyName: res.companyName,
+          email: res.email,
+          fullName: res.fullName,
+        });
+        setSnap((res.state ?? {}) as CoreSpendSnapshot);
+        setReady(true);
+      })
+      .catch(() => setReady(true));
     return () => { cancelled = true; };
   }, [load]);
 
