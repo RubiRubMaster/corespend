@@ -162,9 +162,6 @@ export function ManagementCockpit() {
         </ul>
       </section>
 
-      {/* Live Contracts */}
-      <ContractsTable title="📄 Live Vertrags-Pipeline" />
-
       {/* CTA Strip · 2 actions */}
       <section className="grid gap-4 md:grid-cols-2">
         <CtaTile
