@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  CoreSpendProvider,
   useCoreSpend,
   formatEUR,
   PRICING,
@@ -13,19 +12,20 @@ import {
   type RiskStatus,
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
+import { CoreSpendHydrator } from "@/components/corespend/CoreSpendHydrator";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "CoreSpend · Admin" }] }),
   component: AdminPage,
 });
 
 function AdminPage() {
   return (
-    <CoreSpendProvider>
+    <CoreSpendHydrator>
       <AppShell>
         <AdminInner />
       </AppShell>
-    </CoreSpendProvider>
+    </CoreSpendHydrator>
   );
 }
 
