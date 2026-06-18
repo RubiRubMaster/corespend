@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
-import { useServerFn } from "@tanstack/react-start";
-import { recordMobilfunkUpload } from "@/lib/mobilfunk-upload.functions";
 import { uploadContract } from "@/lib/contracts";
 import { toast } from "sonner";
 import { MobilfunkConsultantChat } from "./MobilfunkConsultantChat";
