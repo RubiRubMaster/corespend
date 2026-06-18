@@ -71,6 +71,7 @@ export type Database = {
           created_at: string
           file_url: string
           id: string
+          provider: string | null
           status: string
           updated_at: string
           user_id: string
@@ -81,6 +82,7 @@ export type Database = {
           created_at?: string
           file_url: string
           id?: string
+          provider?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -91,6 +93,7 @@ export type Database = {
           created_at?: string
           file_url?: string
           id?: string
+          provider?: string | null
           status?: string
           updated_at?: string
           user_id?: string

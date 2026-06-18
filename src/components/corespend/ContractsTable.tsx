@@ -28,6 +28,7 @@ export function ContractsTable({ title = "Hochgeladene Verträge", compact = fal
             <thead>
               <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-border">
                 <th className="text-left font-medium py-2">Bereich</th>
+                <th className="text-left font-medium py-2">Provider</th>
                 <th className="text-left font-medium py-2">Datei</th>
                 <th className="text-left font-medium py-2">Status</th>
                 {!compact && <th className="text-left font-medium py-2">Hochgeladen</th>}
@@ -37,6 +38,7 @@ export function ContractsTable({ title = "Hochgeladene Verträge", compact = fal
               {contracts.map((c) => (
                 <tr key={c.id} className="hover:bg-surface/40">
                   <td className="py-2.5 capitalize">{c.area}</td>
+                  <td className="py-2.5">{c.provider ?? "—"}</td>
                   <td className="py-2.5 text-muted-foreground truncate max-w-[260px]">{c.file_url}</td>
                   <td className="py-2.5">
                     <span className={cn(

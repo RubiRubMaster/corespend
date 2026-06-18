@@ -95,43 +95,50 @@ function StateA() {
     }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop() ?? "bin";
-      const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
-      const path = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}-${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("mobilfunk-uploads")
-        .upload(path, file, {
-          contentType: file.type || "application/octet-stream",
-          upsert: false,
-        });
-
-      if (uploadError) throw uploadError;
-
-      await recordUpload({
-        data: {
-          originalFilename: file.name,
-          mimeType: file.type || undefined,
-          sizeBytes: file.size,
-          storagePath: path,
-          customerEmail: customerEmail.trim() || undefined,
-          customerCompany: customerCompany.trim() || undefined,
-          customerNote: consultantBriefing.trim() || undefined,
-        },
-      });
-
-      // Also persist into contracts table + corespend-documents bucket
+      // PRIMARY: real upload to corespend-documents + contracts insert
       const cRes = await uploadContract({ file, area: "Mobilfunk" });
       if (!cRes.ok) {
-        toast.warning("Vertrag-Eintrag fehlgeschlagen", { description: cRes.error });
+        console.error("[MobilfunkView] uploadContract failed", cRes.error);
+        throw new Error(cRes.error);
+      }
+
+      // SECONDARY (best-effort): legacy mobilfunk-uploads + admin notification
+      try {
+        const ext = file.name.split(".").pop() ?? "bin";
+        const safeBase = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
+        const legacyPath = `uploads/${Date.now()}-${crypto.randomUUID()}-${safeBase}-${ext}`;
+        const { error: legacyErr } = await supabase.storage
+          .from("mobilfunk-uploads")
+          .upload(legacyPath, file, {
+            contentType: file.type || "application/octet-stream",
+            upsert: false,
+          });
+        if (!legacyErr) {
+          await recordUpload({
+            data: {
+              originalFilename: file.name,
+              mimeType: file.type || undefined,
+              sizeBytes: file.size,
+              storagePath: legacyPath,
+              customerEmail: customerEmail.trim() || undefined,
+              customerCompany: customerCompany.trim() || undefined,
+              customerNote: consultantBriefing.trim() || undefined,
+            },
+          });
+        } else {
+          console.warn("[MobilfunkView] legacy mirror failed", legacyErr);
+        }
+      } catch (legacyErr) {
+        console.warn("[MobilfunkView] legacy notify failed", legacyErr);
       }
 
       toast.success("Strategische Mobilfunk-Analyse gestartet", {
-        description: "Daten und Consultant-Briefing erfolgreich erfasst.",
+        description: "Vertrag wurde sicher gespeichert und steht in Core Cockpit & Analytics zur Verfügung.",
       });
       startMobilfunkUpload(file.name);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      console.error("[MobilfunkView] upload failed", err);
       toast.error("Upload fehlgeschlagen", { description: msg });
     } finally {
       setUploading(false);
