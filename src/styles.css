@@ -146,3 +146,31 @@
   background-size: 200% 100%;
   animation: shimmer 2.5s linear infinite;
 }
+
+/* =================== LIGHT MODE (B2B Enterprise White) =================== */
+.light {
+  --background: oklch(0.99 0.003 250);          /* near-white */
+  --foreground: oklch(0.20 0.02 265);            /* deep slate */
+  --surface: oklch(0.97 0.005 250);              /* panel */
+  --surface-elevated: oklch(1 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.02 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.02 265);
+  --primary: oklch(0.55 0.18 245);               /* enterprise blue */
+  --primary-foreground: oklch(0.99 0.003 250);
+  --secondary: oklch(0.95 0.01 250);
+  --secondary-foreground: oklch(0.22 0.02 265);
+  --muted: oklch(0.95 0.01 250);
+  --muted-foreground: oklch(0.45 0.02 260);
+  --accent: oklch(0.94 0.015 250);
+  --accent-foreground: oklch(0.22 0.02 265);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.55 0.17 160);               /* darker emerald — readable on white */
+  --success-foreground: oklch(0.99 0 0);
+  --border: oklch(0.88 0.01 250);
+  --input: oklch(0.92 0.01 250);
+  --ring: oklch(0.55 0.18 245);
+}
+
