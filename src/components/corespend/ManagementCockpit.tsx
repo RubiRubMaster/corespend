@@ -1,7 +1,7 @@
 import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
-import { ContractsTable } from "./ContractsTable";
+
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
 
@@ -161,9 +161,6 @@ export function ManagementCockpit() {
           })}
         </ul>
       </section>
-
-      {/* Live Contracts */}
-      <ContractsTable title="📄 Live Vertrags-Pipeline" />
 
       {/* CTA Strip · 2 actions */}
       <section className="grid gap-4 md:grid-cols-2">
