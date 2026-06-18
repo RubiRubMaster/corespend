@@ -14,7 +14,7 @@ import {
 } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "CoreSpend · Admin" }] }),
   component: AdminPage,
 });
