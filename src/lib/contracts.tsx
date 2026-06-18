@@ -14,6 +14,10 @@ export type Contract = {
   updated_at: string;
 };
 
+/**
+ * Kept for backwards-compatibility with Cockpit / Analytics views that still
+ * read from the `contracts` table. The upload flow no longer writes here.
+ */
 export function useContracts() {
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,19 +51,15 @@ export function useContracts() {
   return { contracts, loading, error, refresh };
 }
 
-function guessProvider(filename: string): string {
-  const base = filename.replace(/\.[^.]+$/, "");
-  const KNOWN = ["Vodafone", "Telekom", "O2", "Telefonica", "1und1", "1&1", "Freenet", "Congstar", "Microsoft", "AWS", "Google"];
-  const hit = KNOWN.find((k) => base.toLowerCase().includes(k.toLowerCase()));
-  if (hit) return hit;
-  return base.split(/[_\-\s.]/)[0] || "Unbekannt";
-}
-
+/**
+ * Lädt eine Datei AUSSCHLIESSLICH in den Storage-Bucket `corespend-documents`
+ * unter dem Pfad `{user_id}/{filename}` hoch. Es wird KEIN DB-Eintrag erzeugt.
+ */
 export async function uploadContract(params: {
   file: File;
-  area: string;
+  area?: string;
   provider?: string;
-}): Promise<{ ok: true; contractId: string } | { ok: false; error: string }> {
+}): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
   const { data: userData, error: userErr } = await supabase.auth.getUser();
   if (userErr || !userData.user) {
     const msg = userErr?.message ?? "Nicht eingeloggt – bitte erneut anmelden.";
@@ -69,11 +69,10 @@ export async function uploadContract(params: {
   }
   const user = userData.user;
 
-  // Path: {user_id}/{filename} as requested
   const safeName = params.file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const path = `${user.id}/${safeName}`;
 
-  console.log("[uploadContract] uploading", { path, area: params.area, size: params.file.size });
+  console.log("[uploadContract] uploading", { path, size: params.file.size });
 
   const { error: upErr } = await supabase.storage
     .from("corespend-documents")
@@ -88,30 +87,8 @@ export async function uploadContract(params: {
     return { ok: false, error: upErr.message };
   }
 
-  const provider = params.provider?.trim() || guessProvider(params.file.name);
-
-  const { data: profile } = await supabase
-    .from("profiles").select("company_id").eq("id", user.id).maybeSingle();
-
-  const { data: inserted, error: insErr } = await supabase
-    .from("contracts")
-    .insert({
-      user_id: user.id,
-      company_id: profile?.company_id ?? null,
-      area: params.area,
-      provider,
-      file_url: path,
-      status: "In Analyse",
-    })
-    .select("id")
-    .single();
-
-  if (insErr) {
-    console.error("[uploadContract] insert error", insErr);
-    toast.error("DB-Eintrag fehlgeschlagen", { description: insErr.message });
-    return { ok: false, error: insErr.message };
-  }
-
-  console.log("[uploadContract] success", inserted);
-  return { ok: true, contractId: inserted!.id as string };
+  toast.success("Datei erfolgreich hochgeladen", {
+    description: "Unsere Analysten prüfen deine Daten.",
+  });
+  return { ok: true, path };
 }
