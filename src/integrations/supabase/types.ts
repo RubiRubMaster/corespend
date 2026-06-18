@@ -14,8 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_state: {
+        Row: {
+          company_id: string
+          state: Json
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          state?: Json
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          state?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_state_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mobilfunk_uploads: {
         Row: {
+          company_id: string | null
           created_at: string
           customer_company: string | null
           customer_email: string | null
@@ -27,8 +78,10 @@ export type Database = {
           original_filename: string
           size_bytes: number
           storage_path: string
+          user_id: string | null
         }
         Insert: {
+          company_id?: string | null
           created_at?: string
           customer_company?: string | null
           customer_email?: string | null
@@ -40,8 +93,10 @@ export type Database = {
           original_filename: string
           size_bytes: number
           storage_path: string
+          user_id?: string | null
         }
         Update: {
+          company_id?: string | null
           created_at?: string
           customer_company?: string | null
           customer_email?: string | null
@@ -53,15 +108,59 @@ export type Database = {
           original_filename?: string
           size_bytes?: number
           storage_path?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "mobilfunk_uploads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          company_id: string
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_company_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
