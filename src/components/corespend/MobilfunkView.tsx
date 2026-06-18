@@ -120,6 +120,12 @@ function StateA() {
         },
       });
 
+      // Also persist into contracts table + corespend-documents bucket
+      const cRes = await uploadContract({ file, area: "Mobilfunk" });
+      if (!cRes.ok) {
+        toast.warning("Vertrag-Eintrag fehlgeschlagen", { description: cRes.error });
+      }
+
       toast.success("Strategische Mobilfunk-Analyse gestartet", {
         description: "Daten und Consultant-Briefing erfolgreich erfasst.",
       });
