@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
+export type CompanySnapshot = Record<string, any>;
+
 export const loadCompanyState = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -21,19 +23,27 @@ export const loadCompanyState = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
 
-    return {
+    const result: {
+      companyId: string;
+      companyName: string | null;
+      email: string | null;
+      fullName: string | null;
+      state: CompanySnapshot;
+      updatedAt: string | null;
+    } = {
       companyId: profile.company_id as string,
-      companyName: (profile as any).companies?.name as string | null,
+      companyName: ((profile as any).companies?.name as string | null) ?? null,
       email: profile.email,
       fullName: profile.full_name,
-      state: (row?.state ?? {}) as Record<string, unknown>,
+      state: (row?.state ?? {}) as CompanySnapshot,
       updatedAt: row?.updated_at ?? null,
     };
+    return result;
   });
 
 export const saveCompanyState = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ state: z.record(z.string(), z.unknown()) }).parse(data))
+  .inputValidator((data: unknown) => z.object({ state: z.record(z.string(), z.any()) }).parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: profile, error: pErr } = await supabase
@@ -45,7 +55,7 @@ export const saveCompanyState = createServerFn({ method: "POST" })
 
     const { error } = await supabase
       .from("company_state")
-      .upsert({ company_id: profile.company_id, state: data.state, updated_at: new Date().toISOString() });
+      .upsert({ company_id: profile.company_id, state: data.state as any, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
