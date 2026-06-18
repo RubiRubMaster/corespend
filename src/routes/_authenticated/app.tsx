@@ -3,7 +3,7 @@ import { CoreSpendProvider } from "@/lib/corespend-store";
 import { AppShell } from "@/components/corespend/AppShell";
 import { Dashboard } from "@/components/corespend/Dashboard";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
       { title: "CoreSpend · Plattform" },
