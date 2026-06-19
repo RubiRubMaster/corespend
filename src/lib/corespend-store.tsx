@@ -355,7 +355,11 @@ export function CoreSpendProvider({
   const [cockpitMetrics, setCockpitMetrics] = useState<CockpitMetrics>(s.cockpitMetrics ?? DEFAULT_COCKPIT);
   const [deadlines, setDeadlines] = useState<DeadlineItem[]>(s.deadlines ?? DEFAULT_DEADLINES);
   const [optimizations, setOptimizations] = useState<Optimizations>(s.optimizations ?? DEFAULT_OPTIMIZATIONS);
-  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(s.spendBreakdown ?? DEFAULT_SPEND_BREAKDOWN);
+  const [spendBreakdown, setSpendBreakdown] = useState<SpendAreaItem[]>(
+    (s.spendBreakdown ?? DEFAULT_SPEND_BREAKDOWN).map((it) =>
+      it.key === "saas" ? { ...it, label: "SaaS / AI" } : it,
+    ),
+  );
   const [riskItems, setRiskItems] = useState<RiskItem[]>(s.riskItems ?? DEFAULT_RISK_ITEMS);
   const [priceOverride, setPriceOverride] = useState<number | null>(s.priceOverride ?? null);
   const [spendOverride, setSpendOverride] = useState<number | null>(s.spendOverride ?? null);
