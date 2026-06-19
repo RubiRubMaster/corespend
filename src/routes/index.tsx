@@ -139,7 +139,7 @@ function Landing() {
           </span>
         </div>
         <p className="mt-8 text-[15px] text-muted-foreground/80 max-w-2xl mx-auto leading-relaxed tracking-wide">
-          Unternehmen teilen ihre IT-Vertragsdaten und erhalten durch den Abgleich mit hunderten Branchen-Benchmarks in Echtzeit volle Kostentransparenz. CoreSpend analysiert den gesamten IT-Stack, macht Vertragsbedingungen, Verlängerungen und Ausgaben zentral sichtbar und navigiert Unternehmen datenbasiert zu den Preisuntergrenzen für ihre zentralen IT-Ausgaben.
+          Erfassen Sie Ihren gesamten IT-Stack in einem zentralen Dashboard und erhalten Sie durch den automatisierten Abgleich mit Hunderten DACH-Benchmarks sofort <strong className="text-primary font-semibold">volle Transparenz</strong>. CoreSpend überwacht Vertragsbedingungen, Risiken und Geldflüsse <strong className="text-primary font-semibold">vollautomatisch</strong>, macht KPIs wie Total Tech Spend und Financial Exposure direkt sichtbar und deckt ungenutzte Ressourcen (No Usage) durch kontinuierliche Prüfung auf. Die Plattform übernimmt die <strong className="text-primary font-semibold">harte Arbeit</strong> und begleitet Sie mit smarten Verhandlungs-Guides und verifizierten Experten bis zu den echten Preisuntergrenzen, während Sie die absolute Kontrolle behalten – und <strong className="text-primary font-semibold">jederzeit in Minuten entscheidungsfähig</strong> sind.
         </p>
         <p className="mt-5 text-[14px] italic max-w-2xl mx-auto leading-relaxed tracking-wide bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
           "It's like having your own dedicated IT procurement, expense, and vendor management department—without the cost of building one."
