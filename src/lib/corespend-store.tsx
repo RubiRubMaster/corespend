@@ -301,6 +301,7 @@ export type CoreSpendSnapshot = {
   coreStartStatuses?: CoreStartStatuses;
   timeMode?: TimeMode;
   consultantBriefing?: string;
+  tickerOverrides?: (Partial<TickerItem> | null)[];
 };
 
 export function CoreSpendProvider({
