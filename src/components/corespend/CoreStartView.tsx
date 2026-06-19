@@ -15,7 +15,7 @@ type Tile = {
 const TILES: Tile[] = [
   { key: "telco", title: "Telekommunikation", emoji: "📞", Icon: Phone, subs: ["Mobilfunk", "Festnetz", "Daten"] },
   { key: "office", title: "Office Suites", emoji: "💻", Icon: Laptop, subs: ["Microsoft 365", "Weitere folgen…"] },
-  { key: "saas", title: "SaaS", emoji: "☁️", Icon: Cloud, subs: ["Plattformen & Lizenzen"] },
+  { key: "saas", title: "SaaS / AI", emoji: "☁️", Icon: Cloud, subs: ["Plattformen & Lizenzen"] },
   { key: "cloud", title: "Cloud", emoji: "🌐", Icon: Globe, subs: ["AWS", "Azure", "GCP", "Weitere folgen…"] },
   { key: "hardware", title: "Hardware", emoji: "🔌", Icon: Cable, subs: ["Smartphones & Tablets", "Workplace (Notebooks, PCs, Peripherie)"] },
 ];
