@@ -146,11 +146,36 @@ export type SpendAreaItem = {
   yoyPercent: number;
 };
 const DEFAULT_SPEND_BREAKDOWN: SpendAreaItem[] = [
-  { key: "telco", label: "Telekommunikation", emoji: "📞", monthly: 7820, yoyPercent: 8.4 },
-  { key: "office", label: "Office Suites", emoji: "💻", monthly: 3450, yoyPercent: 4.1 },
-  { key: "saas", label: "SaaS Plattformen", emoji: "☁️", monthly: 3200, yoyPercent: 12.5 },
-  { key: "cloud", label: "Cloud Infrastruktur", emoji: "🌐", monthly: 2700, yoyPercent: 9.8 },
-  { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", monthly: 1250, yoyPercent: -2.3 },
+  { key: "cloud", label: "Cloud Infrastruktur", emoji: "🌐", monthly: 14500, yoyPercent: 9.8 },
+  { key: "saas", label: "SaaS / AI", emoji: "☁️", monthly: 9600, yoyPercent: 12.5 },
+  { key: "telco", label: "Telekommunikation", emoji: "📞", monthly: 4800, yoyPercent: 8.4 },
+  { key: "office", label: "Office Suites", emoji: "💻", monthly: 2240, yoyPercent: 4.1 },
+  { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", monthly: 960, yoyPercent: -2.3 },
+];
+
+/** Top 4 Renewals / Sourcing Pipeline (statisch, demo). */
+export type RenewalStatus = "In Analyse" | "Strategie bereit" | "In Verhandlung" | "Erfolgreich optimiert";
+export type RenewalItem = {
+  category: string;
+  vendor: string;
+  due: string;
+  dueDays: number;
+  status: RenewalStatus;
+  volume?: number;
+};
+export const DEFAULT_RENEWALS: RenewalItem[] = [
+  { category: "Telekommunikation", vendor: "Deutsche Telekom", due: "In 30 Tagen", dueDays: 30, status: "In Verhandlung", volume: 312000 },
+  { category: "SaaS / AI", vendor: "Salesforce", due: "In 90 Tagen", dueDays: 90, status: "Strategie bereit", volume: 184000 },
+  { category: "Cloud", vendor: "AWS", due: "In 150 Tagen", dueDays: 150, status: "In Analyse", volume: 245000 },
+  { category: "Office Suites", vendor: "Microsoft 365", due: "Abgeschlossen", dueDays: -1, status: "Erfolgreich optimiert", volume: 198000 },
+];
+export const ALL_RENEWALS: RenewalItem[] = [
+  ...DEFAULT_RENEWALS,
+  { category: "SaaS / AI", vendor: "HubSpot", due: "In 210 Tagen", dueDays: 210, status: "In Analyse", volume: 64000 },
+  { category: "Cloud", vendor: "Microsoft Azure", due: "In 240 Tagen", dueDays: 240, status: "In Analyse", volume: 128000 },
+  { category: "SaaS / AI", vendor: "Adobe Creative Cloud", due: "In 60 Tagen", dueDays: 60, status: "Strategie bereit", volume: 42000 },
+  { category: "Hardware", vendor: "Dell Leasing", due: "In 320 Tagen", dueDays: 320, status: "In Analyse", volume: 78000 },
+  { category: "Telekommunikation", vendor: "Vodafone Festnetz", due: "Abgeschlossen", dueDays: -1, status: "Erfolgreich optimiert", volume: 54000 },
 ];
 
 /** Risk-Exposure rows (Detail page „Vertragsrisiko"). */
