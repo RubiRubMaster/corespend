@@ -174,7 +174,7 @@ export function ManagementCockpit() {
       </section>
 
       {/* CTA Strip · 2 actions */}
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="grid gap-3 md:grid-cols-2">
         <CtaTile
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
