@@ -47,19 +47,19 @@ const BADGES = [
 const WHAT_ITEMS = [
   {
     title: "Glasklare Transparenz",
-    text: "Sofortige Analyse aller Verträge, Lizenzen und Mobilfunkflotten.",
+    text: "Sofortige Erfassung und Analyse aller Rahmenvertragsbedingungen, Fristen und Kostenflüsse auf einem Dashboard. Wichtige KPIs wie der Total Tech Spend werden als konsolidiertes Echtzeit-Budget sofort sichtbar.",
   },
   {
-    title: "Ungesehene Potenziale",
-    text: 'Automatisierte Identifikation von Überzahlungen, ungenutzten Lizenzen ("Karteileichen") und massiven Benchmark-Abweichungen.',
+    title: "Ungesehene Potenzial-Analyse",
+    text: "Automatisiertes Aufdecken von Überzahlungen, verdeckten Vertragsrisiken und ungenutzten Ressourcen (No Usage) durch die kontinuierliche Prüfung von Rechnungen und den Abgleich mit Hunderten DACH-Benchmarks.",
   },
   {
-    title: "CFO-Ready Insights",
-    text: "Managementtaugliche Berichte, direkt nutzbar für die interne Budgetfreigabe.",
+    title: "CFO- & CIO-Ready Insights",
+    text: "Managementtaugliche C-Level-Reports und eine genaue Analyse der Financial Exposure (vertragliche Restrisiken), direkt nutzbar für strategische Entscheidungen und die interne Budgetfreigabe in wenigen Minuten.",
   },
   {
-    title: "Smarte Verhandlungs-Unterstützung",
-    text: "Digitale Vorbereitung und Begleitung von Anbieter-Verhandlungen für das absolute Marktoptimum.",
+    title: "Smarte Verhandlungs-Execution",
+    text: "Maximale Einsparungen durch digitale Verhandlungs-Guides, Best-Practice-Szenarien und die Bewertung von Nebenabreden durch den AI-Consultant – bei Bedarf ergänzt durch verifizierte Verhandlungsexperten per Klick.",
   },
 ];
 
@@ -208,7 +208,7 @@ function Landing() {
         <div className="text-center mb-12">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">The What</div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Eine KI-Plattform, die dein gesamtes IT-Vertragsportfolio vollautomatisch durchleuchtet.
+            Eine KI-Plattform, die Ihr gesamtes IT-Vertragsportfolio vollautomatisch durchleuchtet.
           </h2>
           <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Wir haben CoreSpend für IT- und Einkaufsverantwortliche entwickelt, die Transparenz,
