@@ -419,6 +419,21 @@ export function CoreSpendProvider({
 
   const resetStrategy = useCallback(() => setStrategy(DEFAULT_STRATEGY), []);
 
+  const updateTickerItem = useCallback((index: number, patch: Partial<TickerItem>) => {
+    setTickerOverrides((prev) => {
+      const next = [...prev];
+      next[index] = { ...(next[index] ?? {}), ...patch };
+      return next;
+    });
+  }, []);
+  const resetTickerItem = useCallback((index: number) => {
+    setTickerOverrides((prev) => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+  }, []);
+
   const resetAll = useCallback(() => {
     setMobilfunkStatus("idle");
     setMobilfunkFile(undefined);
