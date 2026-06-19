@@ -176,7 +176,7 @@ export function ManagementCockpit() {
           title="C-Level Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
           onClick={live ? () => generateCLevelReport({ cockpit: m, ticker: sortedTicker, yearly }) : undefined}
-          tone="default"
+          tone="success"
         />
       </section>
     </div>
