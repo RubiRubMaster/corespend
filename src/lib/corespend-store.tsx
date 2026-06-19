@@ -366,6 +366,8 @@ export function CoreSpendProvider({
   const [timeMode, setTimeMode] = useState<TimeMode>(s.timeMode ?? "yearly");
   const [consultantBriefing, setConsultantBriefing] = useState<string>(s.consultantBriefing ?? "");
   const [tickerOverrides, setTickerOverrides] = useState<(Partial<TickerItem> | null)[]>(s.tickerOverrides ?? [null, null, null, null]);
+  const [basePriceOverride, setBasePriceOverride] = useState<number | null>(s.basePriceOverride ?? null);
+  const [discountPerAreaOverride, setDiscountPerAreaOverride] = useState<number | null>(s.discountPerAreaOverride ?? null);
 
   // Debounced persistence — fires whenever any persistable state changes
   const persistRef = useRef(onPersist);
