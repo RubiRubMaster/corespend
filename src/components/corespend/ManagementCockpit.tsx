@@ -140,12 +140,12 @@ export function ManagementCockpit() {
       {/* Management Briefing */}
       <section
         className={cn(
-          "rounded-xl border bg-background/60 backdrop-blur p-5",
+          "rounded-xl border bg-background/60 backdrop-blur p-4",
           live ? "border-border" : "border-border opacity-70",
         )}
       >
-        <div className="flex items-center gap-2 pb-3 mb-3 border-b border-border">
-          <span className="text-base">📊</span>
+        <div className="flex items-center gap-2 pb-2 mb-2 border-b border-border">
+          <span className="text-sm">📊</span>
           <span className="text-sm font-semibold tracking-tight">Management Briefing</span>
         </div>
         <ul className="flex flex-col divide-y divide-border/60">
@@ -157,7 +157,7 @@ export function ManagementCockpit() {
                   onClick={interactive ? () => navTo(t.target) : undefined}
                   disabled={!interactive}
                   className={cn(
-                    "w-full flex items-center gap-3 py-2.5 text-left text-[13px] tabular-nums",
+                    "w-full flex items-center gap-3 py-2 text-left text-[12px] tabular-nums",
                     interactive && "hover:text-primary transition-colors cursor-pointer",
                     !live && "text-muted-foreground/70",
                   )}
