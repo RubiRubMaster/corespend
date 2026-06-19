@@ -394,7 +394,7 @@ function SpendDistribution({
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "rounded-xl border bg-background/60 backdrop-blur p-4 text-left transition-all flex flex-col gap-3",
+        "rounded-xl border bg-background/60 backdrop-blur p-4 text-left transition-all flex flex-col gap-3 h-full",
         live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 cursor-not-allowed",
       )}
     >
@@ -419,16 +419,12 @@ function SpendDistribution({
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
-        {items.map((it) => {
-          const pct = total > 0 ? Math.round((it.monthly / total) * 100) : 0;
-          return (
-            <span key={it.key} className="flex items-center gap-1.5 tabular-nums">
-              <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
-              <span className="text-foreground/80">{it.label}</span>
-              <span className="text-muted-foreground">{pct}%</span>
-            </span>
-          );
-        })}
+        {items.map((it) => (
+          <span key={it.key} className="flex items-center gap-1.5">
+            <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
+            <span className="text-foreground/80">{it.label}</span>
+          </span>
+        ))}
       </div>
     </button>
   );
@@ -464,34 +460,27 @@ function RenewalsBox({ live }: { live: boolean }) {
         <span className="text-sm font-semibold tracking-tight">Sourcing-Status</span>
         <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground shrink-0" />
       </div>
-      <div className="relative pl-4">
-        {/* Vertical line */}
-        <div className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-border" />
-        <ul className="flex flex-col gap-1">
-          {items.map((r) => (
-            <li key={r.vendor} className="relative flex items-start gap-3 py-1">
-              {/* Dot on timeline */}
-              <span className={cn(
-                "absolute left-[-11px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-background shrink-0",
-                RENEWAL_DOT[r.status]
-              )} />
-              <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="text-[12px] font-medium text-foreground/90 truncate leading-tight">{r.vendor}</div>
-                  <div className="text-[10px] text-muted-foreground truncate leading-tight">{r.category} · {r.due}</div>
-                </div>
-                <span className={cn("text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border whitespace-nowrap shrink-0", RENEWAL_BADGE[r.status])}>
-                  {r.status}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <div className="grid grid-cols-2 gap-2 flex-1">
+        {items.map((r) => (
+          <div
+            key={r.vendor}
+            className="rounded-lg border border-border/60 bg-background/40 p-2.5 flex flex-col justify-between gap-1.5"
+          >
+            <div className="text-[11px] font-medium text-foreground/90 truncate leading-tight">{r.vendor}</div>
+            <div className="text-[10px] text-muted-foreground truncate">{r.category}</div>
+            <div className="flex items-center justify-between gap-1">
+              <span className={cn("text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border whitespace-nowrap", RENEWAL_BADGE[r.status])}>
+                {r.status}
+              </span>
+              <span className="text-[9px] text-muted-foreground shrink-0">{r.due}</span>
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );
   const cls = cn(
-    "rounded-xl border bg-background/60 backdrop-blur p-4 flex flex-col gap-3 transition-all",
+    "rounded-xl border bg-background/60 backdrop-blur p-4 flex flex-col gap-3 transition-all h-full",
     live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70",
   );
   if (!live) return <div className={cls}>{content}</div>;
