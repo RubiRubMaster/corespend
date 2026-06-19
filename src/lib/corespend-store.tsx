@@ -488,6 +488,8 @@ export function CoreSpendProvider({
     setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
     setConsultantBriefing("");
     setTickerOverrides([null, null, null, null]);
+    setBasePriceOverride(null);
+    setDiscountPerAreaOverride(null);
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
