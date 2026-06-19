@@ -43,8 +43,8 @@ export function ManagementCockpit() {
         </div>
       </header>
 
-      {/* Unified compact grid · 3x2 · all boxes same weight */}
-      <section className="grid gap-3 lg:grid-cols-3">
+      {/* Top KPIs · unchanged */}
+      <section className="grid gap-3 lg:grid-cols-4">
         <KpiCard
           label={spendLabel}
           value={live ? `${formatEUR(spendValue)}` : "—"}
@@ -80,13 +80,14 @@ export function ManagementCockpit() {
           locked={!live}
           onClick={live ? goRisk : undefined}
         />
+      </section>
 
-        <SpendShareBar
-          areas={spendBreakdown}
-          live={live}
-          onOpen={live ? goSpend : undefined}
-        />
-        <NegotiationsCard live={live} />
+      {/* Slim row · halbe Höhe der KPIs */}
+      <section className="grid gap-3 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <SpendShareBar areas={spendBreakdown} live={live} onOpen={live ? goSpend : undefined} />
+        </div>
+        <NegotiationsButton live={live} />
       </section>
 
       {/* Management Briefing */}
