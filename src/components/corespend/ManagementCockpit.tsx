@@ -460,20 +460,16 @@ function RenewalsBox({ live }: { live: boolean }) {
         <span className="text-sm font-semibold tracking-tight">Sourcing-Status</span>
         <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground shrink-0" />
       </div>
-      <div className="grid grid-cols-2 gap-2 flex-1">
+      <div className="flex gap-2 flex-1 items-stretch">
         {items.map((r) => (
           <div
             key={r.vendor}
-            className="rounded-lg border border-border/60 bg-background/40 p-2.5 flex flex-col justify-between gap-1.5"
+            className="flex-1 rounded-lg border border-border/60 bg-background/40 p-2 flex flex-col items-center justify-center gap-1.5 text-center min-w-0"
           >
-            <div className="text-[11px] font-medium text-foreground/90 truncate leading-tight">{r.vendor}</div>
-            <div className="text-[10px] text-muted-foreground truncate">{r.category}</div>
-            <div className="flex items-center justify-between gap-1">
-              <span className={cn("text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border whitespace-nowrap", RENEWAL_BADGE[r.status])}>
-                {r.status}
-              </span>
-              <span className="text-[9px] text-muted-foreground shrink-0">{r.due}</span>
-            </div>
+            <div className="text-[11px] font-medium text-foreground/90 truncate leading-tight w-full">{r.vendor}</div>
+            <span className={cn("text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border whitespace-nowrap", RENEWAL_BADGE[r.status])}>
+              {r.status}
+            </span>
           </div>
         ))}
       </div>
