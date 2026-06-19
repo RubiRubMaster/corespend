@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem, type SpendAreaItem } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { AlertCircle, Clock, CheckCircle, ChevronDown } from "lucide-react";
-import {
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from "recharts";
+import { AlertCircle, Clock, CheckCircle, ArrowRight } from "lucide-react";
+import { NEGOTIATIONS, STATUS_META } from "@/lib/negotiations";
 
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
