@@ -173,8 +173,9 @@ export function ManagementCockpit() {
         />
         <CtaTile
           emoji="📄"
-          title="Management Report generieren"
+          title="C-Level Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
+          onClick={live ? () => generateCLevelReport({ cockpit: m, ticker: sortedTicker, yearly }) : undefined}
           tone="default"
         />
       </section>
