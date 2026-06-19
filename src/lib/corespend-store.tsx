@@ -501,22 +501,22 @@ export function CoreSpendProvider({
     return [
       {
         tone: "danger",
-        text: `Unnötige Kapitalbindung: ${formatEUR(noUsageYearly)} / Jahr durch inaktive und ungenutzte Mobilfunk-Assets identifiziert (Sofortmaßnahme empfohlen).`,
+        text: `Ungenutzte Ressourcen (No Usage): Unnötige Kapitalbindung von ${formatEUR(noUsageYearly)} / Jahr im Mobilfunk-Stack identifiziert. Sofortmaßnahme verfügbar.`,
         target: "optimizations",
       },
       {
         tone: "warning",
-        text: `Strategisches Zeitfenster: Kommerzielles Verhandlungsfenster für Telekommunikation geöffnet (Vertragslaufzeit endet in ${months} Monaten).`,
+        text: `Strategisches Verhandlungsfenster: Kündigungs- und Optimierungsfrist für Telekommunikation aktiv (Vertragslaufzeit endet in ${months} Monaten).`,
         target: "deadlines",
       },
       {
         tone: "success",
-        text: `Sourcing-Hebel aktiv: Dein durchschnittlicher Preis pro User (ARPU) liegt 18% über dem DACH-Marktdurchschnitt. Einsparungspotenzial von ${formatEUR(derivedSavings)} freigeschaltet.`,
+        text: `Benchmark-Abweichung erkannt: Der durchschnittliche Preis pro User (ARPU) liegt 18% über dem DACH-Marktdurchschnitt. Einsparungspotenzial von ${formatEUR(derivedSavings)} verifiziert.`,
         target: "mobilfunk",
       },
       {
         tone: "success",
-        text: "Daten-Validierung abgeschlossen: Bestehender Mobilfunk-Stack erfolgreich anonymisiert und gegen 1.200+ reale B2B-Vertragsabschlüsse gematcht.",
+        text: "Automatisierter Abgleich abgeschlossen: IT-Stack erfolgreich anonymisiert und gegen Hunderte verifizierte DACH-Benchmarks gematcht.",
         target: "mobilfunk",
       },
     ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
