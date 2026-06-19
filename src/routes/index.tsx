@@ -172,7 +172,7 @@ function Landing() {
         <div className="mt-14">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">DAS CORESPEND-PRINZIP</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Drei Schritte zu absoluter Kostentransparenz
+            Drei Schritte zu absoluter Transparenz und Kontrolle
           </h2>
         </div>
 
