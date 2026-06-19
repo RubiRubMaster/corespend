@@ -1,4 +1,4 @@
-import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
 
@@ -173,8 +173,9 @@ export function ManagementCockpit() {
         />
         <CtaTile
           emoji="📄"
-          title="Management Report generieren"
+          title="C-Level Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
+          onClick={live ? () => generateCLevelReport({ cockpit: m, ticker: sortedTicker, yearly }) : undefined}
           tone="default"
         />
       </section>
@@ -285,4 +286,65 @@ function CtaTile({
       </div>
     </button>
   );
+}
+
+function generateCLevelReport({
+  cockpit, ticker, yearly,
+}: {
+  cockpit: CockpitView;
+  ticker: (TickerItem & { originalIndex: number })[];
+  yearly: boolean;
+}) {
+  const unit = yearly ? "Jahr" : "Monat";
+  const spendValue = yearly ? cockpit.spendMonthly * 12 : cockpit.spendMonthly;
+  const savingsValue = yearly ? cockpit.savingsYearly : Math.floor(cockpit.savingsYearly / 12);
+  const today = new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" });
+  const toneLabel: Record<TickerTone, string> = { danger: "Kritisch", warning: "Beobachten", success: "Erfolg" };
+
+  const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"/>
+<title>CoreSpend · C-Level Report · ${today}</title>
+<style>
+  *{box-sizing:border-box} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#111;margin:0;padding:48px;line-height:1.5}
+  h1{font-size:28px;margin:0 0 4px;letter-spacing:-0.02em}
+  .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#666}
+  .meta{color:#666;font-size:13px;margin-bottom:32px}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.15em;color:#444;border-bottom:1px solid #ddd;padding-bottom:6px;margin:32px 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .kpi{border:1px solid #e5e5e5;border-radius:8px;padding:16px}
+  .kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:#666;margin-bottom:8px}
+  .kpi .v{font-size:24px;font-weight:600;letter-spacing:-0.01em}
+  .kpi .s{font-size:12px;color:#666;margin-top:6px}
+  ul{padding:0;list-style:none;margin:0}
+  li{border-bottom:1px solid #eee;padding:12px 0;font-size:13px;display:flex;gap:12px}
+  .tag{font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:99px;flex-shrink:0;height:fit-content}
+  .danger{background:#fee;color:#a00} .warning{background:#fef3c7;color:#92400e} .success{background:#dcfce7;color:#166534}
+  .footer{margin-top:48px;padding-top:16px;border-top:1px solid #ddd;font-size:11px;color:#999;text-align:center}
+  @media print{body{padding:24px}}
+</style></head><body>
+<div class="kicker">CoreSpend · Executive Briefing</div>
+<h1>C-Level Report</h1>
+<div class="meta">Stand: ${today} · Zeitraum: pro ${unit}</div>
+
+<h2>Kennzahlen</h2>
+<div class="grid">
+  <div class="kpi"><div class="l">Validierte IT-Ausgaben</div><div class="v">${formatEUR(spendValue)}</div><div class="s">pro ${unit} · ▲ ${cockpit.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr</div></div>
+  <div class="kpi"><div class="l">Identifiziertes Sparpotenzial</div><div class="v">${formatEUR(savingsValue)}</div><div class="s">pro ${unit} · ${cockpit.savingsPercent.toFixed(1).replace(".", ",")} % des Stacks</div></div>
+  <div class="kpi"><div class="l">Kritische Fristen</div><div class="v">${cockpit.criticalDeadlines}</div><div class="s">in den nächsten ${cockpit.deadlineWindowDays} Tagen</div></div>
+  <div class="kpi"><div class="l">Vertragsrisiko</div><div class="v">${formatEUR(cockpit.riskExposure)}</div><div class="s">Volumen mit Handlungsbedarf</div></div>
+  <div class="kpi"><div class="l">Realisierte Einsparungen</div><div class="v">${formatEUR(cockpit.impactRealized)}</div><div class="s">CoreSpend Impact bis dato</div></div>
+  <div class="kpi"><div class="l">ROI</div><div class="v">${cockpit.roi.toFixed(1).replace(".", ",")}x</div><div class="s">je investiertem Euro</div></div>
+</div>
+
+<h2>Management Briefing</h2>
+<ul>
+${ticker.map((t) => `<li><span class="tag ${t.tone}">${toneLabel[t.tone]}</span><span>${t.text}</span></li>`).join("")}
+</ul>
+
+<div class="footer">CoreSpend · Vertraulich · Nur für den internen Gebrauch</div>
+<script>window.onload=()=>{setTimeout(()=>window.print(),300)}</script>
+</body></html>`;
+
+  const w = window.open("", "_blank");
+  if (!w) return;
+  w.document.open(); w.document.write(html); w.document.close();
 }

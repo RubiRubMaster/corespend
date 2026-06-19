@@ -274,6 +274,9 @@ type Ctx = {
   setTimeMode: (m: TimeMode) => void;
   consultantBriefing: string;
   setConsultantBriefing: (s: string) => void;
+  tickerOverrides: (Partial<TickerItem> | null)[];
+  updateTickerItem: (index: number, patch: Partial<TickerItem>) => void;
+  resetTickerItem: (index: number) => void;
   resetAll: () => void;
 };
 
@@ -298,6 +301,7 @@ export type CoreSpendSnapshot = {
   coreStartStatuses?: CoreStartStatuses;
   timeMode?: TimeMode;
   consultantBriefing?: string;
+  tickerOverrides?: (Partial<TickerItem> | null)[];
 };
 
 export function CoreSpendProvider({
@@ -328,6 +332,7 @@ export function CoreSpendProvider({
   const [coreStartStatuses, setCoreStartStatuses] = useState<CoreStartStatuses>(s.coreStartStatuses ?? DEFAULT_CORESTART_STATUSES);
   const [timeMode, setTimeMode] = useState<TimeMode>(s.timeMode ?? "yearly");
   const [consultantBriefing, setConsultantBriefing] = useState<string>(s.consultantBriefing ?? "");
+  const [tickerOverrides, setTickerOverrides] = useState<(Partial<TickerItem> | null)[]>(s.tickerOverrides ?? [null, null, null, null]);
 
   // Debounced persistence — fires whenever any persistable state changes
   const persistRef = useRef(onPersist);
@@ -340,14 +345,14 @@ export function CoreSpendProvider({
       mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
-      strategy, coreStartStatuses, timeMode, consultantBriefing,
+      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
     };
     const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
     return () => clearTimeout(t);
   }, [mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
-      strategy, coreStartStatuses, timeMode, consultantBriefing]);
+      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
@@ -414,6 +419,21 @@ export function CoreSpendProvider({
 
   const resetStrategy = useCallback(() => setStrategy(DEFAULT_STRATEGY), []);
 
+  const updateTickerItem = useCallback((index: number, patch: Partial<TickerItem>) => {
+    setTickerOverrides((prev) => {
+      const next = [...prev];
+      next[index] = { ...(next[index] ?? {}), ...patch };
+      return next;
+    });
+  }, []);
+  const resetTickerItem = useCallback((index: number) => {
+    setTickerOverrides((prev) => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+  }, []);
+
   const resetAll = useCallback(() => {
     setMobilfunkStatus("idle");
     setMobilfunkFile(undefined);
@@ -430,6 +450,7 @@ export function CoreSpendProvider({
     setSavingsOverride(null);
     setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
     setConsultantBriefing("");
+    setTickerOverrides([null, null, null, null]);
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
@@ -498,8 +519,8 @@ export function CoreSpendProvider({
         text: "Daten-Validierung abgeschlossen: Bestehender Mobilfunk-Stack erfolgreich anonymisiert und gegen 1.200+ reale B2B-Vertragsabschlüsse gematcht.",
         target: "mobilfunk",
       },
-    ];
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays]);
+    ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
 
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
     const areas = mobilfunkLive ? 1 : 0;
@@ -572,6 +593,9 @@ export function CoreSpendProvider({
     setSavingsOverride,
     consultantBriefing,
     setConsultantBriefing,
+    tickerOverrides,
+    updateTickerItem,
+    resetTickerItem,
     resetAll,
   };
 

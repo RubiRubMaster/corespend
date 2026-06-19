@@ -14,6 +14,10 @@ export function AdminPanel() {
     effectiveSpendMonthly,
     effectiveSavingsYearly,
     consultantBriefing,
+    tickerItems,
+    tickerOverrides,
+    updateTickerItem,
+    resetTickerItem,
     resetAll,
   } = useCoreSpend();
 
@@ -87,6 +91,43 @@ export function AdminPanel() {
                 Noch keine Eingabe — wird sichtbar, sobald der Kunde im Mobilfunk-Onboarding das Consultant-Textfeld ausgefüllt hat.
               </div>
             )}
+          </div>
+
+          <div className="md:col-span-4 rounded-lg border border-border bg-background/40 p-3 space-y-2">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              📊 Management Briefing · Texte anpassen
+            </div>
+            {tickerItems.map((t, i) => {
+              const overridden = !!tickerOverrides[i];
+              return (
+                <div key={i} className="flex items-start gap-2">
+                  <select
+                    value={t.tone}
+                    onChange={(e) => updateTickerItem(i, { tone: e.target.value as typeof t.tone })}
+                    className="bg-background/60 border border-border rounded px-1.5 py-1 text-[11px] text-foreground focus:outline-none"
+                  >
+                    <option value="danger">danger</option>
+                    <option value="warning">warning</option>
+                    <option value="success">success</option>
+                  </select>
+                  <textarea
+                    value={t.text}
+                    onChange={(e) => updateTickerItem(i, { text: e.target.value })}
+                    rows={2}
+                    className="flex-1 bg-background/60 border border-border rounded px-2 py-1 text-[11px] text-foreground focus:outline-none resize-y"
+                  />
+                  {overridden && (
+                    <button
+                      onClick={() => resetTickerItem(i)}
+                      className="text-[10px] text-muted-foreground hover:text-destructive shrink-0 mt-1"
+                      title="Auf Standardtext zurücksetzen"
+                    >
+                      ↺
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
