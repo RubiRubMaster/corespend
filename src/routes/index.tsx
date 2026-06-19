@@ -67,27 +67,33 @@ const HOW_PILLARS = [
   {
     n: "01",
     title: "Infrastruktur-Intelligenz",
-    text: "Intelligente Algorithmen scannen reale Nutzungsdaten und matchen sie mit vertraglichen Pflichten.",
+    text: "Intelligente Algorithmen scannen reale Nutzungsdaten sowie monatliche Rechnungen und decken ungenutzte Ressourcen (No Usage) über den gesamten IT-Stack hinweg sofort auf.",
   },
   {
     n: "02",
     title: "Automatisierte Vertrags-Analyse",
-    text: "KI-gestützte Auswertung von Rahmenverträgen, Kündigungsfristen, Zahlungszielen und Sonderklauseln.",
+    text: "KI-gestützte Auswertung von Rahmenverträgen, Fristen und Geldflüssen. Strategische KPIs wie Total Tech Spend und Financial Exposure werden vollautomatisch ermittelt und auf dem Dashboard visualisiert.",
   },
   {
     n: "03",
     title: "Live-Benchmark-Daten",
-    text: "Ein kollaboratives, anonymisiertes DACH-Netzwerk liefert echte Marktpreise vergleichbarer Unternehmen in Echtzeit.",
+    text: "Ein kollaboratives, anonymisiertes DACH-Netzwerk aus Tausenden von realen Geschäften liefert echte Markt- und Spitzenpreise vergleichbarer Unternehmen in Echtzeit.",
   },
   {
     n: "04",
-    title: "Autonome Verhandlungs-Agenten",
-    text: "Digitale Assistenten generieren maßgeschneiderte Argumentationsketten und Drohkulissen für den Einkauf.",
+    title: "Digitale Verhandlungs-Guides & AI-Consultant",
+    text: "Generierung maßgeschneiderter Argumentationsketten, Best-Practice-Szenarien und echter Preisuntergrenzen. Der integrierte AI-Consultant bewertet zusätzlich individuelle Nebenabreden.",
   },
   {
     n: "05",
     title: "Zertifiziertes Experten-Netzwerk",
-    text: "Jede automatisierte Analyse wird von verifizierten IT-Einkaufsexperten auditiert — für 100% Präzision und Compliance.",
+    text: "Aktivieren Sie per Klick verifizierte CoreSpend-Verhandlungs­experten. Sie steigen ohne teure Vorphasen direkt auf Augenhöhe am Verhandlungstisch ein, um den maximalen Erfolg zu erzielen.",
+  },
+  {
+    n: "06",
+    title: "Zentrale IT-Governance & C-Level-Control",
+    text: "Ein digitales Kontroll-Cockpit bündelt sämtliche IT-Ausgaben, Vertragsrisiken und Freigaben an einem Ort. Automatisierte Compliance-Checks reduzieren manuelle Abstimmungen auf ein Minimum, wodurch Sie die absolute Hoheit über das gesamte Portfolio behalten.",
+    comingSoon: true,
   },
 ];
 
