@@ -271,13 +271,12 @@ function Landing() {
       {/* Closing CTA */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
         <div className="glass-card p-8 md:p-10 text-center">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Dein Ergebnis</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">IHR ERGEBNIS</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Volle Kostentransparenz und datenbasierte Hebel für deine nächste Verhandlung.
+            Maximale Einsparungen und die absolute Hoheit über Ihren gesamten IT-Stack.
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-            CoreSpend bricht das intransparente B2B IT-Einkaufssystem und stellt IT-Leiter
-            und Einkaufsverantwortliche endgültig auf Augenhöhe mit Anbietern.
+            Überlassen Sie der KI und verifizierten Experten die harte Arbeit. Steuern Sie Compliance, Fristen und Budgets zentral über ein einziges Dashboard und sichern Sie sich dauerhaft das absolute Marktoptimum.
           </p>
           <Link
             to="/app"
