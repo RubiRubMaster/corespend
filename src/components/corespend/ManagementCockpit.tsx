@@ -445,15 +445,8 @@ const RENEWAL_BADGE: Record<RenewalStatus, string> = {
 
 function RenewalsBox({ live }: { live: boolean }) {
   const items = DEFAULT_RENEWALS;
-  return (
-    <Link
-      to="/verhandlungen"
-      disabled={!live}
-      className={cn(
-        "rounded-xl border bg-background/60 backdrop-blur p-5 flex flex-col gap-3 transition-all",
-        live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 pointer-events-none",
-      )}
-    >
+  const content = (
+    <>
       <div className="flex items-center gap-2 border-b border-border pb-3">
         <span className="text-base">🤝</span>
         <span className="text-sm font-semibold tracking-tight">Sourcing-Status · Top 4 Verhandlungen</span>
@@ -472,7 +465,13 @@ function RenewalsBox({ live }: { live: boolean }) {
           </li>
         ))}
       </ul>
-    </Link>
+    </>
   );
+  const cls = cn(
+    "rounded-xl border bg-background/60 backdrop-blur p-5 flex flex-col gap-3 transition-all",
+    live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70",
+  );
+  if (!live) return <div className={cls}>{content}</div>;
+  return <Link to="/verhandlungen" className={cls}>{content}</Link>;
 }
 
