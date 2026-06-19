@@ -25,7 +25,7 @@ export function ManagementCockpit() {
     .sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Header */}
       <header className="flex items-end justify-between flex-wrap gap-4">
         <div>
