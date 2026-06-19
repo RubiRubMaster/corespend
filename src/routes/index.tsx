@@ -47,19 +47,19 @@ const BADGES = [
 const WHAT_ITEMS = [
   {
     title: "Glasklare Transparenz",
-    text: "Sofortige Analyse aller Verträge, Lizenzen und Mobilfunkflotten.",
+    text: "Sofortige Erfassung und Analyse aller Rahmenvertragsbedingungen, Fristen und Kostenflüsse auf einem Dashboard. Wichtige KPIs wie der Total Tech Spend werden als konsolidiertes Echtzeit-Budget sofort sichtbar.",
   },
   {
-    title: "Ungesehene Potenziale",
-    text: 'Automatisierte Identifikation von Überzahlungen, ungenutzten Lizenzen ("Karteileichen") und massiven Benchmark-Abweichungen.',
+    title: "Ungesehene Potenzial-Analyse",
+    text: "Automatisiertes Aufdecken von Überzahlungen, verdeckten Vertragsrisiken und ungenutzten Ressourcen (No Usage) durch die kontinuierliche Prüfung von Rechnungen und den Abgleich mit Hunderten DACH-Benchmarks.",
   },
   {
-    title: "CFO-Ready Insights",
-    text: "Managementtaugliche Berichte, direkt nutzbar für die interne Budgetfreigabe.",
+    title: "CFO- & CIO-Ready Insights",
+    text: "Managementtaugliche C-Level-Reports und eine genaue Analyse der Financial Exposure (vertragliche Restrisiken), direkt nutzbar für strategische Entscheidungen und die interne Budgetfreigabe in wenigen Minuten.",
   },
   {
-    title: "Smarte Verhandlungs-Unterstützung",
-    text: "Digitale Vorbereitung und Begleitung von Anbieter-Verhandlungen für das absolute Marktoptimum.",
+    title: "Smarte Verhandlungs-Execution",
+    text: "Maximale Einsparungen durch digitale Verhandlungs-Guides, Best-Practice-Szenarien und die Bewertung von Nebenabreden durch den AI-Consultant – bei Bedarf ergänzt durch verifizierte Verhandlungsexperten per Klick.",
   },
 ];
 
