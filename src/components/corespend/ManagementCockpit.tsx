@@ -1,6 +1,7 @@
-import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, DEFAULT_RENEWALS, type TickerTone, type ActiveView, type CockpitView, type TickerItem, type RenewalStatus } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { AlertCircle, Clock, CheckCircle } from "lucide-react";
+import { AlertCircle, Clock, CheckCircle, ChevronRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
