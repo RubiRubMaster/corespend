@@ -208,7 +208,7 @@ function Landing() {
         <div className="text-center mb-12">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">The What</div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Eine KI-Plattform, die dein gesamtes IT-Vertragsportfolio vollautomatisch durchleuchtet.
+            Eine KI-Plattform, die Ihr gesamtes IT-Vertragsportfolio vollautomatisch durchleuchtet.
           </h2>
           <p className="mt-4 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Wir haben CoreSpend für IT- und Einkaufsverantwortliche entwickelt, die Transparenz,
