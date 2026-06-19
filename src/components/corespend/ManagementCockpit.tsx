@@ -127,8 +127,8 @@ export function ManagementCockpit() {
         </div>
       </section>
 
-      {/* Spend nach Dimensionen + Sourcing-Status (Top 4 Renewals) */}
-      <section className="grid gap-4 lg:grid-cols-2">
+      {/* Spend nach Dimensionen + Sourcing-Status */}
+      <section className="grid gap-3 lg:grid-cols-2">
         <SpendDistribution
           items={spendBreakdown}
           live={live}
