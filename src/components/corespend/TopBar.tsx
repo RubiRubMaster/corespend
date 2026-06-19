@@ -6,6 +6,7 @@ export function TopBar() {
   const {
     currentPrice, totalDiscount, activatedAreas,
     effectiveSpendMonthly, effectiveSavingsYearly, mobilfunkStatus,
+    effectiveBasePrice, effectiveDiscountPerArea,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
   const prev = useRef(currentPrice);
