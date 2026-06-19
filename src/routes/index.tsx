@@ -140,13 +140,13 @@ function Landing() {
         </div>
         <div className="mt-8 max-w-2xl mx-auto space-y-3 text-[15px] text-muted-foreground/80 leading-relaxed tracking-wide text-left md:text-center">
           <p>
-            Erfassen Sie Ihren gesamten IT-Stack in einem zentralen Dashboard und erhalten Sie durch den automatisierten Abgleich mit Hunderten DACH-Benchmarks sofort <strong className="text-primary font-semibold">volle Transparenz</strong>.
+            Erfassen Sie Ihren gesamten IT-Stack in einem zentralen Dashboard und erhalten Sie durch den automatisierten Abgleich mit Hunderten DACH-Benchmarks sofort volle Transparenz.
           </p>
           <p>
-            CoreSpend überwacht Vertragsbedingungen, Risiken und Geldflüsse <strong className="text-primary font-semibold">vollautomatisch</strong>, macht KPIs wie Total Tech Spend und Financial Exposure direkt sichtbar und deckt ungenutzte Ressourcen (No Usage) durch kontinuierliche Prüfung auf.
+            CoreSpend überwacht Vertragsbedingungen, Risiken und Geldflüsse vollautomatisch, macht KPIs wie Total Tech Spend und Financial Exposure direkt sichtbar und deckt ungenutzte Ressourcen (No Usage) durch kontinuierliche Prüfung auf.
           </p>
           <p>
-            Die Plattform übernimmt die <strong className="text-primary font-semibold">harte Arbeit</strong> und begleitet Sie mit smarten Verhandlungs-Guides und verifizierten Experten bis zu den echten Preisuntergrenzen, während Sie die absolute Kontrolle behalten – und <strong className="text-primary font-semibold">jederzeit in Minuten entscheidungsfähig</strong> sind.
+            Die Plattform übernimmt die harte Arbeit und begleitet Sie mit smarten Verhandlungs-Guides und verifizierten Experten bis zu den echten Preisuntergrenzen, während Sie die absolute Kontrolle behalten – und jederzeit in Minuten entscheidungsfähig sind.
           </p>
         </div>
         <p className="mt-5 text-[14px] italic max-w-2xl mx-auto leading-relaxed tracking-wide bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
