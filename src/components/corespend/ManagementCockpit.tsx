@@ -400,7 +400,7 @@ function SpendDistribution({
     >
       <div className="flex items-center gap-2">
         <span className="text-sm">📊</span>
-        <span className="text-sm font-semibold tracking-tight">Spend nach Dimensionen</span>
+        <span className="text-sm font-semibold tracking-tight">Kostenverteilung je Kategorie</span>
         {onClick && <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground shrink-0" />}
       </div>
 
