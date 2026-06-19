@@ -25,7 +25,7 @@ export function ManagementCockpit() {
     .sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Header */}
       <header className="flex items-end justify-between flex-wrap gap-4">
         <div>
@@ -46,7 +46,7 @@ export function ManagementCockpit() {
       </header>
 
       {/* KPI Row */}
-      <section className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
+      <section className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
         <KpiCard
           label={spendLabel}
           value={live ? `${formatEUR(spendValue)}` : "—"}
@@ -127,8 +127,8 @@ export function ManagementCockpit() {
         </div>
       </section>
 
-      {/* Spend nach Dimensionen + Sourcing-Status (Top 4 Renewals) */}
-      <section className="grid gap-4 lg:grid-cols-2">
+      {/* Spend nach Dimensionen + Sourcing-Status */}
+      <section className="grid gap-3 lg:grid-cols-2">
         <SpendDistribution
           items={spendBreakdown}
           live={live}
@@ -140,12 +140,12 @@ export function ManagementCockpit() {
       {/* Management Briefing */}
       <section
         className={cn(
-          "rounded-xl border bg-background/60 backdrop-blur p-5",
+          "rounded-xl border bg-background/60 backdrop-blur p-4",
           live ? "border-border" : "border-border opacity-70",
         )}
       >
-        <div className="flex items-center gap-2 pb-3 mb-3 border-b border-border">
-          <span className="text-base">📊</span>
+        <div className="flex items-center gap-2 pb-2 mb-2 border-b border-border">
+          <span className="text-sm">📊</span>
           <span className="text-sm font-semibold tracking-tight">Management Briefing</span>
         </div>
         <ul className="flex flex-col divide-y divide-border/60">
@@ -157,7 +157,7 @@ export function ManagementCockpit() {
                   onClick={interactive ? () => navTo(t.target) : undefined}
                   disabled={!interactive}
                   className={cn(
-                    "w-full flex items-center gap-3 py-2.5 text-left text-[13px] tabular-nums",
+                    "w-full flex items-center gap-3 py-2 text-left text-[12px] tabular-nums",
                     interactive && "hover:text-primary transition-colors cursor-pointer",
                     !live && "text-muted-foreground/70",
                   )}
@@ -174,7 +174,7 @@ export function ManagementCockpit() {
       </section>
 
       {/* CTA Strip · 2 actions */}
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="grid gap-3 md:grid-cols-2">
         <CtaTile
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
@@ -394,17 +394,17 @@ function SpendDistribution({
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "rounded-xl border bg-background/60 backdrop-blur p-5 text-left transition-all flex flex-col gap-4",
+        "rounded-xl border bg-background/60 backdrop-blur p-4 text-left transition-all flex flex-col gap-3",
         live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 cursor-not-allowed",
       )}
     >
-      <div className="flex items-center gap-2 border-b border-border pb-3">
-        <span className="text-base">📊</span>
+      <div className="flex items-center gap-2">
+        <span className="text-sm">📊</span>
         <span className="text-sm font-semibold tracking-tight">Spend nach Dimensionen</span>
-        {onClick && <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />}
+        {onClick && <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground shrink-0" />}
       </div>
 
-      <div className="flex h-3 w-full rounded-full overflow-hidden bg-background border border-border/60">
+      <div className="flex h-2.5 w-full rounded-full overflow-hidden bg-background border border-border/60">
         {items.map((it) => {
           const pct = total > 0 ? (it.monthly / total) * 100 : 0;
           return (
@@ -412,29 +412,36 @@ function SpendDistribution({
               key={it.key}
               className={cn(SEGMENT_COLORS[it.key] ?? "bg-primary")}
               style={{ width: `${pct}%` }}
-              title={`${it.label}: ${formatEUR(it.monthly)} (${Math.round(pct)}%)`}
+              title={`${it.label}: ${Math.round(pct)}%`}
             />
           );
         })}
       </div>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[12px]">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
         {items.map((it) => {
           const pct = total > 0 ? Math.round((it.monthly / total) * 100) : 0;
           return (
-            <li key={it.key} className="flex items-center gap-2 tabular-nums">
-              <span className={cn("h-2 w-2 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
-              <span className="text-foreground/90 truncate">{it.label}</span>
-              <span className="ml-auto text-muted-foreground">{formatEUR(it.monthly)} ({pct}%)</span>
-            </li>
+            <span key={it.key} className="flex items-center gap-1.5 tabular-nums">
+              <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
+              <span className="text-foreground/80">{it.label}</span>
+              <span className="text-muted-foreground">{pct}%</span>
+            </span>
           );
         })}
-      </ul>
+      </div>
     </button>
   );
 }
 
-/* ---------- Top 4 Renewals ---------- */
+/* ---------- Renewals Timeline ---------- */
+
+const RENEWAL_DOT: Record<RenewalStatus, string> = {
+  "In Analyse": "bg-slate-400",
+  "Strategie bereit": "bg-primary",
+  "In Verhandlung": "bg-[hsl(32_95%_60%)]",
+  "Erfolgreich optimiert": "bg-success",
+};
 
 const RENEWAL_BADGE: Record<RenewalStatus, string> = {
   "In Analyse": "border-slate-500/40 bg-slate-500/15 text-slate-300",
@@ -444,31 +451,47 @@ const RENEWAL_BADGE: Record<RenewalStatus, string> = {
 };
 
 function RenewalsBox({ live }: { live: boolean }) {
-  const items = DEFAULT_RENEWALS;
+  const items = [...DEFAULT_RENEWALS].sort((a, b) => {
+    if (a.dueDays === -1) return 1;
+    if (b.dueDays === -1) return -1;
+    return a.dueDays - b.dueDays;
+  });
+
   const content = (
     <>
-      <div className="flex items-center gap-2 border-b border-border pb-3">
-        <span className="text-base">🤝</span>
-        <span className="text-sm font-semibold tracking-tight">Sourcing-Status · Top 4 Verhandlungen</span>
-        <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
+      <div className="flex items-center gap-2">
+        <span className="text-sm">🤝</span>
+        <span className="text-sm font-semibold tracking-tight">Sourcing-Status</span>
+        <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground shrink-0" />
       </div>
-      <ul className="flex flex-col divide-y divide-border/60">
-        {items.map((r) => (
-          <li key={r.vendor} className="py-2.5 flex items-center gap-3 text-[13px]">
-            <div className="min-w-0 flex-1">
-              <div className="text-foreground/90 font-medium truncate">{r.vendor}</div>
-              <div className="text-[11px] text-muted-foreground truncate">{r.category} · {r.due}</div>
-            </div>
-            <span className={cn("text-[10px] uppercase tracking-wider rounded-full px-2 py-0.5 border whitespace-nowrap", RENEWAL_BADGE[r.status])}>
-              {r.status}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="relative pl-4">
+        {/* Vertical line */}
+        <div className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-border" />
+        <ul className="flex flex-col gap-1">
+          {items.map((r) => (
+            <li key={r.vendor} className="relative flex items-start gap-3 py-1">
+              {/* Dot on timeline */}
+              <span className={cn(
+                "absolute left-[-11px] top-[7px] h-[9px] w-[9px] rounded-full border-2 border-background shrink-0",
+                RENEWAL_DOT[r.status]
+              )} />
+              <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="text-[12px] font-medium text-foreground/90 truncate leading-tight">{r.vendor}</div>
+                  <div className="text-[10px] text-muted-foreground truncate leading-tight">{r.category} · {r.due}</div>
+                </div>
+                <span className={cn("text-[9px] uppercase tracking-wider rounded-full px-1.5 py-0.5 border whitespace-nowrap shrink-0", RENEWAL_BADGE[r.status])}>
+                  {r.status}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
   const cls = cn(
-    "rounded-xl border bg-background/60 backdrop-blur p-5 flex flex-col gap-3 transition-all",
+    "rounded-xl border bg-background/60 backdrop-blur p-4 flex flex-col gap-3 transition-all",
     live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70",
   );
   if (!live) return <div className={cls}>{content}</div>;
