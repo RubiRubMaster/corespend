@@ -147,9 +147,6 @@ export function ManagementCockpit() {
           live ? "border-border" : "border-border opacity-70",
         )}
       >
-          live ? "border-border" : "border-border opacity-70",
-        )}
-      >
         <div className="flex items-center gap-2 pb-3 mb-3 border-b border-border">
           <span className="text-base">📊</span>
           <span className="text-sm font-semibold tracking-tight">Management Briefing</span>
