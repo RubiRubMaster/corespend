@@ -23,17 +23,17 @@ const STEPS = [
   {
     n: "01",
     title: "Daten analysieren",
-    text: "Lade Verträge, Rechnungen und Nutzungsdaten hoch. Unsere KI extrahiert alle relevanten Kennzahlen innerhalb weniger Minuten.",
+    text: "Erfassen Sie Verträge, Rechnungen und Nutzungsdaten. Unsere KI extrahiert alle relevanten KPIs innerhalb kürzester Zeit und bildet diese volltransparent auf einem zentralen Dashboard ab – direkt C-Level und Report-ready.",
   },
   {
     n: "02",
     title: "Potenziale identifizieren",
-    text: "Erkenne Überzahlungen, ungenutzte Lizenzen und Benchmark-Abweichungen durch den Abgleich mit hunderten von Live-Benchmarks — präzise aufbereitet für dein nächstes Management-Update.",
+    text: "Erkennen Sie neue Verhandlungspotenziale, ungenutzte Lizenzen und verdeckte Vertragsrisiken durch die dauerhafte Analyse und den automatisierten Abgleich mit Hunderten von Live-Benchmarks — präzise aufbereitet, um schnelle, datenbasierte Entscheidungen zu treffen.",
   },
   {
     n: "03",
     title: "Verhandlungsmacht sichern",
-    text: "Erhalte datenbasierte Argumentationsketten, Drohkulissen und einen maßgeschneiderten Verhandlungsleitfaden für maximale Einsparungen.",
+    text: "Erhalten Sie echte Preisuntergrenzen, datenbasierte Argumentationsketten, klare Wettbewerbsszenarien und einen maßgeschneiderten Verhandlungsleitfaden für maximale Einsparungen, während Sie jederzeit die absolute Kontrolle behalten.",
   },
 ];
 
@@ -172,7 +172,7 @@ function Landing() {
         <div className="mt-14">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">DAS CORESPEND-PRINZIP</div>
           <h2 className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Drei Schritte zu absoluter Kostentransparenz
+            Drei Schritte zu absoluter Transparenz und Kontrolle
           </h2>
         </div>
 
