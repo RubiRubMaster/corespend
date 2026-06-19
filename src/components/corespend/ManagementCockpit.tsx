@@ -1,4 +1,4 @@
-import { useCoreSpend, formatEUR, type TickerTone, type ActiveView } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, CheckCircle } from "lucide-react";
 
