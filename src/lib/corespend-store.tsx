@@ -237,9 +237,9 @@ const DEFAULT_MOBILFUNK: MobilfunkMetrics = {
 };
 
 export const PRICING = {
-  BASE_PRICE: 2800,
-  DISCOUNT_PER_AREA: 200,
-  MIN_PRICE: 1300,
+  BASE_PRICE: 3200,
+  DISCOUNT_PER_AREA: 350,
+  MIN_PRICE: 1450,
   TOTAL_AREAS: 5,
 };
 
@@ -295,6 +295,12 @@ type Ctx = {
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
   setSavingsOverride: (n: number | null) => void;
+  basePriceOverride: number | null;
+  discountPerAreaOverride: number | null;
+  effectiveBasePrice: number;
+  effectiveDiscountPerArea: number;
+  setBasePriceOverride: (n: number | null) => void;
+  setDiscountPerAreaOverride: (n: number | null) => void;
   timeMode: TimeMode;
   setTimeMode: (m: TimeMode) => void;
   consultantBriefing: string;
@@ -327,6 +333,8 @@ export type CoreSpendSnapshot = {
   timeMode?: TimeMode;
   consultantBriefing?: string;
   tickerOverrides?: (Partial<TickerItem> | null)[];
+  basePriceOverride?: number | null;
+  discountPerAreaOverride?: number | null;
 };
 
 export function CoreSpendProvider({
@@ -358,6 +366,8 @@ export function CoreSpendProvider({
   const [timeMode, setTimeMode] = useState<TimeMode>(s.timeMode ?? "yearly");
   const [consultantBriefing, setConsultantBriefing] = useState<string>(s.consultantBriefing ?? "");
   const [tickerOverrides, setTickerOverrides] = useState<(Partial<TickerItem> | null)[]>(s.tickerOverrides ?? [null, null, null, null]);
+  const [basePriceOverride, setBasePriceOverride] = useState<number | null>(s.basePriceOverride ?? null);
+  const [discountPerAreaOverride, setDiscountPerAreaOverride] = useState<number | null>(s.discountPerAreaOverride ?? null);
 
   // Debounced persistence — fires whenever any persistable state changes
   const persistRef = useRef(onPersist);
@@ -371,13 +381,15 @@ export function CoreSpendProvider({
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
       strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
+      basePriceOverride, discountPerAreaOverride,
     };
     const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
     return () => clearTimeout(t);
   }, [mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
-      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides]);
+      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
+      basePriceOverride, discountPerAreaOverride]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
@@ -476,6 +488,8 @@ export function CoreSpendProvider({
     setCoreStartStatuses(DEFAULT_CORESTART_STATUSES);
     setConsultantBriefing("");
     setTickerOverrides([null, null, null, null]);
+    setBasePriceOverride(null);
+    setDiscountPerAreaOverride(null);
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
@@ -547,10 +561,13 @@ export function CoreSpendProvider({
     ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
   }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
 
+  const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
+  const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
+
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
     const areas = mobilfunkLive ? 1 : 0;
-    const discount = areas * PRICING.DISCOUNT_PER_AREA;
-    const price = priceOverride ?? Math.max(PRICING.BASE_PRICE - discount, PRICING.MIN_PRICE);
+    const discount = areas * effectiveDiscountPerArea;
+    const price = priceOverride ?? Math.max(effectiveBasePrice - discount, PRICING.MIN_PRICE);
     const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
     const savings = savingsOverride ?? (mobilfunkLive ? derivedSavings : 0);
     return {
@@ -560,7 +577,7 @@ export function CoreSpendProvider({
       effectiveSpendMonthly: spend,
       effectiveSavingsYearly: savings,
     };
-  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings]);
+  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
 
   const value: Ctx = {
     mobilfunkStatus,
@@ -616,6 +633,12 @@ export function CoreSpendProvider({
     setPriceOverride,
     setSpendOverride,
     setSavingsOverride,
+    basePriceOverride,
+    discountPerAreaOverride,
+    effectiveBasePrice,
+    effectiveDiscountPerArea,
+    setBasePriceOverride,
+    setDiscountPerAreaOverride,
     consultantBriefing,
     setConsultantBriefing,
     tickerOverrides,
