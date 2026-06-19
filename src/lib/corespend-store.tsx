@@ -519,8 +519,8 @@ export function CoreSpendProvider({
         text: "Daten-Validierung abgeschlossen: Bestehender Mobilfunk-Stack erfolgreich anonymisiert und gegen 1.200+ reale B2B-Vertragsabschlüsse gematcht.",
         target: "mobilfunk",
       },
-    ];
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays]);
+    ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
 
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
     const areas = mobilfunkLive ? 1 : 0;
