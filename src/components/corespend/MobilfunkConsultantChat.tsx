@@ -6,7 +6,7 @@ type Phase = "intro" | "chat" | "waiting";
 type Msg = { role: "ai" | "user"; text: string };
 
 const INTRO_TEXT =
-  "Hi 👋 ich bin Ihr AI Consultant. Damit ich Ihre Analyse und den Benchmark optimal für Sie gestalten kann, führe ich Sie jetzt durch einen Consultant-verifizierten Prozess. Bist Sie bereit?";
+  "Hi 👋 ich bin Ihr AI Consultant. Damit ich Ihre Analyse und den Benchmark optimal für Sie gestalten kann, führe ich Sie jetzt durch einen Consultant-verifizierten Prozess. Sind Sie bereit?";
 
 const FIRST_QUESTION =
   "Super. Bitte beschreibe mir Ihr Vorhaben so genau wie möglich: Was ist Ihr Motiv? Welche Anforderungen und Inhalte sollten sich gegenüber Ihrem jetzigen Vertragskonstrukt ändern?";
