@@ -38,7 +38,7 @@ export function CoreSpendHydrator({ children }: { children: ReactNode }) {
   if (!ready) {
     return (
       <div className="min-h-screen grid place-items-center bg-background text-muted-foreground text-sm">
-        Lade dein Cockpit…
+        Lade Ihr Cockpit…
       </div>
     );
   }

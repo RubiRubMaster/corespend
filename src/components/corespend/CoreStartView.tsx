@@ -58,7 +58,7 @@ export function CoreStartView() {
         <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">🚀 Core Start</div>
         <h1 className="text-3xl font-semibold tracking-tight">Launchpad · 5 IT-Bereiche</h1>
         <p className="text-sm text-muted-foreground max-w-2xl">
-          Dein zentrales Einstiegsportal. Wähle einen Bereich, um direkt in das jeweilige Cockpit
+          Ihr zentrales Einstiegsportal. Wählen Sie einen Bereich, um direkt in das jeweilige Cockpit
           oder in die Datenaufnahme zu springen.
         </p>
       </header>
@@ -146,7 +146,7 @@ export function CoreStartView() {
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Coming Soon</div>
             <h3 className="text-xl font-semibold tracking-tight mt-1">{infoTile.title}</h3>
             <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-              Dieser Bereich folgt im nächsten Release. Wir benachrichtigen dich, sobald
+              Dieser Bereich folgt im nächsten Release. Wir benachrichtigen Sie, sobald
               {` ${infoTile.title} `} freigeschaltet wird — inkl. CoreSpend-Tarif-Rabatt.
             </p>
             <button

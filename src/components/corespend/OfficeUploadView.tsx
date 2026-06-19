@@ -60,7 +60,7 @@ function Header({ stage }: { stage: OfficeStage }) {
           <h1 className="text-3xl font-semibold tracking-tight mt-0.5">Microsoft 365</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
             Vom Lizenz-Upload bis zum freigeschalteten M365-Optimierungs-Cockpit. Jede geteilte
-            Datenquelle senkt deinen CoreSpend-Tarif dauerhaft um {formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat.
+            Datenquelle senkt Ihren CoreSpend-Tarif dauerhaft um {formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat.
           </p>
         </div>
       </div>
@@ -151,7 +151,7 @@ function StateA({ onStart }: { onStart: (name?: string) => void }) {
             <div className="grid gap-3 sm:grid-cols-2">
               <input
                 type="email"
-                placeholder="Deine E-Mail (optional)"
+                placeholder="Ihre E-Mail (optional)"
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
                 className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
@@ -187,7 +187,7 @@ function StateA({ onStart }: { onStart: (name?: string) => void }) {
               ))}
             </ul>
             <div className="mt-5 pt-5 border-t border-border/60 text-[11px] text-muted-foreground leading-relaxed">
-              Alle Dokumente werden serverseitig anonymisiert und ausschließlich für deine eigene
+              Alle Dokumente werden serverseitig anonymisiert und ausschließlich für Ihre eigene
               M365-Lizenzoptimierung verwendet. NDA wird automatisch beim Upload erzeugt.
             </div>
           </div>
@@ -200,7 +200,7 @@ function StateA({ onStart }: { onStart: (name?: string) => void }) {
             <div>
               <h3 className="font-semibold">🔑 Microsoft Graph API & n8n-Workflow</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Direkte Anbindung an deinen M365 Tenant · 1-Klick-Setup
+                Direkte Anbindung an Ihren M365 Tenant · 1-Klick-Setup
               </p>
             </div>
             <span className="text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5">
@@ -284,8 +284,8 @@ function StateB({ fileName, onDemoUnlock }: { fileName?: string; onDemoUnlock: (
           <div className="text-sm font-medium">M365-Dateneingang bestätigt.</div>
           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
             Da jede KI-Analyse durch zertifizierte Microsoft-Lizenz-Experten auditiert wird, schalten
-            wir dein M365-Cockpit in <span className="text-foreground">24–48 Stunden</span> frei.
-            Dein Data-Bonus (<span className="text-success">−{formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat</span>)
+            wir Ihr M365-Cockpit in <span className="text-foreground">24–48 Stunden</span> frei.
+            Ihr Data-Bonus (<span className="text-success">−{formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat</span>)
             auf den Plattform-Tarif wurde bereits vorgemerkt und gilt ab sofort.
           </p>
         </div>
