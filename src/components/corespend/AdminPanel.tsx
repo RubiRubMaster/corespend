@@ -14,6 +14,10 @@ export function AdminPanel() {
     effectiveSpendMonthly,
     effectiveSavingsYearly,
     consultantBriefing,
+    tickerItems,
+    tickerOverrides,
+    updateTickerItem,
+    resetTickerItem,
     resetAll,
   } = useCoreSpend();
 
