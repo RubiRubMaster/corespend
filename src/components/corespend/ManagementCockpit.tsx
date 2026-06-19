@@ -419,16 +419,12 @@ function SpendDistribution({
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
-        {items.map((it) => {
-          const pct = total > 0 ? Math.round((it.monthly / total) * 100) : 0;
-          return (
-            <span key={it.key} className="flex items-center gap-1.5 tabular-nums">
-              <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
-              <span className="text-foreground/80">{it.label}</span>
-              <span className="text-muted-foreground">{pct}%</span>
-            </span>
-          );
-        })}
+        {items.map((it) => (
+          <span key={it.key} className="flex items-center gap-1.5">
+            <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
+            <span className="text-foreground/80">{it.label}</span>
+          </span>
+        ))}
       </div>
     </button>
   );
