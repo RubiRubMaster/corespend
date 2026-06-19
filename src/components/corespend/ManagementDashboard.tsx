@@ -164,16 +164,14 @@ export function ManagementDashboard() {
             actions={
               mobilfunkLive ? (
                 <>
-                  <ActionBtn onClick={() => toast.success("CFO-Report wird generiert", { description: "PDF mit Kernzahlen ist in 30 Sek. bereit." })}>📄 CFO-Report</ActionBtn>
                   <ActionBtn onClick={() => toast.success("Verhandlungs-Guide vorbereitet", { description: "Strategische Argumentationshilfen für den Provider-Termin." })}>📘 Verhandlungs-Guide</ActionBtn>
                   <ActionBtn onClick={() => toast.success("Analyse-Report wird exportiert", { description: "XLSX-Komplettreport für den Einkauf." })}>📊 Analyse-Report</ActionBtn>
-                  <ActionBtn onClick={() => toast.success("Kündigungsschreiben für 14 SIMs generiert", { description: "Sofort versandfertig · spart 4.200 € / Jahr." })} variant="destructive">❌ Inaktive SIMs kündigen</ActionBtn>
                   <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success" full>🔥 Verhandlungsexperten aktivieren</ActionBtn>
                 </>
               ) : (
                 <>
-                  <ActionBtn onClick={() => toast.success("CFO-Report wird generiert", { description: "PDF mit Kernzahlen ist in 30 Sek. bereit." })}>📄 CFO-Report</ActionBtn>
-                  <ActionBtn onClick={() => toast.success("Anfrage an CoreSpend-Experten übermittelt", { description: "Ein Senior-Negotiator meldet sich innerhalb von 24 h." })} variant="success">🔥 Verhandlungsexperten</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Verhandlungs-Guide vorbereitet", { description: "Strategische Argumentationshilfen für den Provider-Termin." })}>📘 Verhandlungs-Guide</ActionBtn>
+                  <ActionBtn onClick={() => toast.success("Analyse-Report wird exportiert", { description: "XLSX-Komplettreport für den Einkauf." })}>📊 Analyse-Report</ActionBtn>
                   <ActionBtn onClick={goMobilfunk} variant="primary" full>
                     ➜ Mobilfunk-Daten teilen & freischalten
                   </ActionBtn>
