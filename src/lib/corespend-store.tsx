@@ -188,7 +188,7 @@ export const CATEGORIES_META: CategoryMeta[] = [
     ],
   },
   { key: "office", label: "Office-Suite", emoji: "💻", available: false, subs: [] },
-  { key: "saas", label: "SaaS Plattformen", emoji: "☁️", available: false, subs: [] },
+  { key: "saas", label: "SaaS / AI", emoji: "☁️", available: false, subs: [] },
   { key: "cloud", label: "Cloud Infrastruktur", emoji: "🌐", available: false, subs: [] },
   { key: "hardware", label: "Hardware & Workplace", emoji: "🔌", available: false, subs: [] },
 ];
