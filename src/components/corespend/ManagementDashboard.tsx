@@ -109,7 +109,7 @@ export function ManagementDashboard() {
         </span>
         {[
           { e: "💻", l: "Office" },
-          { e: "☁️", l: "SaaS" },
+          { e: "☁️", l: "SaaS / AI" },
           { e: "🌩", l: "Cloud" },
           { e: "🔌", l: "Hardware" },
         ].map((s) => (
@@ -237,10 +237,10 @@ export function ManagementDashboard() {
         </div>
       </CategoryTile>
 
-      {/* 3 · SaaS */}
+      {/* 3 · SaaS / AI */}
       <CategoryTile
         emoji="☁️"
-        title="SaaS Plattformen"
+        title="SaaS / AI"
         subtitle="Salesforce · HubSpot · Adobe Creative Cloud · weitere"
         statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
         locked
