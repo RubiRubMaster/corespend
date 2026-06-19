@@ -109,7 +109,7 @@ export function ManagementDashboard() {
         </span>
         {[
           { e: "💻", l: "Office" },
-          { e: "☁️", l: "SaaS" },
+          { e: "☁️", l: "SaaS / AI" },
           { e: "🌩", l: "Cloud" },
           { e: "🔌", l: "Hardware" },
         ].map((s) => (
