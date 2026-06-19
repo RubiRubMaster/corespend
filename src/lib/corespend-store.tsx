@@ -295,6 +295,12 @@ type Ctx = {
   setPriceOverride: (n: number | null) => void;
   setSpendOverride: (n: number | null) => void;
   setSavingsOverride: (n: number | null) => void;
+  basePriceOverride: number | null;
+  discountPerAreaOverride: number | null;
+  effectiveBasePrice: number;
+  effectiveDiscountPerArea: number;
+  setBasePriceOverride: (n: number | null) => void;
+  setDiscountPerAreaOverride: (n: number | null) => void;
   timeMode: TimeMode;
   setTimeMode: (m: TimeMode) => void;
   consultantBriefing: string;
