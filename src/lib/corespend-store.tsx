@@ -333,6 +333,8 @@ export type CoreSpendSnapshot = {
   timeMode?: TimeMode;
   consultantBriefing?: string;
   tickerOverrides?: (Partial<TickerItem> | null)[];
+  basePriceOverride?: number | null;
+  discountPerAreaOverride?: number | null;
 };
 
 export function CoreSpendProvider({
