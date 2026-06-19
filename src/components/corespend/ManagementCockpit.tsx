@@ -52,6 +52,7 @@ export function ManagementCockpit() {
           unit={unit}
           sub={live ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr` : "Datenbasis wird geladen"}
           subTone="destructive"
+          labelTone="primary"
           locked={!live}
           onClick={live ? goSpend : undefined}
         />
@@ -62,6 +63,7 @@ export function ManagementCockpit() {
           sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial im bestehenden Stack` : "Wird nach Analyse berechnet"}
           subTone="success"
           valueTone="success"
+          labelTone="primary"
           locked={!live}
           onClick={live ? goOptimizations : undefined}
         />
@@ -70,6 +72,7 @@ export function ManagementCockpit() {
           value={live ? `${m.criticalDeadlines}` : "—"}
           valueTone="warning"
           sub={live ? `Handlungsbedarf innerhalb der nächsten ${m.deadlineWindowDays} Tage` : "Vertragsfristen werden überwacht"}
+          labelTone="primary"
           locked={!live}
           onClick={live ? goDeadlines : undefined}
         />
@@ -77,6 +80,7 @@ export function ManagementCockpit() {
           label="Vertragsrisiko"
           value={live ? formatEUR(m.riskExposure) : "—"}
           sub={live ? "Vertragsvolumen in Verhandlung / mit Handlungsbedarf" : "Risk-Exposure-Modell inaktiv"}
+          labelTone="primary"
           locked={!live}
           onClick={live ? goRisk : undefined}
         />
@@ -186,7 +190,7 @@ export function ManagementCockpit() {
 /* ---------- bits ---------- */
 
 function KpiCard({
-  label, value, unit, sub, subTone, valueTone, locked, onClick,
+  label, value, unit, sub, subTone, valueTone, labelTone, locked, onClick,
 }: {
   label: string;
   value: string;
@@ -194,6 +198,7 @@ function KpiCard({
   sub?: string;
   subTone?: "success" | "destructive" | "muted";
   valueTone?: "success" | "warning" | "destructive";
+  labelTone?: "primary";
   locked?: boolean;
   onClick?: () => void;
 }) {
@@ -208,7 +213,10 @@ function KpiCard({
         onClick && "hover:border-primary/40 hover:bg-primary/5 cursor-pointer",
       )}
     >
-      <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">{label}</span>
+      <span className={cn(
+        "text-[9px] uppercase tracking-[0.22em] font-medium",
+        labelTone === "primary" ? "text-primary" : "text-muted-foreground"
+      )}>{label}</span>
       <div className="mt-3 flex items-baseline gap-1.5">
         <span
           className={cn(
