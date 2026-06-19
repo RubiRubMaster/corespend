@@ -345,14 +345,14 @@ export function CoreSpendProvider({
       mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
-      strategy, coreStartStatuses, timeMode, consultantBriefing,
+      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
     };
     const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
     return () => clearTimeout(t);
   }, [mobilfunkStatus, mobilfunkFile, activeView, metrics, cockpitMetrics,
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
-      strategy, coreStartStatuses, timeMode, consultantBriefing]);
+      strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
