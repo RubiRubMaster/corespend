@@ -130,10 +130,23 @@ export function ManagementCockpit() {
         </div>
       </section>
 
+      {/* Spend Trend Chart + Status Verhandlungen */}
+      <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <SpendTrendChart
+          areas={spendBreakdown}
+          live={live}
+          onOpen={live ? goSpend : undefined}
+        />
+        <NegotiationsCard live={live} />
+      </section>
+
       {/* Management Briefing */}
       <section
         className={cn(
           "rounded-xl border bg-background/60 backdrop-blur p-5",
+          live ? "border-border" : "border-border opacity-70",
+        )}
+      >
           live ? "border-border" : "border-border opacity-70",
         )}
       >
