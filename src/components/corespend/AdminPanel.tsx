@@ -84,6 +84,27 @@ export function AdminPanel() {
             Demo zurücksetzen
           </button>
 
+          <div className="md:col-span-4 grid gap-3 md:grid-cols-2">
+            <NumField
+              label="Lizenz-Basispreis (€ / Monat)"
+              value={basePriceOverride ?? effectiveBasePrice}
+              placeholder="z. B. 3200"
+              onChange={(n) => setBasePriceOverride(Number.isFinite(n) ? n : null)}
+              onClear={() => setBasePriceOverride(null)}
+              cleared={basePriceOverride === null}
+              hint={`Aktuell: ${formatEUR(effectiveBasePrice)} / Mo. (Standard 3.200 €)`}
+            />
+            <NumField
+              label="Data-Contribution Bonus (€ / Bereich)"
+              value={discountPerAreaOverride ?? effectiveDiscountPerArea}
+              placeholder="z. B. 350"
+              onChange={(n) => setDiscountPerAreaOverride(Number.isFinite(n) ? n : null)}
+              onClear={() => setDiscountPerAreaOverride(null)}
+              cleared={discountPerAreaOverride === null}
+              hint={`Aktuell: −${formatEUR(effectiveDiscountPerArea)} pro Bereich (Standard 350 €)`}
+            />
+          </div>
+
           <div className="md:col-span-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
             <div className="text-[10px] uppercase tracking-wider text-primary mb-1.5 flex items-center gap-1.5">
               🤖 AI Consultant · Kundenbriefing (Mobilfunk-Nebenabreden)
