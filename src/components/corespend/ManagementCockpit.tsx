@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem, type SpendAreaItem } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { AlertCircle, Clock, CheckCircle, ChevronDown } from "lucide-react";
-import {
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from "recharts";
+import { AlertCircle, Clock, CheckCircle, ArrowRight } from "lucide-react";
+import { NEGOTIATIONS, STATUS_META } from "@/lib/negotiations";
 
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
@@ -130,9 +128,9 @@ export function ManagementCockpit() {
         </div>
       </section>
 
-      {/* Spend Trend Chart + Status Verhandlungen */}
+      {/* Spend Share Bar + Status Verhandlungen */}
       <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <SpendTrendChart
+        <SpendShareBar
           areas={spendBreakdown}
           live={live}
           onOpen={live ? goSpend : undefined}
@@ -367,7 +365,7 @@ ${ticker.map((t) => `<li><span class="tag ${t.tone}">${toneLabel[t.tone]}</span>
   w.document.open(); w.document.write(html); w.document.close();
 }
 
-/* ---------- Spend Trend Chart ---------- */
+/* ---------- Spend Share Bar (stacked 100% horizontal bar) ---------- */
 
 const AREA_COLORS: Record<SpendAreaItem["key"], string> = {
   telco: "#22d3ee",      // cyan
@@ -377,26 +375,18 @@ const AREA_COLORS: Record<SpendAreaItem["key"], string> = {
   hardware: "#94a3b8",   // slate
 };
 
-const MONTH_LABELS = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-
-function buildTrendData(areas: SpendAreaItem[]) {
-  // Build 12 months of deterministic, slightly varying values that end at the current monthly value.
-  return MONTH_LABELS.map((m, i) => {
-    const row: Record<string, string | number> = { month: m };
-    areas.forEach((a) => {
-      const trendFactor = 1 - (a.yoyPercent / 100) * ((11 - i) / 11);
-      // small deterministic wave so the line isn't perfectly straight
-      const wave = 1 + Math.sin((i + a.key.length) * 0.9) * 0.04;
-      row[a.key] = Math.round(a.monthly * trendFactor * wave);
-    });
-    return row;
-  });
-}
-
-function SpendTrendChart({
+function SpendShareBar({
   areas, live, onOpen,
 }: { areas: SpendAreaItem[]; live: boolean; onOpen?: () => void }) {
-  const data = buildTrendData(areas);
+  const total = areas.reduce((s, a) => s + (a.monthly || 0), 0) || 1;
+  const segments = areas.map((a) => ({
+    key: a.key,
+    label: a.label,
+    monthly: a.monthly,
+    pct: (a.monthly / total) * 100,
+    color: AREA_COLORS[a.key],
+  }));
+
   return (
     <div
       onClick={onOpen}
@@ -409,13 +399,13 @@ function SpendTrendChart({
         !live && "opacity-70",
       )}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            Ausgabenverlauf · 12 Monate
+            Kostenaufteilung · Gesamtportfolio
           </div>
           <div className="text-sm font-semibold tracking-tight mt-1">
-            Kostenentwicklung nach Kernbereich
+            Anteil der Kernbereiche an den IT-Gesamtausgaben
           </div>
         </div>
         {onOpen && (
@@ -424,131 +414,86 @@ function SpendTrendChart({
           </span>
         )}
       </div>
-      <div className="h-[260px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} opacity={0.4} />
-            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
-            <YAxis
-              stroke="hsl(var(--muted-foreground))"
-              fontSize={11}
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(v) => `${Math.round(Number(v) / 1000)}k`}
-            />
-            <Tooltip
-              contentStyle={{
-                background: "hsl(var(--background))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              formatter={(value: number, name: string) => {
-                const a = areas.find((x) => x.key === name);
-                return [formatEUR(value), a?.label ?? name];
-              }}
-              labelStyle={{ color: "hsl(var(--muted-foreground))" }}
-            />
-            <Legend
-              iconType="circle"
-              wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
-              formatter={(value: string) => {
-                const a = areas.find((x) => x.key === value);
-                return <span className="text-muted-foreground">{a?.label ?? value}</span>;
-              }}
-            />
-            {areas.map((a) => (
-              <Line
-                key={a.key}
-                type="monotone"
-                dataKey={a.key}
-                stroke={AREA_COLORS[a.key]}
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+
+      {/* The 100% bar */}
+      <div className="h-6 w-full rounded-full overflow-hidden flex border border-border bg-background">
+        {segments.map((s) => (
+          <div
+            key={s.key}
+            title={`${s.label} · ${s.pct.toFixed(1).replace(".", ",")} % · ${formatEUR(s.monthly)} / Monat`}
+            className="h-full transition-opacity hover:opacity-80"
+            style={{ width: `${s.pct}%`, background: s.color }}
+          />
+        ))}
       </div>
+
+      {/* Legend */}
+      <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-2">
+        {segments.map((s) => (
+          <li key={s.key} className="flex items-center gap-2 min-w-0">
+            <span className="h-2.5 w-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] text-foreground/90 truncate">{s.label}</span>
+              <span className="text-[10px] text-muted-foreground tabular-nums">
+                {s.pct.toFixed(1).replace(".", ",")} %
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-/* ---------- Status Verhandlungen ---------- */
-
-type NegotiationStatus = "analyse" | "strategie" | "verhandlung" | "geschlossen";
-
-type Negotiation = {
-  area: string;
-  vendor: string;
-  endLabel: string;
-  status: NegotiationStatus;
-};
-
-const NEGOTIATIONS: Negotiation[] = [
-  { area: "Telekommunikation", vendor: "Vodafone · Mobilfunk-Rahmenvertrag", endLabel: "In 150 Tagen", status: "verhandlung" },
-  { area: "Office Suites", vendor: "Microsoft · M365 E5 Enterprise", endLabel: "In 270 Tagen", status: "strategie" },
-  { area: "SaaS / AI", vendor: "Salesforce · Sales Cloud", endLabel: "In 95 Tagen", status: "verhandlung" },
-  { area: "Cloud", vendor: "AWS · Reserved Instances Q1", endLabel: "In 330 Tagen", status: "analyse" },
-  { area: "Hardware", vendor: "Dell · Workplace Leasing", endLabel: "Vor 12 Tagen", status: "geschlossen" },
-];
-
-const STATUS_META: Record<NegotiationStatus, { label: string; cls: string }> = {
-  analyse:      { label: "In Analyse",            cls: "border-slate-500/40 bg-slate-500/10 text-slate-300" },
-  strategie:    { label: "Strategie bereit",       cls: "border-primary/40 bg-primary/10 text-primary" },
-  verhandlung:  { label: "In Verhandlung",         cls: "border-orange-500/40 bg-orange-500/10 text-orange-400" },
-  geschlossen:  { label: "Erfolgreich geschlossen", cls: "border-success/40 bg-success/10 text-success" },
-};
+/* ---------- Status Verhandlungen (Focus-Panel) ---------- */
 
 function NegotiationsCard({ live }: { live: boolean }) {
-  const [open, setOpen] = useState(false);
-  const active = NEGOTIATIONS.filter((n) => n.status !== "geschlossen").length;
+  // Top 4: open negotiations sorted by daysRemaining ascending
+  const top = [...NEGOTIATIONS]
+    .filter((n) => n.daysRemaining >= 0)
+    .sort((a, b) => a.daysRemaining - b.daysRemaining)
+    .slice(0, 4);
 
   return (
     <div className={cn("rounded-xl border border-border bg-surface/40 flex flex-col", !live && "opacity-70")}>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        disabled={!live}
-        className="w-full px-5 py-5 flex items-center justify-between text-left hover:bg-surface/60 transition-colors disabled:cursor-not-allowed rounded-xl"
-      >
-        <div>
-          <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            Status Verhandlungen
-          </div>
-          <div className="text-sm font-semibold tracking-tight mt-1">
-            {live ? `${active} aktive Prozesse` : "—"}
-          </div>
-          <div className="text-[11px] text-muted-foreground mt-1.5">
-            Upcoming Renewals · Klick für Details
-          </div>
+      <div className="px-5 pt-5 pb-3">
+        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Status Verhandlungen
         </div>
-        <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")} />
-      </button>
+        <div className="text-sm font-semibold tracking-tight mt-1">
+          Top 4 anstehende Renewals
+        </div>
+      </div>
 
-      {open && live && (
-        <div className="border-t border-border px-1 pb-1">
-          <ul className="divide-y divide-border/60">
-            {NEGOTIATIONS.map((n, i) => {
-              const meta = STATUS_META[n.status];
-              return (
-                <li key={i} className="px-4 py-3 flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                      {n.area}
-                    </span>
-                    <span className={cn("text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border font-medium", meta.cls)}>
-                      {meta.label}
-                    </span>
-                  </div>
-                  <div className="text-xs font-medium text-foreground/90 leading-snug">{n.vendor}</div>
-                  <div className="text-[11px] text-muted-foreground tabular-nums">{n.endLabel}</div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+      <ul className="flex-1 divide-y divide-border/60 border-t border-border">
+        {top.map((n, i) => {
+          const meta = STATUS_META[n.status];
+          return (
+            <li key={i} className="px-5 py-3 flex flex-col gap-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground truncate">
+                  {n.area}
+                </span>
+                <span className={cn("text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border font-medium shrink-0", meta.cls)}>
+                  {meta.label}
+                </span>
+              </div>
+              <div className="text-xs font-medium text-foreground/90 leading-snug truncate">{n.vendor}</div>
+              <div className="text-[11px] text-muted-foreground tabular-nums">{n.endLabel}</div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <Link
+        to="/verhandlungen"
+        className={cn(
+          "flex items-center justify-center gap-1.5 border-t border-border px-5 py-3 text-xs font-medium text-primary hover:bg-primary/5 transition-colors rounded-b-xl",
+          !live && "pointer-events-none opacity-60",
+        )}
+      >
+        Alle Verhandlungen anzeigen <ArrowRight className="h-3.5 w-3.5" />
+      </Link>
     </div>
   );
 }
