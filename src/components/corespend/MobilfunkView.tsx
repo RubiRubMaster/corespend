@@ -51,7 +51,7 @@ function Header() {
           <h1 className="text-3xl font-semibold tracking-tight mt-0.5">Mobilfunk</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
             Vom ersten Datenupload bis zum freigeschalteten Verhandlungs-Cockpit. Jede geteilte Datenquelle
-            senkt Ihren CoreSpend-Tarif dauerhaft um {formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat.
+            senkt deinen CoreSpend-Tarif dauerhaft um {formatEUR(PRICING.DISCOUNT_PER_AREA)} / Monat.
           </p>
         </div>
       </div>
@@ -152,7 +152,7 @@ function StateA() {
           <div className="grid gap-3 sm:grid-cols-2">
             <input
               type="email"
-              placeholder="Ihre E-Mail (optional)"
+              placeholder="Deine E-Mail (optional)"
               value={customerEmail}
               onChange={(e) => setCustomerEmail(e.target.value)}
               className="rounded-lg border border-border bg-background/40 px-3 py-2.5 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
@@ -180,7 +180,7 @@ function StateA() {
             ))}
           </ul>
           <div className="mt-5 pt-5 border-t border-border/60 text-[11px] text-muted-foreground leading-relaxed">
-            Alle Dokumente werden serverseitig anonymisiert und ausschließlich für Ihre eigene
+            Alle Dokumente werden serverseitig anonymisiert und ausschließlich für deine eigene
             Benchmark-Analyse verwendet. NDA wird automatisch beim Upload erzeugt.
           </div>
         </div>
@@ -402,8 +402,8 @@ function StateC() {
       <div className="space-y-3">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Enterprise Procure-Actions</h3>
         <div className="grid gap-3 md:grid-cols-3">
-          <ExportAction title="Executive Summary (PDF)" sub="Sauberes Management-Handout für Ihren CFO · Kernzahlen & Freigabe-Vorlage" emoji="📄" />
-          <ExportAction title="Verhandlungs-Guide" sub="Strategische Argumentationshilfen für das Gespräch mit Ihrem Provider" emoji="📘" />
+          <ExportAction title="Executive Summary (PDF)" sub="Sauberes Management-Handout für deinen CFO · Kernzahlen & Freigabe-Vorlage" emoji="📄" />
+          <ExportAction title="Verhandlungs-Guide" sub="Strategische Argumentationshilfen für das Gespräch mit deinem Provider" emoji="📘" />
           <ExportAction title="Analyse-Report (XLSX)" sub="Detaillierter Komplett-Report als Datenbasis für den Einkauf" emoji="📊" />
         </div>
         <button

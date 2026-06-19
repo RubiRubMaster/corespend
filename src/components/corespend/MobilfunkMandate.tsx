@@ -16,9 +16,9 @@ export function MobilfunkMandate() {
             <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
               State E · Verhandlungsmandat
             </div>
-            <h2 className="text-3xl font-semibold tracking-tight mt-1">Ihr Mandat ist bereit</h2>
+            <h2 className="text-3xl font-semibold tracking-tight mt-1">Dein Mandat ist bereit</h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-              Diese strategischen Parameter führen unsere Verhandlungsexperten in Ihr Provider-Gespräch.
+              Diese strategischen Parameter führen unsere Verhandlungsexperten in dein Provider-Gespräch.
               Erwartetes Verhandlungsergebnis:{" "}
               <span className="text-success font-semibold tabular-nums">{formatEUR(expectedSavings)} / Jahr</span>.
             </p>
@@ -37,7 +37,7 @@ export function MobilfunkMandate() {
             <button
               onClick={() =>
                 toast.success("Verhandlungsmandat wird vorbereitet", {
-                  description: "Sie erhalten das signierte PDF per E-Mail innerhalb von 24 Stunden.",
+                  description: "Du erhältst das signierte PDF per E-Mail innerhalb von 24 Stunden.",
                 })
               }
               className="rounded-lg bg-gradient-to-r from-success to-primary text-success-foreground px-5 py-3 text-sm font-semibold hover:brightness-110 transition shadow-[0_15px_50px_-15px_color-mix(in_oklab,var(--success)_70%,transparent)]"

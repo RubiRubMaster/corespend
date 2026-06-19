@@ -20,7 +20,7 @@ export function ContractsTable({ title = "Hochgeladene Verträge", compact = fal
         <div className="py-10 text-center">
           <div className="text-3xl mb-2">📭</div>
           <p className="text-sm font-medium">Noch keine Verträge vorhanden</p>
-          <p className="text-xs text-muted-foreground mt-1">Bitte lade Ihren ersten Vertrag hoch</p>
+          <p className="text-xs text-muted-foreground mt-1">Bitte lade deinen ersten Vertrag hoch</p>
         </div>
       ) : (
         <div className="overflow-x-auto">

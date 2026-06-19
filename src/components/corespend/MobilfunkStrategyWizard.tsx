@@ -157,7 +157,7 @@ function computeImpact(s: NegotiationStrategy, base: number) {
     leveragePct,
     leverageLabel,
     expectedSavings: Math.round(base * m),
-    notes: notes.length ? notes : ["Wählen Sie Optionen für eine Live-Schätzung des Hebels."],
+    notes: notes.length ? notes : ["Wähle Optionen für eine Live-Schätzung des Hebels."],
   };
 }
 
@@ -269,8 +269,8 @@ function CheckOption({
 function Step1({ strategy, update }: StepProps) {
   return (
     <StepShell
-      title="Wie wollen Sie verhandeln?"
-      intro="Legen Sie die strategische Ausrichtung fest. Sie können leise nachverhandeln oder die volle Drohkulisse einer Marktausschreibung aufbauen."
+      title="Wie willst du verhandeln?"
+      intro="Lege die strategische Ausrichtung fest. Du kannst leise nachverhandeln oder die volle Drohkulisse einer Marktausschreibung aufbauen."
     >
       <OptionCard
         selected={strategy.approach === "renegotiate"}
@@ -292,8 +292,8 @@ function Step1({ strategy, update }: StepProps) {
 function Step2({ strategy, update }: StepProps) {
   return (
     <StepShell
-      title="Welchen Vertragshorizont wollen Sie?"
-      intro="Die Laufzeit bestimmt Ihre Flexibilität und gleichzeitig den verhandelbaren Rabatt."
+      title="Welchen Vertragshorizont willst du?"
+      intro="Die Laufzeit bestimmt deine Flexibilität und gleichzeitig den verhandelbaren Rabatt."
     >
       <OptionCard
         selected={strategy.termMonths === 12}
@@ -322,7 +322,7 @@ function Step3({ strategy, update }: StepProps) {
   return (
     <StepShell
       title="Wie soll abgerechnet werden?"
-      intro="Erweiterte Zahlungsziele optimieren Ihren Cashflow. Eine konsolidierte Gesamtrechnung erleichtert die ERP-Verbuchung."
+      intro="Erweiterte Zahlungsziele optimieren deinen Cashflow. Eine konsolidierte Gesamtrechnung erleichtert die ERP-Verbuchung."
     >
       <CheckOption
         checked={strategy.payment.net60}
@@ -349,8 +349,8 @@ function Step3({ strategy, update }: StepProps) {
 function Step4({ strategy, update }: StepProps) {
   return (
     <StepShell
-      title="Welche Schutzklauseln wollen Sie?"
-      intro="Harte Klauseln, die Sie in den Vertrag verhandeln wollen, um Sie gegen unternehmerische Risiken abzusichern."
+      title="Welche Schutzklauseln willst du?"
+      intro="Harte Klauseln, die du in den Vertrag verhandeln willst, um dich gegen unternehmerische Risiken abzusichern."
     >
       <CheckOption
         checked={strategy.clauses.flexStaff}
@@ -372,7 +372,7 @@ function Step5({ strategy, update }: StepProps) {
   return (
     <StepShell
       title="Welche Flotten-Infrastruktur ist Pflicht?"
-      intro="Operative Must-Haves für die technische Umsetzung Ihrer Mobilfunk-Flotte."
+      intro="Operative Must-Haves für die technische Umsetzung deiner Mobilfunk-Flotte."
     >
       <CheckOption
         checked={strategy.fleet.esimMdm}

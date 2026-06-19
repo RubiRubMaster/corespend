@@ -23,7 +23,7 @@ export function LockedView() {
           </h1>
           <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
             Aktuell fokussieren wir den MVP auf Mobilfunk. Sobald dieser Bereich freigeschaltet ist,
-            sinkt Ihr CoreSpend-Tarif um weitere 200 € / Monat.
+            sinkt dein CoreSpend-Tarif um weitere 200 € / Monat.
           </p>
           <div className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-3 py-1.5">
             <span>📬</span> Auf Warteliste setzen

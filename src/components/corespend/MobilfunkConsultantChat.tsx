@@ -6,10 +6,10 @@ type Phase = "intro" | "chat" | "waiting";
 type Msg = { role: "ai" | "user"; text: string };
 
 const INTRO_TEXT =
-  "Hi 👋 ich bin Ihr AI Consultant. Damit ich Ihre Analyse und den Benchmark optimal für Sie gestalten kann, führe ich Sie jetzt durch einen Consultant-verifizierten Prozess. Sind Sie bereit?";
+  "Hi 👋 ich bin dein AI Consultant. Damit ich deine Analyse und den Benchmark optimal für dich gestalten kann, führe ich dich jetzt durch einen Consultant-verifizierten Prozess. Bist du bereit?";
 
 const FIRST_QUESTION =
-  "Super. Bitte beschreibe mir Ihr Vorhaben so genau wie möglich: Was ist Ihr Motiv? Welche Anforderungen und Inhalte sollten sich gegenüber Ihrem jetzigen Vertragskonstrukt ändern?";
+  "Super. Bitte beschreibe mir dein Vorhaben so genau wie möglich: Was ist dein Motiv? Welche Anforderungen und Inhalte sollten sich gegenüber deinem jetzigen Vertragskonstrukt ändern?";
 
 export function MobilfunkConsultantChat() {
   const { resetAll, goDashboard } = useCoreSpend();
@@ -73,15 +73,15 @@ export function MobilfunkConsultantChat() {
           <Bubble role="ai">
             <div className="space-y-3">
               <p>
-                Danke 🙏 Auf Basis Ihrer Angaben wird nun der <span className="text-success font-medium">Verhandlungsguide</span> aktiviert
-                und Ihr Benchmark spezifiziert. Unsere Consultants prüfen die Strategie und feinjustieren die Argumente für Ihr Provider-Gespräch.
+                Danke 🙏 Auf Basis deiner Angaben wird nun der <span className="text-success font-medium">Verhandlungsguide</span> aktiviert
+                und dein Benchmark spezifiziert. Unsere Consultants prüfen die Strategie und feinjustieren die Argumente für dein Provider-Gespräch.
               </p>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
                 Verarbeitung läuft · geschätzte Bearbeitungszeit 24 h
               </div>
               <p className="text-xs text-muted-foreground">
-                📧 Sie werden per E-Mail informiert, sobald Ihre Ergebnisse fertig sind.
+                📧 Du wirst per E-Mail informiert, sobald deine Ergebnisse fertig sind.
               </p>
             </div>
           </Bubble>
@@ -111,7 +111,7 @@ export function MobilfunkConsultantChat() {
                   submitAnswer();
                 }
               }}
-              placeholder="Beschreiben Sie Ihr Vorhaben, Motiv und gewünschte Änderungen am Vertrag …"
+              placeholder="Beschreibe dein Vorhaben, Motiv und gewünschte Änderungen am Vertrag …"
               rows={4}
               className="w-full resize-none rounded-lg border border-border bg-background/60 px-3.5 py-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary"
             />
