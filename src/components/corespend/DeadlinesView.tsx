@@ -125,6 +125,70 @@ export function DeadlinesView() {
       <p className={cn("text-[11px] text-muted-foreground")}>
         Diese Tabelle wird live aus den Admin-Eingaben gespeist (Sektion „Daten für Fristen-Detailseite").
       </p>
+
+      <section className="space-y-3 pt-4">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">Fristen nach Kategorie</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Kategorie-spezifische Vorlaufzeiten, typische Risiken und Verhandlungshebel — verdichtet aus CoreSpend-Benchmarks.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {CATEGORY_INSIGHTS.map((c) => {
+            const Icon = c.icon;
+            return (
+              <div
+                key={c.key}
+                className={cn(
+                  "rounded-xl border bg-gradient-to-br p-4 space-y-3",
+                  c.accent,
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-background/60 p-1.5 border border-border/60">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-sm font-semibold tracking-tight">{c.label}</h3>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Vorlaufzeit</div>
+                    <div className="text-foreground/90 mt-0.5">{c.leadTime}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Typische Risiken</div>
+                    <div className="text-foreground/90 mt-0.5">{c.typicalRisk}</div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Hebel</div>
+                    <ul className="mt-1 space-y-1">
+                      {c.levers.map((l, i) => (
+                        <li key={i} className="flex gap-1.5 text-foreground/85">
+                          <span className="text-success">▸</span>
+                          <span>{l}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Watch-Outs</div>
+                    <ul className="mt-1 space-y-1">
+                      {c.watchOuts.map((w, i) => (
+                        <li key={i} className="flex gap-1.5 text-foreground/85">
+                          <span className="text-destructive">!</span>
+                          <span>{w}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }
