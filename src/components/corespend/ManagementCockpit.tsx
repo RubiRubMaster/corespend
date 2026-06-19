@@ -394,7 +394,7 @@ function SpendDistribution({
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "rounded-xl border bg-background/60 backdrop-blur p-4 text-left transition-all flex flex-col gap-3",
+        "rounded-xl border bg-background/60 backdrop-blur p-4 text-left transition-all flex flex-col gap-3 h-full",
         live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 cursor-not-allowed",
       )}
     >
