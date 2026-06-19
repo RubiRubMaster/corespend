@@ -274,6 +274,9 @@ type Ctx = {
   setTimeMode: (m: TimeMode) => void;
   consultantBriefing: string;
   setConsultantBriefing: (s: string) => void;
+  tickerOverrides: (Partial<TickerItem> | null)[];
+  updateTickerItem: (index: number, patch: Partial<TickerItem>) => void;
+  resetTickerItem: (index: number) => void;
   resetAll: () => void;
 };
 
