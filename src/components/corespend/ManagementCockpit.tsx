@@ -176,7 +176,7 @@ export function ManagementCockpit() {
           title="C-Level Report generieren"
           desc="Sofortiger, CFO-ready PDF-Export des aktuellen IT-Finanzstatus für das Management."
           onClick={live ? () => generateCLevelReport({ cockpit: m, ticker: sortedTicker, yearly }) : undefined}
-          tone="default"
+          tone="success"
         />
       </section>
     </div>
@@ -252,10 +252,11 @@ function CtaTile({
   emoji, title, desc, onClick, tone, size = "md",
 }: {
   emoji: string; title: string; desc: string; onClick?: () => void;
-  tone: "primary" | "default";
+  tone: "primary" | "success" | "default";
   size?: "md" | "lg";
 }) {
   const isPrimary = tone === "primary";
+  const isSuccess = tone === "success";
   const isLarge = size === "lg";
   return (
     <button
@@ -266,7 +267,9 @@ function CtaTile({
         isLarge ? "px-7 py-7 gap-3" : "px-5 py-5 gap-2",
         isPrimary
           ? "border-primary/60 bg-gradient-to-br from-primary/35 via-primary/20 to-primary/10 shadow-[0_0_50px_-12px_hsl(var(--primary)/0.6)] hover:from-primary/45 hover:via-primary/25 hover:to-primary/15 hover:border-primary/80"
-          : "border-border bg-surface/40 hover:bg-surface/60 hover:border-primary/30",
+          : isSuccess
+            ? "border-success/60 bg-gradient-to-br from-success/35 via-success/20 to-success/10 shadow-[0_0_50px_-12px_hsl(var(--success)/0.6)] hover:from-success/45 hover:via-success/25 hover:to-success/15 hover:border-success/80"
+            : "border-border bg-surface/40 hover:bg-surface/60 hover:border-primary/30",
         !onClick && "cursor-not-allowed opacity-70",
       )}
     >
@@ -274,13 +277,14 @@ function CtaTile({
         "flex items-center gap-2 font-semibold tracking-tight",
         isLarge ? "text-lg" : "text-sm",
         isPrimary && "text-foreground",
+        isSuccess && "text-success",
       )}>
         <span className={cn(isLarge ? "text-2xl" : "text-base")}>{emoji}</span> {title}
       </div>
       <div className={cn(
         "leading-snug",
         isLarge ? "text-xs" : "text-[11px]",
-        isPrimary ? "text-foreground/80" : "text-muted-foreground",
+        isPrimary ? "text-foreground/80" : isSuccess ? "text-success/80" : "text-muted-foreground",
       )}>
         {desc}
       </div>
