@@ -62,7 +62,7 @@ export function TopBar() {
             </span>
             {totalDiscount > 0 && (
               <span className="text-xs text-muted-foreground line-through tabular-nums">
-                {formatEUR(PRICING.BASE_PRICE)}
+                {formatEUR(effectiveBasePrice)}
               </span>
             )}
           </div>
