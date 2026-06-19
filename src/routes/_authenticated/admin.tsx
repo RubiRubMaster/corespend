@@ -140,7 +140,7 @@ function AdminInner() {
             const labels: Record<typeof key, string> = {
               telco: "📞 Telekommunikation",
               office: "💻 Office Suites",
-              saas: "☁️ SaaS / AI",
+              saas: "☁️ SaaS",
               cloud: "🌐 Cloud",
               hardware: "🔌 Hardware",
             };
