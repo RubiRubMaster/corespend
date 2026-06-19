@@ -46,7 +46,7 @@ export function ManagementCockpit() {
       </header>
 
       {/* KPI Row */}
-      <section className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
+      <section className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
         <KpiCard
           label={spendLabel}
           value={live ? `${formatEUR(spendValue)}` : "—"}
