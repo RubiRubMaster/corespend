@@ -347,92 +347,62 @@ function SpendShareBar({
       tabIndex={onOpen ? 0 : undefined}
       onKeyDown={(e) => { if (onOpen && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onOpen(); } }}
       className={cn(
-        "rounded-xl border border-border bg-surface/40 px-3 py-3 flex flex-col justify-between min-h-[110px]",
+        "rounded-xl border border-border bg-surface/40 px-3 py-2 flex items-center gap-3 h-[52px]",
         onOpen && "cursor-pointer hover:border-primary/40 hover:bg-surface/60 transition-colors",
         !live && "opacity-70",
       )}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
-          Kostenaufteilung
-        </span>
-        {onOpen && (
-          <span className="text-[9px] text-muted-foreground hover:text-primary">
-            Details →
-          </span>
-        )}
+      <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium shrink-0">
+        Kostenaufteilung
+      </span>
+
+      <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+        <div className="h-2 w-full rounded-full overflow-hidden flex border border-border bg-background">
+          {segments.map((s) => (
+            <div
+              key={s.key}
+              title={`${s.label} · ${s.pct.toFixed(1).replace(".", ",")} % · ${formatEUR(s.monthly)} / Monat`}
+              className="h-full transition-opacity hover:opacity-80"
+              style={{ width: `${s.pct}%`, background: s.color }}
+            />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+          {segments.map((s) => (
+            <div key={s.key} className="flex items-center gap-1 min-w-0">
+              <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: s.color }} />
+              <span className="text-[9px] text-foreground/80 truncate">{s.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* The 100% bar */}
-      <div className="h-3 w-full rounded-full overflow-hidden flex border border-border bg-background mt-2">
-        {segments.map((s) => (
-          <div
-            key={s.key}
-            title={`${s.label} · ${s.pct.toFixed(1).replace(".", ",")} % · ${formatEUR(s.monthly)} / Monat`}
-            className="h-full transition-opacity hover:opacity-80"
-            style={{ width: `${s.pct}%`, background: s.color }}
-          />
-        ))}
-      </div>
-
-      {/* Compact legend */}
-      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-        {segments.map((s) => (
-          <div key={s.key} className="flex items-center gap-1 min-w-0">
-            <span className="h-2 w-2 rounded-full shrink-0" style={{ background: s.color }} />
-            <span className="text-[9px] text-foreground/80 truncate">{s.label}</span>
-          </div>
-        ))}
-      </div>
+      {onOpen && <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
     </div>
   );
 }
 
-/* ---------- Top 4 Verhandlungen (mini · same size as KPI card) ---------- */
+/* ---------- Status Verhandlungen Button (slim · half height) ---------- */
 
-function NegotiationsCard({ live }: { live: boolean }) {
-  const top = [...NEGOTIATIONS]
-    .filter((n) => n.daysRemaining >= 0)
-    .sort((a, b) => a.daysRemaining - b.daysRemaining)
-    .slice(0, 4);
-
+function NegotiationsButton({ live }: { live: boolean }) {
   return (
-    <div className={cn("rounded-xl border border-border bg-surface/40 px-3 py-3 flex flex-col min-h-[110px]", !live && "opacity-70")}>
-      <div className="flex items-center justify-between mb-1.5">
+    <Link
+      to="/verhandlungen"
+      className={cn(
+        "rounded-xl border border-border bg-surface/40 px-3 py-2 h-[52px] flex items-center justify-between gap-2 transition-colors",
+        live ? "hover:border-primary/40 hover:bg-surface/60 cursor-pointer" : "pointer-events-none opacity-70",
+      )}
+    >
+      <div className="flex flex-col leading-tight min-w-0">
         <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
+          Verhandlungs-Portfolio
+        </span>
+        <span className="text-sm font-semibold tracking-tight text-foreground/90 truncate">
           Status Verhandlungen
         </span>
       </div>
-
-      <ul className="flex-1 divide-y divide-border/40">
-        {top.map((n, i) => {
-          const meta = STATUS_META[n.status];
-          return (
-            <li key={i} className="py-1 flex items-center justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] text-muted-foreground truncate">{n.area}</span>
-                  <span className={cn("text-[8px] uppercase tracking-wider px-1 py-0 rounded-full border font-medium shrink-0", meta.cls)}>
-                    {meta.label}
-                  </span>
-                </div>
-                <div className="text-[10px] font-medium text-foreground/90 truncate leading-tight">{n.vendor}</div>
-                <div className="text-[9px] text-muted-foreground tabular-nums">{n.endLabel}</div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-
-      <Link
-        to="/verhandlungen"
-        className={cn(
-          "flex items-center justify-center gap-1 border-t border-border pt-1.5 mt-1 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors",
-          !live && "pointer-events-none opacity-60",
-        )}
-      >
-        Alle Verhandlungen <ArrowRight className="h-3 w-3" />
-      </Link>
-    </div>
+      <ArrowRight className="h-4 w-4 text-primary shrink-0" />
+    </Link>
   );
 }
+
