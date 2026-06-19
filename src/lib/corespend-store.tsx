@@ -559,10 +559,13 @@ export function CoreSpendProvider({
     ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
   }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
 
+  const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
+  const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
+
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
     const areas = mobilfunkLive ? 1 : 0;
-    const discount = areas * PRICING.DISCOUNT_PER_AREA;
-    const price = priceOverride ?? Math.max(PRICING.BASE_PRICE - discount, PRICING.MIN_PRICE);
+    const discount = areas * effectiveDiscountPerArea;
+    const price = priceOverride ?? Math.max(effectiveBasePrice - discount, PRICING.MIN_PRICE);
     const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
     const savings = savingsOverride ?? (mobilfunkLive ? derivedSavings : 0);
     return {
@@ -572,7 +575,7 @@ export function CoreSpendProvider({
       effectiveSpendMonthly: spend,
       effectiveSavingsYearly: savings,
     };
-  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings]);
+  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
 
   const value: Ctx = {
     mobilfunkStatus,
