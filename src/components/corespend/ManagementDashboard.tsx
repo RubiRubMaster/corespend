@@ -60,13 +60,11 @@ export function ManagementDashboard() {
             <GlobalKpi
               label={spendLabel}
               value={live || effectiveSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
-              labelTone="primary"
             />
             <GlobalKpi
               label="Identifiziertes Einsparpotenzial"
               value={live || effectiveSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
               tone="success"
-              labelTone="primary"
             />
             <GlobalKpi
               label="Aktive Bereiche"
@@ -517,7 +515,7 @@ function LockedAction() {
   );
 }
 
-function GlobalKpi({ label, value, tone, labelTone }: { label: string; value: string; tone?: "success" | "muted"; labelTone?: "primary" }) {
+function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?: "success" | "muted" }) {
   return (
     <div
       className={cn(
@@ -525,10 +523,7 @@ function GlobalKpi({ label, value, tone, labelTone }: { label: string; value: st
         tone === "success" ? "border-success/30" : "border-border",
       )}
     >
-      <span className={cn(
-        "text-xs uppercase tracking-wider",
-        labelTone === "primary" ? "text-primary" : "text-muted-foreground"
-      )}>{label}</span>
+      <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
       <span
         className={cn(
           "text-xl font-semibold tabular-nums mt-1.5",
