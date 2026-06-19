@@ -1,6 +1,71 @@
 import { useCoreSpend } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { Clock, AlertCircle, CheckCircle } from "lucide-react";
+import { Clock, AlertCircle, CheckCircle, Cloud, Cpu, Server } from "lucide-react";
+
+type CategoryInsight = {
+  key: string;
+  label: string;
+  icon: typeof Cloud;
+  accent: string;
+  leadTime: string;
+  typicalRisk: string;
+  levers: string[];
+  watchOuts: string[];
+};
+
+const CATEGORY_INSIGHTS: CategoryInsight[] = [
+  {
+    key: "saas",
+    label: "SaaS / AI",
+    icon: Cloud,
+    accent: "from-sky-500/15 to-sky-500/5 border-sky-500/30",
+    leadTime: "6–9 Monate vor Renewal",
+    typicalRisk: "Auto-Renewal-Klauseln, Preis-Uplifts 8–15 % p.a., ungenutzte Lizenzen 20–35 %",
+    levers: [
+      "True-Up & License-Reharvesting vor Verlängerung",
+      "Multi-Year-Locks gegen AI-Add-on-Preissprünge",
+      "Benchmark gegen Listenpreise & Peer-Discounts",
+    ],
+    watchOuts: [
+      "Stille Verlängerung bei Versäumen der Kündigungsfrist",
+      "AI-Module (Copilot, GenAI) oft außerhalb des Rahmenvertrags bepreist",
+    ],
+  },
+  {
+    key: "hardware",
+    label: "Hardware & Workplace",
+    icon: Cpu,
+    accent: "from-amber-500/15 to-amber-500/5 border-amber-500/30",
+    leadTime: "4–6 Monate vor Leasing-Ende / Refresh",
+    typicalRisk: "Lieferzeiten 8–14 Wochen, Restwert-Risiken, ESG-Reporting-Pflichten",
+    levers: [
+      "Device-as-a-Service vs. CAPEX-Vergleich neu rechnen",
+      "Bundling von Endgeräten, Zubehör & Service-Levels",
+      "Trade-In & Refurbishment in TCO einpreisen",
+    ],
+    watchOuts: [
+      "Verlängerte Leasingraten nach Ende der Grundmietzeit",
+      "Versteckte Logistik- und Imaging-Gebühren",
+    ],
+  },
+  {
+    key: "cloud",
+    label: "Cloud Infrastruktur",
+    icon: Server,
+    accent: "from-emerald-500/15 to-emerald-500/5 border-emerald-500/30",
+    leadTime: "3–12 Monate vor EDP / Commit-Ende",
+    typicalRisk: "Over-Commit auf EDPs, Egress-Kosten, ungenutzte Reserved Instances",
+    levers: [
+      "Savings Plans & RIs gegen On-Demand-Mix optimieren",
+      "Private Pricing Agreements (PPA) neu verhandeln",
+      "FinOps-Tags zur verursachergerechten Allokation",
+    ],
+    watchOuts: [
+      "Commit-Strafen bei Unterschreitung des EDP-Volumens",
+      "Egress-Fallen bei Multi-Cloud-Architekturen",
+    ],
+  },
+];
 
 export function DeadlinesView() {
   const { deadlines, cockpit, goCockpit } = useCoreSpend();
