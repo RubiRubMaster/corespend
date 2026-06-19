@@ -67,27 +67,33 @@ const HOW_PILLARS = [
   {
     n: "01",
     title: "Infrastruktur-Intelligenz",
-    text: "Intelligente Algorithmen scannen reale Nutzungsdaten und matchen sie mit vertraglichen Pflichten.",
+    text: "Intelligente Algorithmen scannen reale Nutzungsdaten sowie monatliche Rechnungen und decken ungenutzte Ressourcen (No Usage) über den gesamten IT-Stack hinweg sofort auf.",
   },
   {
     n: "02",
     title: "Automatisierte Vertrags-Analyse",
-    text: "KI-gestützte Auswertung von Rahmenverträgen, Kündigungsfristen, Zahlungszielen und Sonderklauseln.",
+    text: "KI-gestützte Auswertung von Rahmenverträgen, Fristen und Geldflüssen. Strategische KPIs wie Total Tech Spend und Financial Exposure werden vollautomatisch ermittelt und auf dem Dashboard visualisiert.",
   },
   {
     n: "03",
     title: "Live-Benchmark-Daten",
-    text: "Ein kollaboratives, anonymisiertes DACH-Netzwerk liefert echte Marktpreise vergleichbarer Unternehmen in Echtzeit.",
+    text: "Ein kollaboratives, anonymisiertes DACH-Netzwerk aus Tausenden von realen Geschäften liefert echte Markt- und Spitzenpreise vergleichbarer Unternehmen in Echtzeit.",
   },
   {
     n: "04",
-    title: "Autonome Verhandlungs-Agenten",
-    text: "Digitale Assistenten generieren maßgeschneiderte Argumentationsketten und Drohkulissen für den Einkauf.",
+    title: "Digitale Verhandlungs-Guides & AI-Consultant",
+    text: "Generierung maßgeschneiderter Argumentationsketten, Best-Practice-Szenarien und echter Preisuntergrenzen. Der integrierte AI-Consultant bewertet zusätzlich individuelle Nebenabreden.",
   },
   {
     n: "05",
     title: "Zertifiziertes Experten-Netzwerk",
-    text: "Jede automatisierte Analyse wird von verifizierten IT-Einkaufsexperten auditiert — für 100% Präzision und Compliance.",
+    text: "Aktivieren Sie per Klick verifizierte CoreSpend-Verhandlungs­experten. Sie steigen ohne teure Vorphasen direkt auf Augenhöhe am Verhandlungstisch ein, um den maximalen Erfolg zu erzielen.",
+  },
+  {
+    n: "06",
+    title: "Zentrale IT-Governance & C-Level-Control",
+    text: "Ein digitales Kontroll-Cockpit bündelt sämtliche IT-Ausgaben, Vertragsrisiken und Freigaben an einem Ort. Automatisierte Compliance-Checks reduzieren manuelle Abstimmungen auf ein Minimum, wodurch Sie die absolute Hoheit über das gesamte Portfolio behalten.",
+    comingSoon: true,
   },
 ];
 
@@ -233,16 +239,29 @@ function Landing() {
         <div className="text-center mb-12">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">The How</div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight max-w-3xl mx-auto">
-            Modernste Technologie. Tiefes Marktwissen. Fünf Kern-Säulen für deinen Erfolg.
+            Modernste Technologie. Tiefes Marktwissen. Sechs Kern-Säulen für Ihren Erfolg.
           </h2>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {HOW_PILLARS.map((p) => (
-            <div key={p.n} className="glass-card p-6 relative overflow-hidden">
+            <div key={p.n} className={`glass-card p-6 relative overflow-hidden ${p.comingSoon ? 'opacity-70' : ''}`}>
               <div className="absolute top-4 right-5 text-[11px] font-mono text-muted-foreground/60 tracking-wider">
                 {p.n}
               </div>
-              <h3 className="text-lg font-semibold tracking-tight pr-8">{p.title}</h3>
+              <h3 className="text-lg font-semibold tracking-tight pr-8 flex items-center gap-2">
+                {p.comingSoon && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                )}
+                {p.title}
+                {p.comingSoon && (
+                  <span className="ml-auto inline-flex items-center rounded-full border border-border bg-accent px-2 py-0.5 text-[10px] font-medium text-muted-foreground tracking-wide">
+                    Coming Soon
+                  </span>
+                )}
+              </h3>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.text}</p>
             </div>
           ))}
