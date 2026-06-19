@@ -363,3 +363,116 @@ ${ticker.map((t) => `<li><span class="tag ${t.tone}">${toneLabel[t.tone]}</span>
   if (!w) return;
   w.document.open(); w.document.write(html); w.document.close();
 }
+
+/* ---------- Spend distribution bar ---------- */
+
+const SEGMENT_COLORS: Record<string, string> = {
+  cloud: "bg-[hsl(210_90%_55%)]",
+  saas: "bg-[hsl(265_75%_60%)]",
+  telco: "bg-[hsl(160_70%_45%)]",
+  office: "bg-[hsl(45_90%_55%)]",
+  hardware: "bg-[hsl(15_85%_60%)]",
+};
+const DOT_COLORS: Record<string, string> = {
+  cloud: "bg-[hsl(210_90%_55%)]",
+  saas: "bg-[hsl(265_75%_60%)]",
+  telco: "bg-[hsl(160_70%_45%)]",
+  office: "bg-[hsl(45_90%_55%)]",
+  hardware: "bg-[hsl(15_85%_60%)]",
+};
+
+function SpendDistribution({
+  items, live, onClick,
+}: {
+  items: { key: string; label: string; monthly: number }[];
+  live: boolean;
+  onClick?: () => void;
+}) {
+  const total = items.reduce((s, i) => s + (i.monthly || 0), 0);
+  return (
+    <button
+      onClick={onClick}
+      disabled={!onClick}
+      className={cn(
+        "rounded-xl border bg-background/60 backdrop-blur p-5 text-left transition-all flex flex-col gap-4",
+        live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 cursor-not-allowed",
+      )}
+    >
+      <div className="flex items-center gap-2 border-b border-border pb-3">
+        <span className="text-base">📊</span>
+        <span className="text-sm font-semibold tracking-tight">Spend nach Dimensionen</span>
+        {onClick && <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />}
+      </div>
+
+      <div className="flex h-3 w-full rounded-full overflow-hidden bg-background border border-border/60">
+        {items.map((it) => {
+          const pct = total > 0 ? (it.monthly / total) * 100 : 0;
+          return (
+            <div
+              key={it.key}
+              className={cn(SEGMENT_COLORS[it.key] ?? "bg-primary")}
+              style={{ width: `${pct}%` }}
+              title={`${it.label}: ${formatEUR(it.monthly)} (${Math.round(pct)}%)`}
+            />
+          );
+        })}
+      </div>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-[12px]">
+        {items.map((it) => {
+          const pct = total > 0 ? Math.round((it.monthly / total) * 100) : 0;
+          return (
+            <li key={it.key} className="flex items-center gap-2 tabular-nums">
+              <span className={cn("h-2 w-2 rounded-full shrink-0", DOT_COLORS[it.key] ?? "bg-primary")} />
+              <span className="text-foreground/90 truncate">{it.label}</span>
+              <span className="ml-auto text-muted-foreground">{formatEUR(it.monthly)} ({pct}%)</span>
+            </li>
+          );
+        })}
+      </ul>
+    </button>
+  );
+}
+
+/* ---------- Top 4 Renewals ---------- */
+
+const RENEWAL_BADGE: Record<RenewalStatus, string> = {
+  "In Analyse": "border-slate-500/40 bg-slate-500/15 text-slate-300",
+  "Strategie bereit": "border-primary/40 bg-primary/15 text-primary",
+  "In Verhandlung": "border-[hsl(32_95%_60%)]/40 bg-[hsl(32_95%_60%)]/15 text-[hsl(32_95%_60%)]",
+  "Erfolgreich optimiert": "border-success/40 bg-success/15 text-success",
+};
+
+function RenewalsBox({ live }: { live: boolean }) {
+  const items = DEFAULT_RENEWALS;
+  return (
+    <Link
+      to="/verhandlungen"
+      disabled={!live}
+      className={cn(
+        "rounded-xl border bg-background/60 backdrop-blur p-5 flex flex-col gap-3 transition-all",
+        live ? "border-border hover:border-primary/40 hover:bg-primary/5 cursor-pointer" : "border-border opacity-70 pointer-events-none",
+      )}
+    >
+      <div className="flex items-center gap-2 border-b border-border pb-3">
+        <span className="text-base">🤝</span>
+        <span className="text-sm font-semibold tracking-tight">Sourcing-Status · Top 4 Verhandlungen</span>
+        <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
+      </div>
+      <ul className="flex flex-col divide-y divide-border/60">
+        {items.map((r) => (
+          <li key={r.vendor} className="py-2.5 flex items-center gap-3 text-[13px]">
+            <div className="min-w-0 flex-1">
+              <div className="text-foreground/90 font-medium truncate">{r.vendor}</div>
+              <div className="text-[11px] text-muted-foreground truncate">{r.category} · {r.due}</div>
+            </div>
+            <span className={cn("text-[10px] uppercase tracking-wider rounded-full px-2 py-0.5 border whitespace-nowrap", RENEWAL_BADGE[r.status])}>
+              {r.status}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </Link>
+  );
+}
+
