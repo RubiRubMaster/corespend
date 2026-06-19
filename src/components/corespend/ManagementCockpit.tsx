@@ -1,13 +1,17 @@
-import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem } from "@/lib/corespend-store";
+import { useState } from "react";
+import { useCoreSpend, formatEUR, type TickerTone, type ActiveView, type CockpitView, type TickerItem, type SpendAreaItem } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
-import { AlertCircle, Clock, CheckCircle } from "lucide-react";
+import { AlertCircle, Clock, CheckCircle, ChevronDown } from "lucide-react";
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+} from "recharts";
 
 
 const TONE_ORDER: Record<TickerTone, number> = { danger: 0, warning: 1, success: 2 };
 
 export function ManagementCockpit() {
   const {
-    mobilfunkStatus, cockpit: m, tickerItems, timeMode,
+    mobilfunkStatus, cockpit: m, tickerItems, timeMode, spendBreakdown,
     goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
