@@ -26,28 +26,25 @@ export function ManagementCockpit() {
     .sort((a, b) => TONE_ORDER[a.tone] - TONE_ORDER[b.tone]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-3">
       {/* Header */}
-      <header className="flex items-end justify-between flex-wrap gap-4">
+      <header className="flex items-end justify-between flex-wrap gap-3">
         <div>
-          <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             CoreSpend · Executive Layer
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight mt-1 flex items-center gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight mt-0.5 flex items-center gap-2">
             <span>💼</span> Core Cockpit
           </h1>
-          <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
-            Die zentrale Steuerungseinheit für maximale Kostentransparenz, proaktives Fristenmanagement und messbaren ROI Ihres gesamten IT-Stacks.
-          </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
           <span className={cn("h-2 w-2 rounded-full animate-pulse", live ? "bg-success" : "bg-muted-foreground/40")} />
           {live ? "Live · Datenbasis aktiv" : "Demo · Daten werden nach Analyse freigeschaltet"}
         </div>
       </header>
 
-      {/* KPI Row */}
-      <section className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
+      {/* Unified compact grid · 3x2 · all boxes same weight */}
+      <section className="grid gap-3 lg:grid-cols-3">
         <KpiCard
           label={spendLabel}
           value={live ? `${formatEUR(spendValue)}` : "—"}
@@ -56,12 +53,13 @@ export function ManagementCockpit() {
           subTone="destructive"
           locked={!live}
           onClick={live ? goSpend : undefined}
+          footer={live ? `Impact ${formatEUR(m.impactRealized)} · ROI ${m.roi.toFixed(1).replace(".", ",")}x` : undefined}
         />
         <KpiCard
           label="Identifiziertes Sparpotenzial"
           value={live ? `${formatEUR(savingsValue)}` : "—"}
           unit={unit}
-          sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial im bestehenden Stack` : "Wird nach Analyse berechnet"}
+          sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial` : "Wird berechnet"}
           subTone="success"
           valueTone="success"
           locked={!live}
@@ -71,65 +69,18 @@ export function ManagementCockpit() {
           label="Kritische Fristen"
           value={live ? `${m.criticalDeadlines}` : "—"}
           valueTone="warning"
-          sub={live ? `Handlungsbedarf innerhalb der nächsten ${m.deadlineWindowDays} Tage` : "Vertragsfristen werden überwacht"}
+          sub={live ? `Handlungsbedarf in ${m.deadlineWindowDays} Tagen` : "Vertragsfristen werden überwacht"}
           locked={!live}
           onClick={live ? goDeadlines : undefined}
         />
         <KpiCard
           label="Vertragsrisiko"
           value={live ? formatEUR(m.riskExposure) : "—"}
-          sub={live ? "Vertragsvolumen in Verhandlung / mit Handlungsbedarf" : "Risk-Exposure-Modell inaktiv"}
+          sub={live ? "Volumen in Verhandlung / mit Handlungsbedarf" : "Risk-Exposure inaktiv"}
           locked={!live}
           onClick={live ? goRisk : undefined}
         />
 
-        {/* Highlight Card */}
-        <div
-          className={cn(
-            "rounded-xl border p-5 flex flex-col gap-4",
-            live
-              ? "border-success/40 bg-gradient-to-br from-success/15 via-success/5 to-primary/10 shadow-[0_0_40px_-15px_hsl(var(--success)/0.4)]"
-              : "border-border bg-surface/40 opacity-70",
-          )}
-        >
-          <div className="text-[10px] uppercase tracking-[0.2em] text-success/90 flex items-center gap-1.5">
-            <span>✦</span> CoreSpend Impact
-          </div>
-
-          <div className="flex items-stretch gap-5 flex-1">
-            {/* Impact value */}
-            <div className="flex-1 flex flex-col justify-center min-w-0">
-              <div className={cn("text-3xl font-semibold tabular-nums tracking-tight leading-none truncate", live ? "text-success" : "text-muted-foreground")}>
-                {live ? formatEUR(m.impactRealized) : "—"}
-              </div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">
-                Realisierte Einsparungen
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="w-px bg-success/20 shrink-0" />
-
-            {/* ROI value */}
-            <div className="flex-1 flex flex-col justify-center min-w-0">
-              <div className={cn("text-3xl font-semibold tabular-nums tracking-tight leading-none", live ? "text-foreground" : "text-muted-foreground")}>
-                {live ? `${m.roi.toFixed(1).replace(".", ",")}x` : "—"}
-              </div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">
-                ROI
-              </div>
-            </div>
-          </div>
-
-          <div className="text-[11px] text-muted-foreground leading-snug border-t border-success/20 pt-3">
-            ROI: {live ? `${m.roi.toFixed(1).replace(".", ",")}x` : "—"}
-            {live && ` (Je investiertem Euro werden ${m.roi.toFixed(2).replace(".", ",")} € eingespart)`}
-          </div>
-        </div>
-      </section>
-
-      {/* Spend Share Bar + Status Verhandlungen */}
-      <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
         <SpendShareBar
           areas={spendBreakdown}
           live={live}
@@ -141,13 +92,13 @@ export function ManagementCockpit() {
       {/* Management Briefing */}
       <section
         className={cn(
-          "rounded-xl border bg-background/60 backdrop-blur p-5",
+          "rounded-xl border bg-background/60 backdrop-blur p-3",
           live ? "border-border" : "border-border opacity-70",
         )}
       >
-        <div className="flex items-center gap-2 pb-3 mb-3 border-b border-border">
-          <span className="text-base">📊</span>
-          <span className="text-sm font-semibold tracking-tight">Management Briefing</span>
+        <div className="flex items-center gap-2 pb-2 mb-2 border-b border-border">
+          <span className="text-sm">📊</span>
+          <span className="text-xs font-semibold tracking-tight">Management Briefing</span>
         </div>
         <ul className="flex flex-col divide-y divide-border/60">
           {sortedTicker.map((t) => {
@@ -158,7 +109,7 @@ export function ManagementCockpit() {
                   onClick={interactive ? () => navTo(t.target) : undefined}
                   disabled={!interactive}
                   className={cn(
-                    "w-full flex items-center gap-3 py-2.5 text-left text-[13px] tabular-nums",
+                    "w-full flex items-center gap-2 py-1.5 text-left text-[11px] tabular-nums",
                     interactive && "hover:text-primary transition-colors cursor-pointer",
                     !live && "text-muted-foreground/70",
                   )}
@@ -175,7 +126,7 @@ export function ManagementCockpit() {
       </section>
 
       {/* CTA Strip · 2 actions */}
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="grid gap-3 md:grid-cols-2">
         <CtaTile
           emoji="⚡"
           title="Optimierungsvorschläge prüfen"
@@ -198,7 +149,7 @@ export function ManagementCockpit() {
 /* ---------- bits ---------- */
 
 function KpiCard({
-  label, value, unit, sub, subTone, valueTone, locked, onClick,
+  label, value, unit, sub, subTone, valueTone, locked, onClick, footer,
 }: {
   label: string;
   value: string;
@@ -208,23 +159,24 @@ function KpiCard({
   valueTone?: "success" | "warning" | "destructive";
   locked?: boolean;
   onClick?: () => void;
+  footer?: string;
 }) {
   const Tag = onClick ? "button" : "div";
   return (
     <Tag
       onClick={onClick}
       className={cn(
-        "rounded-xl border bg-surface/40 px-4 py-5 flex flex-col leading-tight text-left transition-all",
+        "rounded-xl border bg-surface/40 px-3 py-3 flex flex-col leading-tight text-left transition-all min-h-[110px]",
         "border-border",
         locked && "opacity-60",
         onClick && "hover:border-primary/40 hover:bg-primary/5 cursor-pointer",
       )}
     >
       <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">{label}</span>
-      <div className="mt-3 flex items-baseline gap-1.5">
+      <div className="mt-2 flex items-baseline gap-1">
         <span
           className={cn(
-            "text-2xl font-semibold tabular-nums tracking-tight",
+            "text-xl font-semibold tabular-nums tracking-tight",
             valueTone === "success" && "text-success",
             valueTone === "warning" && "text-[hsl(32_95%_60%)]",
             valueTone === "destructive" && "text-destructive",
@@ -232,12 +184,12 @@ function KpiCard({
         >
           {value}
         </span>
-        {unit && <span className="text-[11px] text-muted-foreground">{unit}</span>}
+        {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
       </div>
       {sub && (
         <span
           className={cn(
-            "mt-2 text-[11px] leading-snug",
+            "mt-1.5 text-[10px] leading-snug",
             subTone === "success" && "text-success",
             subTone === "destructive" && "text-destructive/90",
             (!subTone || subTone === "muted") && "text-muted-foreground",
@@ -246,37 +198,39 @@ function KpiCard({
           {sub}
         </span>
       )}
+      {footer && (
+        <span className="mt-auto pt-1.5 text-[9px] text-muted-foreground border-t border-border/40 leading-tight">
+          {footer}
+        </span>
+      )}
     </Tag>
   );
 }
 
 function BriefingIcon({ tone }: { tone: TickerTone }) {
   if (tone === "danger") {
-    return <AlertCircle className="h-4 w-4 shrink-0 text-destructive" strokeWidth={2.2} />;
+    return <AlertCircle className="h-3.5 w-3.5 shrink-0 text-destructive" strokeWidth={2.2} />;
   }
   if (tone === "warning") {
-    return <Clock className="h-4 w-4 shrink-0 text-[hsl(32_95%_60%)]" strokeWidth={2.2} />;
+    return <Clock className="h-3.5 w-3.5 shrink-0 text-[hsl(32_95%_60%)]" strokeWidth={2.2} />;
   }
-  return <CheckCircle className="h-4 w-4 shrink-0 text-success" strokeWidth={2.2} />;
+  return <CheckCircle className="h-3.5 w-3.5 shrink-0 text-success" strokeWidth={2.2} />;
 }
 
 function CtaTile({
-  emoji, title, desc, onClick, tone, size = "md",
+  emoji, title, desc, onClick, tone,
 }: {
   emoji: string; title: string; desc: string; onClick?: () => void;
   tone: "primary" | "success" | "default";
-  size?: "md" | "lg";
 }) {
   const isPrimary = tone === "primary";
   const isSuccess = tone === "success";
-  const isLarge = size === "lg";
   return (
     <button
       onClick={onClick}
       disabled={!onClick}
       className={cn(
-        "rounded-xl border text-left transition-all flex flex-col",
-        isLarge ? "px-7 py-7 gap-3" : "px-5 py-5 gap-2",
+        "rounded-xl border text-left transition-all flex flex-col px-4 py-3 gap-1.5",
         isPrimary
           ? "border-primary/60 bg-gradient-to-br from-primary/35 via-primary/20 to-primary/10 shadow-[0_0_50px_-12px_hsl(var(--primary)/0.6)] hover:from-primary/45 hover:via-primary/25 hover:to-primary/15 hover:border-primary/80"
           : isSuccess
@@ -286,16 +240,14 @@ function CtaTile({
       )}
     >
       <div className={cn(
-        "flex items-center gap-2 font-semibold tracking-tight",
-        isLarge ? "text-lg" : "text-sm",
+        "flex items-center gap-2 font-semibold tracking-tight text-sm",
         isPrimary && "text-foreground",
         isSuccess && "text-success",
       )}>
-        <span className={cn(isLarge ? "text-2xl" : "text-base")}>{emoji}</span> {title}
+        <span className="text-base">{emoji}</span> {title}
       </div>
       <div className={cn(
-        "leading-snug",
-        isLarge ? "text-xs" : "text-[11px]",
+        "leading-snug text-[11px]",
         isPrimary ? "text-foreground/80" : isSuccess ? "text-success/80" : "text-muted-foreground",
       )}>
         {desc}
@@ -365,7 +317,7 @@ ${ticker.map((t) => `<li><span class="tag ${t.tone}">${toneLabel[t.tone]}</span>
   w.document.open(); w.document.write(html); w.document.close();
 }
 
-/* ---------- Spend Share Bar (stacked 100% horizontal bar) ---------- */
+/* ---------- Spend Share Bar (mini · same size as KPI card) ---------- */
 
 const AREA_COLORS: Record<SpendAreaItem["key"], string> = {
   telco: "#22d3ee",      // cyan
@@ -394,29 +346,24 @@ function SpendShareBar({
       tabIndex={onOpen ? 0 : undefined}
       onKeyDown={(e) => { if (onOpen && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onOpen(); } }}
       className={cn(
-        "rounded-xl border border-border bg-surface/40 p-5 flex flex-col",
+        "rounded-xl border border-border bg-surface/40 px-3 py-3 flex flex-col justify-between min-h-[110px]",
         onOpen && "cursor-pointer hover:border-primary/40 hover:bg-surface/60 transition-colors",
         !live && "opacity-70",
       )}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-            Kostenaufteilung · Gesamtportfolio
-          </div>
-          <div className="text-sm font-semibold tracking-tight mt-1">
-            Anteil der Kernbereiche an den IT-Gesamtausgaben
-          </div>
-        </div>
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
+          Kostenaufteilung
+        </span>
         {onOpen && (
-          <span className="text-[11px] text-muted-foreground hover:text-primary">
-            Detailansicht öffnen →
+          <span className="text-[9px] text-muted-foreground hover:text-primary">
+            Details →
           </span>
         )}
       </div>
 
       {/* The 100% bar */}
-      <div className="h-6 w-full rounded-full overflow-hidden flex border border-border bg-background">
+      <div className="h-3 w-full rounded-full overflow-hidden flex border border-border bg-background mt-2">
         {segments.map((s) => (
           <div
             key={s.key}
@@ -427,59 +374,50 @@ function SpendShareBar({
         ))}
       </div>
 
-      {/* Legend */}
-      <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-2">
+      {/* Compact legend */}
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
         {segments.map((s) => (
-          <li key={s.key} className="flex items-center gap-2 min-w-0">
-            <span className="h-2.5 w-2.5 rounded-sm shrink-0" style={{ background: s.color }} />
-            <div className="flex flex-col min-w-0">
-              <span className="text-[11px] text-foreground/90 truncate">{s.label}</span>
-              <span className="text-[10px] text-muted-foreground tabular-nums">
-                {s.pct.toFixed(1).replace(".", ",")} %
-              </span>
-            </div>
-          </li>
+          <div key={s.key} className="flex items-center gap-1 min-w-0">
+            <span className="h-2 w-2 rounded-full shrink-0" style={{ background: s.color }} />
+            <span className="text-[9px] text-foreground/80 truncate">{s.label}</span>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
-/* ---------- Status Verhandlungen (Focus-Panel) ---------- */
+/* ---------- Top 4 Verhandlungen (mini · same size as KPI card) ---------- */
 
 function NegotiationsCard({ live }: { live: boolean }) {
-  // Top 4: open negotiations sorted by daysRemaining ascending
   const top = [...NEGOTIATIONS]
     .filter((n) => n.daysRemaining >= 0)
     .sort((a, b) => a.daysRemaining - b.daysRemaining)
     .slice(0, 4);
 
   return (
-    <div className={cn("rounded-xl border border-border bg-surface/40 flex flex-col", !live && "opacity-70")}>
-      <div className="px-5 pt-5 pb-3">
-        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+    <div className={cn("rounded-xl border border-border bg-surface/40 px-3 py-3 flex flex-col min-h-[110px]", !live && "opacity-70")}>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
           Status Verhandlungen
-        </div>
-        <div className="text-sm font-semibold tracking-tight mt-1">
-          Top 4 anstehende Renewals
-        </div>
+        </span>
       </div>
 
-      <ul className="flex-1 divide-y divide-border/60 border-t border-border">
+      <ul className="flex-1 divide-y divide-border/40">
         {top.map((n, i) => {
           const meta = STATUS_META[n.status];
           return (
-            <li key={i} className="px-5 py-3 flex flex-col gap-1">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground truncate">
-                  {n.area}
-                </span>
-                <span className={cn("text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full border font-medium shrink-0", meta.cls)}>
-                  {meta.label}
-                </span>
+            <li key={i} className="py-1 flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] text-muted-foreground truncate">{n.area}</span>
+                  <span className={cn("text-[8px] uppercase tracking-wider px-1 py-0 rounded-full border font-medium shrink-0", meta.cls)}>
+                    {meta.label}
+                  </span>
+                </div>
+                <div className="text-[10px] font-medium text-foreground/90 truncate leading-tight">{n.vendor}</div>
+                <div className="text-[9px] text-muted-foreground tabular-nums">{n.endLabel}</div>
               </div>
-              <div className="text-xs font-medium text-foreground/90 leading-snug truncate">{n.vendor}</div>
-              <div className="text-[11px] text-muted-foreground tabular-nums">{n.endLabel}</div>
             </li>
           );
         })}
@@ -488,11 +426,11 @@ function NegotiationsCard({ live }: { live: boolean }) {
       <Link
         to="/verhandlungen"
         className={cn(
-          "flex items-center justify-center gap-1.5 border-t border-border px-5 py-3 text-xs font-medium text-primary hover:bg-primary/5 transition-colors rounded-b-xl",
+          "flex items-center justify-center gap-1 border-t border-border pt-1.5 mt-1 text-[10px] font-medium text-primary hover:text-primary/80 transition-colors",
           !live && "pointer-events-none opacity-60",
         )}
       >
-        Alle Verhandlungen anzeigen <ArrowRight className="h-3.5 w-3.5" />
+        Alle Verhandlungen <ArrowRight className="h-3 w-3" />
       </Link>
     </div>
   );
