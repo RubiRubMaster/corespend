@@ -67,7 +67,7 @@ export function TopBar() {
             )}
           </div>
           <span className="text-[10px] text-muted-foreground mt-0.5">
-            Basis {formatEUR(PRICING.BASE_PRICE)} · Data-Contribution Bonus −{formatEUR(PRICING.DISCOUNT_PER_AREA)} pro geteiltem Bereich
+            Basis {formatEUR(effectiveBasePrice)} · Data-Contribution Bonus −{formatEUR(effectiveDiscountPerArea)} pro geteiltem Bereich
           </span>
         </div>
       </div>
