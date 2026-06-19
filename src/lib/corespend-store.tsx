@@ -593,6 +593,9 @@ export function CoreSpendProvider({
     setSavingsOverride,
     consultantBriefing,
     setConsultantBriefing,
+    tickerOverrides,
+    updateTickerItem,
+    resetTickerItem,
     resetAll,
   };
 
