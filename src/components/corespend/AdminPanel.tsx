@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { useCoreSpend, formatEUR } from "@/lib/corespend-store";
+import { useCoreSpend, formatEUR, OFFICE_DEFAULTS, SAAS_DEFAULTS } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
+
+const usd = (n: number) =>
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
 
 export function AdminPanel() {
   const [open, setOpen] = useState(false);
@@ -24,6 +27,24 @@ export function AdminPanel() {
     tickerOverrides,
     updateTickerItem,
     resetTickerItem,
+    officeSuiteEnabled,
+    saasAiEnabled,
+    setOfficeSuiteEnabled,
+    setSaasAiEnabled,
+    officeSpendOverride,
+    officeSavingsOverride,
+    saasSpendOverride,
+    saasDamageOverride,
+    setOfficeSpendOverride,
+    setOfficeSavingsOverride,
+    setSaasSpendOverride,
+    setSaasDamageOverride,
+    effectiveOfficeSpend,
+    effectiveOfficeSavings,
+    effectiveSaasSpend,
+    effectiveSaasDamage,
+    saasScenario,
+    setSaasScenario,
     resetAll,
   } = useCoreSpend();
 
