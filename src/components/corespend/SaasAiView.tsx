@@ -9,8 +9,8 @@ import {
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 
-const usd = (n: number) =>
-  new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
+const eur = (n: number) =>
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(n);
 
 // Daily June spend; anomaly scenario shows spike on 10.06., normal stays flat.
 const FLAT_DAYS = [
