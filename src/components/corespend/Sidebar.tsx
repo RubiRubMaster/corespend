@@ -6,8 +6,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus } = useCoreSpend();
   const [telcoOpen, setTelcoOpen] = useState(activeView === "mobilfunk");
+  const [officeOpen, setOfficeOpen] = useState(activeView === "officesuite");
+  const [saasOpen, setSaasOpen] = useState(activeView === "saasai");
 
   return (
     <aside className="hidden md:flex w-[272px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
