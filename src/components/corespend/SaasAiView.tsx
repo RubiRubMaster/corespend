@@ -65,11 +65,14 @@ const ROWS_NORMAL: TokenRow[] = [
 ];
 
 export function SaasAiView() {
-  const { goDashboard } = useCoreSpend();
+  const { goDashboard, effectiveSaasSpend, effectiveSaasDamage, saasScenario } = useCoreSpend();
   const [file, setFile] = useState<File | undefined>();
   const [dragging, setDragging] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const isAnomaly = saasScenario === "anomaly";
+  const DAILY_SPEND = isAnomaly ? [...FLAT_DAYS, ...TAIL_ANOMALY] : [...FLAT_DAYS, ...TAIL_NORMAL];
+  const TOKEN_ROWS = isAnomaly ? ROWS_ANOMALY : ROWS_NORMAL;
 
   function pickFile(f: File | undefined) {
     if (!f) return;
