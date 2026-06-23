@@ -10,11 +10,16 @@ export function ManagementCockpit() {
   const {
     mobilfunkStatus, cockpit: m, tickerItems, timeMode, spendBreakdown,
     goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
+    globalSpendMonthly, globalSavingsYearly,
+    officeSuiteEnabled, saasAiEnabled,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
+  const anyLive = live || officeSuiteEnabled || saasAiEnabled;
   const yearly = timeMode === "yearly";
-  const spendValue = yearly ? m.spendMonthly * 12 : m.spendMonthly;
-  const savingsValue = yearly ? m.savingsYearly : Math.floor(m.savingsYearly / 12);
+  const spendMonthlyEffective = anyLive ? globalSpendMonthly : m.spendMonthly;
+  const savingsYearlyEffective = anyLive ? globalSavingsYearly : m.savingsYearly;
+  const spendValue = yearly ? spendMonthlyEffective * 12 : spendMonthlyEffective;
+  const savingsValue = yearly ? savingsYearlyEffective : Math.floor(savingsYearlyEffective / 12);
   const unit = yearly ? "/ Jahr" : "/ Monat";
   const spendLabel = yearly ? "Validierte Jahresausgaben" : "Validierte Monatsausgaben";
 
