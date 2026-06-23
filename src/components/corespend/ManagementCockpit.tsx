@@ -54,22 +54,22 @@ export function ManagementCockpit() {
       <section className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
         <KpiCard
           label={spendLabel}
-          value={live ? `${formatEUR(spendValue)}` : "—"}
+          value={anyLive ? `${formatEUR(spendValue)}` : "—"}
           unit={unit}
-          sub={live ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr` : "Datenbasis wird geladen"}
+          sub={anyLive ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr · Mobilfunk + Office + SaaS / AI` : "Datenbasis wird geladen"}
           subTone="destructive"
-          locked={!live}
-          onClick={live ? goSpend : undefined}
+          locked={!anyLive}
+          onClick={anyLive ? goSpend : undefined}
         />
         <KpiCard
           label="Identifiziertes Sparpotenzial"
-          value={live ? `${formatEUR(savingsValue)}` : "—"}
+          value={anyLive ? `${formatEUR(savingsValue)}` : "—"}
           unit={unit}
-          sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial im bestehenden Stack` : "Wird nach Analyse berechnet"}
+          sub={anyLive ? `Aggregiert aus allen aktiven Bereichen` : "Wird nach Analyse berechnet"}
           subTone="success"
           valueTone="success"
-          locked={!live}
-          onClick={live ? goOptimizations : undefined}
+          locked={!anyLive}
+          onClick={anyLive ? goOptimizations : undefined}
         />
         <KpiCard
           label="Kritische Fristen"
