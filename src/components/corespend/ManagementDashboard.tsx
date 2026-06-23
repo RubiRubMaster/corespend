@@ -10,14 +10,19 @@ export function ManagementDashboard() {
     mobilfunkStatus, metrics, goMobilfunk,
     currentPrice, totalDiscount, activatedAreas,
     effectiveSpendMonthly, effectiveSavingsYearly, timeMode,
+    globalSpendMonthly, globalSavingsYearly,
+    officeSuiteEnabled, saasAiEnabled,
+    effectiveOfficeSpend, effectiveOfficeSavings,
+    effectiveSaasSpend, effectiveSaasDamage,
+    goOfficeSuite, goSaasAi,
   } = useCoreSpend();
   const mobilfunkLive = mobilfunkStatus === "analyzed";
   const live = mobilfunkLive;
   const yearly = timeMode === "yearly";
   const unit = yearly ? "/ Jahr" : "/ Monat";
   const unitShort = yearly ? "/ Jahr" : "/ Mo.";
-  const spendDisplay = yearly ? effectiveSpendMonthly * 12 : effectiveSpendMonthly;
-  const savingsDisplay = yearly ? effectiveSavingsYearly : Math.floor(effectiveSavingsYearly / 12);
+  const spendDisplay = yearly ? globalSpendMonthly * 12 : globalSpendMonthly;
+  const savingsDisplay = yearly ? globalSavingsYearly : Math.floor(globalSavingsYearly / 12);
   const spendLabel = yearly ? "Validierte Jahresausgaben (Gesamt)" : "Validierte Monatsausgaben (Gesamt)";
   const telcoCost = yearly ? metrics.costMonthly * 12 : metrics.costMonthly;
   const telcoSavings = yearly ? metrics.savingsYearly : Math.floor(metrics.savingsYearly / 12);
