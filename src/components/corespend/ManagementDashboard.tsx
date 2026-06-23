@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { ContractsTable } from "./ContractsTable";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
 } from "recharts";
 
 export function ManagementDashboard() {
