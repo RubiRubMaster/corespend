@@ -270,6 +270,8 @@ type Ctx = {
   savingsOverride: number | null;
   effectiveSpendMonthly: number;
   effectiveSavingsYearly: number;
+  globalSpendMonthly: number;
+  globalSavingsYearly: number;
   currentPrice: number;
   totalDiscount: number;
   activatedAreas: number;
