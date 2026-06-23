@@ -64,11 +64,11 @@ export function ManagementDashboard() {
           <div className="grid grid-cols-3 gap-3">
             <GlobalKpi
               label={spendLabel}
-              value={live || effectiveSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
+              value={globalSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
             />
             <GlobalKpi
               label="Identifiziertes Einsparpotenzial"
-              value={live || effectiveSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
+              value={globalSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
               tone="success"
             />
             <GlobalKpi
