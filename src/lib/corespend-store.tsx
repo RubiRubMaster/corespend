@@ -694,6 +694,8 @@ export function CoreSpendProvider({
     savingsOverride,
     effectiveSpendMonthly,
     effectiveSavingsYearly,
+    globalSpendMonthly,
+    globalSavingsYearly,
     currentPrice,
     totalDiscount,
     activatedAreas,
