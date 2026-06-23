@@ -664,6 +664,21 @@ export function CoreSpendProvider({
   const effectiveSaasSpend = saasSpendOverride ?? SAAS_DEFAULTS.mtdSpend;
   const effectiveSaasDamage = saasScenario === "normal" ? 0 : (saasDamageOverride ?? SAAS_DEFAULTS.damage);
 
+  // Global aggregates across Mobilfunk + Office-Suite + SaaS / AI
+  const globalSpendMonthly = useMemo(() => {
+    const telco = mobilfunkLive ? metrics.costMonthly : 0;
+    const office = officeSuiteEnabled ? effectiveOfficeSpend : 0;
+    const saas = saasAiEnabled ? effectiveSaasSpend : 0;
+    return telco + office + saas;
+  }, [mobilfunkLive, metrics.costMonthly, officeSuiteEnabled, effectiveOfficeSpend, saasAiEnabled, effectiveSaasSpend]);
+
+  const globalSavingsYearly = useMemo(() => {
+    const telco = mobilfunkLive ? derivedSavings : 0;
+    const office = officeSuiteEnabled ? effectiveOfficeSavings * 12 : 0;
+    const saas = saasAiEnabled ? effectiveSaasDamage * 12 : 0;
+    return Math.ceil(telco + office + saas);
+  }, [mobilfunkLive, derivedSavings, officeSuiteEnabled, effectiveOfficeSavings, saasAiEnabled, effectiveSaasDamage]);
+
   const value: Ctx = {
     mobilfunkStatus,
     mobilfunkFile,
