@@ -324,6 +324,25 @@ type Ctx = {
   tickerOverrides: (Partial<TickerItem> | null)[];
   updateTickerItem: (index: number, patch: Partial<TickerItem>) => void;
   resetTickerItem: (index: number) => void;
+  // Office-Suite + SaaS/AI admin steering
+  officeSuiteEnabled: boolean;
+  saasAiEnabled: boolean;
+  setOfficeSuiteEnabled: (v: boolean) => void;
+  setSaasAiEnabled: (v: boolean) => void;
+  officeSpendOverride: number | null;
+  officeSavingsOverride: number | null;
+  saasSpendOverride: number | null;
+  saasDamageOverride: number | null;
+  setOfficeSpendOverride: (n: number | null) => void;
+  setOfficeSavingsOverride: (n: number | null) => void;
+  setSaasSpendOverride: (n: number | null) => void;
+  setSaasDamageOverride: (n: number | null) => void;
+  effectiveOfficeSpend: number;
+  effectiveOfficeSavings: number;
+  effectiveSaasSpend: number;
+  effectiveSaasDamage: number;
+  saasScenario: SaasScenario;
+  setSaasScenario: (s: SaasScenario) => void;
   resetAll: () => void;
 };
 
