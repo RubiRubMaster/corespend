@@ -12,8 +12,8 @@ const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 const usd = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
 
-// Daily June spend; flat 10-40 days 1-9, massive spike on 10 (2650), back to 16.25 from day 11
-const DAILY_SPEND = [
+// Daily June spend; anomaly scenario shows spike on 10.06., normal stays flat.
+const FLAT_DAYS = [
   { day: "01.06.", cost: 14.2 },
   { day: "02.06.", cost: 22.5 },
   { day: "03.06.", cost: 18.7 },
@@ -23,7 +23,9 @@ const DAILY_SPEND = [
   { day: "07.06.", cost: 15.8 },
   { day: "08.06.", cost: 28.6 },
   { day: "09.06.", cost: 12.6 },
-  { day: "10.06.", cost: 2650 },
+];
+const TAIL_NORMAL = [
+  { day: "10.06.", cost: 22.4 },
   { day: "11.06.", cost: 16.25 },
   { day: "12.06.", cost: 16.25 },
   { day: "13.06.", cost: 16.25 },
@@ -34,6 +36,10 @@ const DAILY_SPEND = [
   { day: "18.06.", cost: 16.25 },
   { day: "19.06.", cost: 16.25 },
   { day: "20.06.", cost: 16.25 },
+];
+const TAIL_ANOMALY = [
+  { day: "10.06.", cost: 2650 },
+  ...TAIL_NORMAL.slice(1),
 ];
 
 type TokenRow = {
@@ -47,8 +53,13 @@ type TokenRow = {
   critical?: boolean;
 };
 
-const TOKEN_ROWS: TokenRow[] = [
+const ROWS_ANOMALY: TokenRow[] = [
   { date: "10.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "430 Mio.", cost: 2650.0, statusEmoji: "🔴", statusLabel: "KRITISCH: Kosten-Explosion / Mögliche Endlosschleife detektiert", critical: true },
+  { date: "09.06.2026", project: "Customer_Support_AI", model: "gpt-4o-mini", tokens: "9,7 Mio.", cost: 12.6, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
+  { date: "05.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "4,7 Mio.", cost: 39.5, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
+];
+const ROWS_NORMAL: TokenRow[] = [
+  { date: "10.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "3,6 Mio.", cost: 22.4, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
   { date: "09.06.2026", project: "Customer_Support_AI", model: "gpt-4o-mini", tokens: "9,7 Mio.", cost: 12.6, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
   { date: "05.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "4,7 Mio.", cost: 39.5, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
 ];
