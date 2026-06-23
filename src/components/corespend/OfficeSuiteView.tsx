@@ -47,7 +47,7 @@ const USERS: UserRow[] = [
 ];
 
 export function OfficeSuiteView() {
-  const { goDashboard } = useCoreSpend();
+  const { goDashboard, effectiveOfficeSpend, effectiveOfficeSavings } = useCoreSpend();
   const [file, setFile] = useState<File | undefined>();
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
