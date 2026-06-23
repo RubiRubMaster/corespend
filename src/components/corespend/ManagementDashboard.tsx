@@ -260,22 +260,49 @@ export function ManagementDashboard() {
         emoji="💻"
         title="Office-Suite"
         subtitle="Microsoft 365 · Google Workspace · Adobe"
-        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
-        locked
-        kpis={lockedTopKpis}
+        statusBadge={officeSuiteEnabled ? { label: "Aktiv", tone: "success" } : { label: "🔒 Coming Soon", tone: "muted" }}
+        locked={!officeSuiteEnabled}
+        kpis={
+          officeSuiteEnabled
+            ? [
+                { label: "Total License Spend", value: `${formatEUR(yearly ? effectiveOfficeSpend * 12 : effectiveOfficeSpend)} ${unitShort}` },
+                { label: "Identifiziertes Potenzial", value: `${formatEUR(yearly ? effectiveOfficeSavings * 12 : effectiveOfficeSavings)} ${unit}`, tone: "success" },
+                { label: "Aktive Nutzer", value: "18 / 20", tone: "muted" },
+              ]
+            : lockedTopKpis
+        }
       >
         <div className="grid gap-3 lg:grid-cols-3">
           <SpecificBlock
-            items={[
-              { l: "Lizenz-Auslastung", v: "—", sub: "Utilization Rate in %" },
-              { l: "Doppel-Lizenzen", v: "—", sub: "SaaS-Overlap: Slack vs. Teams · Zoom vs. Meet" },
-              { l: "Shadow-IT-Erkennung", v: "—", sub: "Kreditkarten-Abos außerhalb Procurement" },
-            ]}
+            items={
+              officeSuiteEnabled
+                ? [
+                    { l: "Lizenz-Verteilung", v: "15× E5", sub: "3× E3 · 2× F3" },
+                    { l: "Zombie-Lizenzen", v: "2", sub: "b.schulz@ · j.zimmermann@" },
+                    { l: "Over-Licensing", v: "3 Downgrades", sub: "p.koch@ · l.bauer@ · c.braun@" },
+                  ]
+                : [
+                    { l: "Lizenz-Auslastung", v: "—", sub: "Utilization Rate in %" },
+                    { l: "Doppel-Lizenzen", v: "—", sub: "SaaS-Overlap: Slack vs. Teams · Zoom vs. Meet" },
+                    { l: "Shadow-IT-Erkennung", v: "—", sub: "Kreditkarten-Abos außerhalb Procurement" },
+                  ]
+            }
           />
           <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
-            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
-            <ActionBtn disabled>⬇️ Lizenz-Downgrade anfordern (E5 → E3)</ActionBtn>
-            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+            {officeSuiteEnabled ? (
+              <>
+                <ActionBtn onClick={goOfficeSuite} variant="primary">→ Office-Suite Detailansicht</ActionBtn>
+                <ActionBtn onClick={() => toast.success("CFO-Report exportiert", { description: "Lizenz-Optimierung M365." })}>📄 CFO-Report</ActionBtn>
+                <ActionBtn onClick={() => toast.success("Downgrade-Anfrage erstellt", { description: "E5 → F3 für 3 Accounts." })}>⬇️ Lizenz-Downgrade (E5 → F3)</ActionBtn>
+                <ActionBtn variant="success" onClick={() => toast.success("Verhandlungsexperte aktiviert", { description: "M365-Spezialist meldet sich in 24 h." })}>🔥 Verhandlungsexperten aktivieren</ActionBtn>
+              </>
+            ) : (
+              <>
+                <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+                <ActionBtn disabled>⬇️ Lizenz-Downgrade anfordern (E5 → E3)</ActionBtn>
+                <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+              </>
+            )}
           </div>
         </div>
       </CategoryTile>
@@ -284,23 +311,50 @@ export function ManagementDashboard() {
       <CategoryTile
         emoji="☁️"
         title="SaaS / AI"
-        subtitle="Salesforce · HubSpot · Adobe Creative Cloud · weitere"
-        statusBadge={{ label: "🔒 Coming Soon", tone: "muted" }}
-        locked
-        kpis={lockedTopKpis}
+        subtitle="OpenAI · Anthropic · Salesforce · HubSpot · weitere"
+        statusBadge={saasAiEnabled ? { label: "Aktiv", tone: "success" } : { label: "🔒 Coming Soon", tone: "muted" }}
+        locked={!saasAiEnabled}
+        kpis={
+          saasAiEnabled
+            ? [
+                { label: "Month-to-Date Spend", value: `${effectiveSaasSpend.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $` },
+                { label: "Identifizierter Schaden", value: `${effectiveSaasDamage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`, tone: "destructive" },
+                { label: "Forecast-Risiko", value: "38.000 $ / Jahr", tone: "muted" },
+              ]
+            : lockedTopKpis
+        }
       >
         <div className="grid gap-3 lg:grid-cols-3">
           <SpecificBlock
-            items={[
-              { l: "Seat-Auslastung Salesforce", v: "—", sub: "Aktive Logins / lizenzierte User" },
-              { l: "Adobe Named-User-Status", v: "—", sub: "Inaktive Creative-Cloud-Seats" },
-              { l: "Vertragsende-Cluster", v: "—", sub: "Renewals in den nächsten 90 Tagen" },
-            ]}
+            items={
+              saasAiEnabled
+                ? [
+                    { l: "Anomalie 10.06.", v: "2.650 $", sub: "Data_Analytics_Pipeline · gpt-4o" },
+                    { l: "Token-Verbrauch (Spike)", v: "430 Mio.", sub: "Mögliche Endlosschleife detektiert" },
+                    { l: "Normalverbrauch (Schnitt)", v: "≈ 21 $/Tag", sub: "Customer_Support_AI · Pipeline" },
+                  ]
+                : [
+                    { l: "Seat-Auslastung Salesforce", v: "—", sub: "Aktive Logins / lizenzierte User" },
+                    { l: "Adobe Named-User-Status", v: "—", sub: "Inaktive Creative-Cloud-Seats" },
+                    { l: "Vertragsende-Cluster", v: "—", sub: "Renewals in den nächsten 90 Tagen" },
+                  ]
+            }
           />
           <div className="lg:col-span-2 flex flex-wrap gap-2 items-end">
-            <ActionBtn disabled>📄 CFO-Report</ActionBtn>
-            <ActionBtn disabled>📊 Auslastungs-Analyse</ActionBtn>
-            <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+            {saasAiEnabled ? (
+              <>
+                <ActionBtn onClick={goSaasAi} variant="primary">→ SaaS / AI Detailansicht</ActionBtn>
+                <ActionBtn onClick={() => toast.success("CFO-Report exportiert", { description: "AI-Kostenanalyse Juni." })}>📄 CFO-Report</ActionBtn>
+                <ActionBtn onClick={() => toast.success("Token-Analyse gestartet", { description: "Auslastung pro Projekt." })}>📊 Auslastungs-Analyse</ActionBtn>
+                <ActionBtn variant="success" onClick={() => toast.success("Verhandlungsexperte aktiviert", { description: "AI/SaaS-Spezialist meldet sich in 24 h." })}>🔥 Verhandlungsexperten aktivieren</ActionBtn>
+              </>
+            ) : (
+              <>
+                <ActionBtn disabled>📄 CFO-Report</ActionBtn>
+                <ActionBtn disabled>📊 Auslastungs-Analyse</ActionBtn>
+                <ActionBtn disabled variant="success">🔥 Verhandlungsexperten aktivieren</ActionBtn>
+              </>
+            )}
           </div>
         </div>
       </CategoryTile>
