@@ -3,7 +3,7 @@ import { useCoreSpend, formatEUR, OFFICE_DEFAULTS, SAAS_DEFAULTS } from "@/lib/c
 import { cn } from "@/lib/utils";
 
 const usd = (n: number) =>
-  new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(n);
 
 export function AdminPanel() {
   const [open, setOpen] = useState(false);
@@ -167,7 +167,7 @@ export function AdminPanel() {
                 hint={`Aktuell: ${formatEUR(effectiveOfficeSavings)} (Standard ${formatEUR(OFFICE_DEFAULTS.potential)})`}
               />
               <NumField
-                label="SaaS / AI · Month-to-Date Spend ($)"
+                label="SaaS / AI · Month-to-Date Spend (€/Mo.)"
                 value={saasSpendOverride ?? effectiveSaasSpend}
                 placeholder={`${SAAS_DEFAULTS.mtdSpend}`}
                 onChange={(n) => setSaasSpendOverride(Number.isFinite(n) ? n : null)}
@@ -176,13 +176,13 @@ export function AdminPanel() {
                 hint={`Aktuell: ${usd(effectiveSaasSpend)} (Standard ${usd(SAAS_DEFAULTS.mtdSpend)})`}
               />
               <NumField
-                label="SaaS / AI · Identifizierter Schaden ($)"
+                label="SaaS / AI · Identifizierter Schaden (€/Mo.)"
                 value={saasDamageOverride ?? (saasScenario === "normal" ? 0 : SAAS_DEFAULTS.damage)}
                 placeholder={`${SAAS_DEFAULTS.damage}`}
                 onChange={(n) => setSaasDamageOverride(Number.isFinite(n) ? n : null)}
                 onClear={() => setSaasDamageOverride(null)}
                 cleared={saasDamageOverride === null}
-                hint={`Aktuell: ${usd(effectiveSaasDamage)} · Szenario: ${saasScenario === "anomaly" ? "Anomalie" : "Normal (0 $)"}`}
+                hint={`Aktuell: ${usd(effectiveSaasDamage)} · Szenario: ${saasScenario === "anomaly" ? "Anomalie" : "Normal (0 €)"}`}
               />
             </div>
 
