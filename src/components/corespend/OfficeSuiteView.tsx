@@ -129,10 +129,10 @@ export function OfficeSuiteView() {
 
       {/* KPI cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <KpiCard label="Total License Spend" value={`${eur(1014)}`} sub="/ Monat · 20 Lizenzen aktiv" />
+        <KpiCard label="Total License Spend" value={`${eur(effectiveOfficeSpend)}`} sub="/ Monat · 20 Lizenzen aktiv" />
         <KpiCard
           label="Identifiziertes Potenzial"
-          value={`${eur(245)}`}
+          value={`${eur(effectiveOfficeSavings)}`}
           sub="/ Monat · 5 Accounts mit Handlungsbedarf"
           tone="warning"
         />
