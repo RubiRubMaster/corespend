@@ -551,6 +551,13 @@ export function CoreSpendProvider({
     setTickerOverrides([null, null, null, null]);
     setBasePriceOverride(null);
     setDiscountPerAreaOverride(null);
+    setOfficeSuiteEnabled(true);
+    setSaasAiEnabled(true);
+    setOfficeSpendOverride(null);
+    setOfficeSavingsOverride(null);
+    setSaasSpendOverride(null);
+    setSaasDamageOverride(null);
+    setSaasScenario("anomaly");
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
