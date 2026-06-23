@@ -1,9 +1,12 @@
 import { toast } from "sonner";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { ContractsTable } from "./ContractsTable";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from "recharts";
 
 export function ManagementDashboard() {
   const {
