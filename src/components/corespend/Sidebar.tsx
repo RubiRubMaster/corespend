@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus, officeSuiteEnabled, saasAiEnabled } = useCoreSpend();
   const [telcoOpen, setTelcoOpen] = useState(activeView === "mobilfunk");
   const [officeOpen, setOfficeOpen] = useState(activeView === "officesuite");
   const [saasOpen, setSaasOpen] = useState(activeView === "saasai");
