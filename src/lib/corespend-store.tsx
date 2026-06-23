@@ -605,7 +605,7 @@ export function CoreSpendProvider({
     const upcoming = deadlines.filter((d) => d.remainingMonths > 0 && d.remainingMonths <= windowMonths);
     const top = upcoming[0] ?? deadlines[0];
     const months = top?.remainingMonths ?? 5;
-    return [
+    const base: TickerItem[] = [
       {
         tone: "danger",
         text: `Unnötige Kapitalbindung: ${formatEUR(noUsageYearly)} / Jahr durch inaktive und ungenutzte Mobilfunk-Assets identifiziert (Sofortmaßnahme empfohlen).`,
@@ -627,7 +627,17 @@ export function CoreSpendProvider({
         target: "mobilfunk",
       },
     ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
+    // Inject SaaS / AI anomaly alert when scenario is "anomaly" and area enabled
+    if (saasAiEnabled && saasScenario === "anomaly") {
+      const damage = saasDamageOverride ?? SAAS_DEFAULTS.damage;
+      base.unshift({
+        tone: "danger",
+        text: `🔴 KI-Anomalie im SaaS / AI-Bereich: Kosten-Explosion am 10.06. detektiert ($${damage.toLocaleString("de-DE")}). Mögliche Endlosschleife in Data_Analytics_Pipeline (gpt-4o).`,
+        target: "saasai",
+      });
+    }
+    return base;
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride]);
 
   const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
   const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
