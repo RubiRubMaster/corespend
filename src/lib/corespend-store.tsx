@@ -245,6 +245,18 @@ export const PRICING = {
   TOTAL_AREAS: 5,
 };
 
+/** Defaults for Office-Suite & SaaS/AI admin-controlled KPIs. */
+export const OFFICE_DEFAULTS = {
+  totalSpend: 1014, // € / Monat
+  potential: 245,   // € / Monat
+};
+export const SAAS_DEFAULTS = {
+  mtdSpend: 2784.6, // $ / Monat
+  damage: 2610,     // $ Anomalie-Schaden
+};
+export type SaasScenario = "anomaly" | "normal";
+
+
 type Ctx = {
   mobilfunkStatus: UploadStatus;
   mobilfunkFile?: string;
@@ -312,6 +324,25 @@ type Ctx = {
   tickerOverrides: (Partial<TickerItem> | null)[];
   updateTickerItem: (index: number, patch: Partial<TickerItem>) => void;
   resetTickerItem: (index: number) => void;
+  // Office-Suite + SaaS/AI admin steering
+  officeSuiteEnabled: boolean;
+  saasAiEnabled: boolean;
+  setOfficeSuiteEnabled: (v: boolean) => void;
+  setSaasAiEnabled: (v: boolean) => void;
+  officeSpendOverride: number | null;
+  officeSavingsOverride: number | null;
+  saasSpendOverride: number | null;
+  saasDamageOverride: number | null;
+  setOfficeSpendOverride: (n: number | null) => void;
+  setOfficeSavingsOverride: (n: number | null) => void;
+  setSaasSpendOverride: (n: number | null) => void;
+  setSaasDamageOverride: (n: number | null) => void;
+  effectiveOfficeSpend: number;
+  effectiveOfficeSavings: number;
+  effectiveSaasSpend: number;
+  effectiveSaasDamage: number;
+  saasScenario: SaasScenario;
+  setSaasScenario: (s: SaasScenario) => void;
   resetAll: () => void;
 };
 
@@ -339,6 +370,13 @@ export type CoreSpendSnapshot = {
   tickerOverrides?: (Partial<TickerItem> | null)[];
   basePriceOverride?: number | null;
   discountPerAreaOverride?: number | null;
+  officeSuiteEnabled?: boolean;
+  saasAiEnabled?: boolean;
+  officeSpendOverride?: number | null;
+  officeSavingsOverride?: number | null;
+  saasSpendOverride?: number | null;
+  saasDamageOverride?: number | null;
+  saasScenario?: SaasScenario;
 };
 
 export function CoreSpendProvider({
@@ -376,6 +414,13 @@ export function CoreSpendProvider({
   const [tickerOverrides, setTickerOverrides] = useState<(Partial<TickerItem> | null)[]>(s.tickerOverrides ?? [null, null, null, null]);
   const [basePriceOverride, setBasePriceOverride] = useState<number | null>(s.basePriceOverride ?? null);
   const [discountPerAreaOverride, setDiscountPerAreaOverride] = useState<number | null>(s.discountPerAreaOverride ?? null);
+  const [officeSuiteEnabled, setOfficeSuiteEnabled] = useState<boolean>(s.officeSuiteEnabled ?? true);
+  const [saasAiEnabled, setSaasAiEnabled] = useState<boolean>(s.saasAiEnabled ?? true);
+  const [officeSpendOverride, setOfficeSpendOverride] = useState<number | null>(s.officeSpendOverride ?? null);
+  const [officeSavingsOverride, setOfficeSavingsOverride] = useState<number | null>(s.officeSavingsOverride ?? null);
+  const [saasSpendOverride, setSaasSpendOverride] = useState<number | null>(s.saasSpendOverride ?? null);
+  const [saasDamageOverride, setSaasDamageOverride] = useState<number | null>(s.saasDamageOverride ?? null);
+  const [saasScenario, setSaasScenario] = useState<SaasScenario>(s.saasScenario ?? "anomaly");
 
   // Debounced persistence — fires whenever any persistable state changes
   const persistRef = useRef(onPersist);
@@ -390,6 +435,9 @@ export function CoreSpendProvider({
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
       strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
       basePriceOverride, discountPerAreaOverride,
+      officeSuiteEnabled, saasAiEnabled,
+      officeSpendOverride, officeSavingsOverride,
+      saasSpendOverride, saasDamageOverride, saasScenario,
     };
     const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
     return () => clearTimeout(t);
@@ -397,7 +445,10 @@ export function CoreSpendProvider({
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
       strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
-      basePriceOverride, discountPerAreaOverride]);
+      basePriceOverride, discountPerAreaOverride,
+      officeSuiteEnabled, saasAiEnabled,
+      officeSpendOverride, officeSavingsOverride,
+      saasSpendOverride, saasDamageOverride, saasScenario]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
@@ -500,6 +551,13 @@ export function CoreSpendProvider({
     setTickerOverrides([null, null, null, null]);
     setBasePriceOverride(null);
     setDiscountPerAreaOverride(null);
+    setOfficeSuiteEnabled(true);
+    setSaasAiEnabled(true);
+    setOfficeSpendOverride(null);
+    setOfficeSavingsOverride(null);
+    setSaasSpendOverride(null);
+    setSaasDamageOverride(null);
+    setSaasScenario("anomaly");
   }, []);
 
   const mobilfunkLive = mobilfunkStatus === "analyzed";
@@ -547,7 +605,7 @@ export function CoreSpendProvider({
     const upcoming = deadlines.filter((d) => d.remainingMonths > 0 && d.remainingMonths <= windowMonths);
     const top = upcoming[0] ?? deadlines[0];
     const months = top?.remainingMonths ?? 5;
-    return [
+    const base: TickerItem[] = [
       {
         tone: "danger",
         text: `Unnötige Kapitalbindung: ${formatEUR(noUsageYearly)} / Jahr durch inaktive und ungenutzte Mobilfunk-Assets identifiziert (Sofortmaßnahme empfohlen).`,
@@ -569,13 +627,23 @@ export function CoreSpendProvider({
         target: "mobilfunk",
       },
     ].map((it, i) => ({ ...it, ...(tickerOverrides[i] ?? {}) })) as TickerItem[];
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides]);
+    // Inject SaaS / AI anomaly alert when scenario is "anomaly" and area enabled
+    if (saasAiEnabled && saasScenario === "anomaly") {
+      const damage = saasDamageOverride ?? SAAS_DEFAULTS.damage;
+      base.unshift({
+        tone: "danger",
+        text: `🔴 KI-Anomalie im SaaS / AI-Bereich: Kosten-Explosion am 10.06. detektiert ($${damage.toLocaleString("de-DE")}). Mögliche Endlosschleife in Data_Analytics_Pipeline (gpt-4o).`,
+        target: "saasai",
+      });
+    }
+    return base;
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride]);
 
   const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
   const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
 
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
-    const areas = mobilfunkLive ? 1 : 0;
+    const areas = (mobilfunkLive ? 1 : 0) + (officeSuiteEnabled ? 1 : 0) + (saasAiEnabled ? 1 : 0);
     const discount = areas * effectiveDiscountPerArea;
     const price = priceOverride ?? Math.max(effectiveBasePrice - discount, PRICING.MIN_PRICE);
     const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
@@ -587,7 +655,12 @@ export function CoreSpendProvider({
       effectiveSpendMonthly: spend,
       effectiveSavingsYearly: savings,
     };
-  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
+  }, [mobilfunkLive, officeSuiteEnabled, saasAiEnabled, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
+
+  const effectiveOfficeSpend = officeSpendOverride ?? OFFICE_DEFAULTS.totalSpend;
+  const effectiveOfficeSavings = officeSavingsOverride ?? OFFICE_DEFAULTS.potential;
+  const effectiveSaasSpend = saasSpendOverride ?? SAAS_DEFAULTS.mtdSpend;
+  const effectiveSaasDamage = saasScenario === "normal" ? 0 : (saasDamageOverride ?? SAAS_DEFAULTS.damage);
 
   const value: Ctx = {
     mobilfunkStatus,
@@ -656,6 +729,24 @@ export function CoreSpendProvider({
     tickerOverrides,
     updateTickerItem,
     resetTickerItem,
+    officeSuiteEnabled,
+    saasAiEnabled,
+    setOfficeSuiteEnabled,
+    setSaasAiEnabled,
+    officeSpendOverride,
+    officeSavingsOverride,
+    saasSpendOverride,
+    saasDamageOverride,
+    setOfficeSpendOverride,
+    setOfficeSavingsOverride,
+    setSaasSpendOverride,
+    setSaasDamageOverride,
+    effectiveOfficeSpend,
+    effectiveOfficeSavings,
+    effectiveSaasSpend,
+    effectiveSaasDamage,
+    saasScenario,
+    setSaasScenario,
     resetAll,
   };
 

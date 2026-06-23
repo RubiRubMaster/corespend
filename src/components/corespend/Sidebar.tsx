@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus, officeSuiteEnabled, saasAiEnabled } = useCoreSpend();
   const [telcoOpen, setTelcoOpen] = useState(activeView === "mobilfunk");
   const [officeOpen, setOfficeOpen] = useState(activeView === "officesuite");
   const [saasOpen, setSaasOpen] = useState(activeView === "saasai");
@@ -122,6 +122,7 @@ export function Sidebar() {
         </Collapsible>
 
         {/* Office-Suite (active) */}
+        {officeSuiteEnabled && (
         <Collapsible open={officeOpen} onOpenChange={setOfficeOpen} className="rounded-lg">
           <CollapsibleTrigger asChild>
             <button
@@ -156,8 +157,10 @@ export function Sidebar() {
             </div>
           </CollapsibleContent>
         </Collapsible>
+        )}
 
         {/* SaaS / AI (active) */}
+        {saasAiEnabled && (
         <Collapsible open={saasOpen} onOpenChange={setSaasOpen} className="rounded-lg">
           <CollapsibleTrigger asChild>
             <button
@@ -192,6 +195,7 @@ export function Sidebar() {
             </div>
           </CollapsibleContent>
         </Collapsible>
+        )}
 
         {CATEGORIES_META.filter((c) => !c.available && c.key !== "office" && c.key !== "saas").map((c) => (
           <LockedRow key={c.key} cat={c.key} label={c.label} emoji={c.emoji} onClick={() => goLocked(c.key)} />

@@ -12,8 +12,8 @@ const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 const usd = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
 
-// Daily June spend; flat 10-40 days 1-9, massive spike on 10 (2650), back to 16.25 from day 11
-const DAILY_SPEND = [
+// Daily June spend; anomaly scenario shows spike on 10.06., normal stays flat.
+const FLAT_DAYS = [
   { day: "01.06.", cost: 14.2 },
   { day: "02.06.", cost: 22.5 },
   { day: "03.06.", cost: 18.7 },
@@ -23,7 +23,9 @@ const DAILY_SPEND = [
   { day: "07.06.", cost: 15.8 },
   { day: "08.06.", cost: 28.6 },
   { day: "09.06.", cost: 12.6 },
-  { day: "10.06.", cost: 2650 },
+];
+const TAIL_NORMAL = [
+  { day: "10.06.", cost: 22.4 },
   { day: "11.06.", cost: 16.25 },
   { day: "12.06.", cost: 16.25 },
   { day: "13.06.", cost: 16.25 },
@@ -34,6 +36,10 @@ const DAILY_SPEND = [
   { day: "18.06.", cost: 16.25 },
   { day: "19.06.", cost: 16.25 },
   { day: "20.06.", cost: 16.25 },
+];
+const TAIL_ANOMALY = [
+  { day: "10.06.", cost: 2650 },
+  ...TAIL_NORMAL.slice(1),
 ];
 
 type TokenRow = {
@@ -47,18 +53,26 @@ type TokenRow = {
   critical?: boolean;
 };
 
-const TOKEN_ROWS: TokenRow[] = [
+const ROWS_ANOMALY: TokenRow[] = [
   { date: "10.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "430 Mio.", cost: 2650.0, statusEmoji: "🔴", statusLabel: "KRITISCH: Kosten-Explosion / Mögliche Endlosschleife detektiert", critical: true },
+  { date: "09.06.2026", project: "Customer_Support_AI", model: "gpt-4o-mini", tokens: "9,7 Mio.", cost: 12.6, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
+  { date: "05.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "4,7 Mio.", cost: 39.5, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
+];
+const ROWS_NORMAL: TokenRow[] = [
+  { date: "10.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "3,6 Mio.", cost: 22.4, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
   { date: "09.06.2026", project: "Customer_Support_AI", model: "gpt-4o-mini", tokens: "9,7 Mio.", cost: 12.6, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
   { date: "05.06.2026", project: "Data_Analytics_Pipeline", model: "gpt-4o", tokens: "4,7 Mio.", cost: 39.5, statusEmoji: "🟢", statusLabel: "Normaler Verbrauch" },
 ];
 
 export function SaasAiView() {
-  const { goDashboard } = useCoreSpend();
+  const { goDashboard, effectiveSaasSpend, effectiveSaasDamage, saasScenario } = useCoreSpend();
   const [file, setFile] = useState<File | undefined>();
   const [dragging, setDragging] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const isAnomaly = saasScenario === "anomaly";
+  const DAILY_SPEND = isAnomaly ? [...FLAT_DAYS, ...TAIL_ANOMALY] : [...FLAT_DAYS, ...TAIL_NORMAL];
+  const TOKEN_ROWS = isAnomaly ? ROWS_ANOMALY : ROWS_NORMAL;
 
   function pickFile(f: File | undefined) {
     if (!f) return;
@@ -161,18 +175,18 @@ export function SaasAiView() {
 
       {/* KPI cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <KpiCard label="Month-to-Date Spend" value={usd(2784.6)} sub="Juni 2026 · 20 Tage" />
+        <KpiCard label="Month-to-Date Spend" value={usd(effectiveSaasSpend)} sub="Juni 2026 · 20 Tage" />
         <KpiCard
           label="Identifizierter Schaden (Anomalie)"
-          value={usd(2610)}
-          sub="Peak am 10.06. · von CoreSpend abgefangen"
-          tone="destructive"
+          value={usd(effectiveSaasDamage)}
+          sub={isAnomaly ? "Peak am 10.06. · von CoreSpend abgefangen" : "Keine Anomalie detektiert · Verbrauch im grünen Bereich"}
+          tone={isAnomaly ? "destructive" : "success"}
         />
         <KpiCard
           label="Hochgerechnetes Risiko (Forecast)"
-          value={usd(38000)}
-          sub="ohne CoreSpend-Warnung · monatliche Hochrechnung"
-          tone="warning"
+          value={usd(isAnomaly ? 38000 : 488)}
+          sub={isAnomaly ? "ohne CoreSpend-Warnung · monatliche Hochrechnung" : "Normalbetrieb · monatliche Hochrechnung"}
+          tone={isAnomaly ? "warning" : "success"}
         />
       </div>
 
@@ -180,9 +194,15 @@ export function SaasAiView() {
       <div className="glass-card p-5 flex flex-col gap-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="text-sm font-semibold tracking-tight">Täglicher Kosten-Verlauf · Juni 2026</h3>
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-destructive border border-destructive/40 bg-destructive/10 rounded-full px-2 py-0.5">
-            ● KI-Anomalie abgefangen
-          </span>
+          {isAnomaly ? (
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-destructive border border-destructive/40 bg-destructive/10 rounded-full px-2 py-0.5">
+              ● KI-Anomalie abgefangen
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-success border border-success/40 bg-success/10 rounded-full px-2 py-0.5">
+              ● Normaler Verbrauch
+            </span>
+          )}
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={DAILY_SPEND} margin={{ top: 20, right: 30, left: 10, bottom: 10 }}>
@@ -200,26 +220,28 @@ export function SaasAiView() {
             <Line
               type="monotone"
               dataKey="cost"
-              stroke="hsl(210 90% 55%)"
+              stroke={isAnomaly ? "hsl(210 90% 55%)" : "hsl(160 70% 45%)"}
               strokeWidth={2.2}
-              dot={{ r: 3, fill: "hsl(210 90% 55%)" }}
+              dot={{ r: 3, fill: isAnomaly ? "hsl(210 90% 55%)" : "hsl(160 70% 45%)" }}
               activeDot={{ r: 5 }}
             />
-            <ReferenceDot
-              x="10.06."
-              y={2650}
-              r={7}
-              fill="hsl(var(--destructive))"
-              stroke="hsl(var(--background))"
-              strokeWidth={2}
-              label={{
-                value: "KI-Anomalie abgefangen",
-                position: "top",
-                fill: "hsl(var(--destructive))",
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            />
+            {isAnomaly && (
+              <ReferenceDot
+                x="10.06."
+                y={2650}
+                r={7}
+                fill="hsl(var(--destructive))"
+                stroke="hsl(var(--background))"
+                strokeWidth={2}
+                label={{
+                  value: "KI-Anomalie abgefangen",
+                  position: "top",
+                  fill: "hsl(var(--destructive))",
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -231,7 +253,7 @@ export function SaasAiView() {
             AI-Infrastruktur & API-Kostenüberwachung
           </h3>
           <span className="text-[11px] text-muted-foreground">
-            {TOKEN_ROWS.length} Vorgänge · 1 kritisch
+            {TOKEN_ROWS.length} Vorgänge · {isAnomaly ? "1 kritisch" : "alle im grünen Bereich"}
           </span>
         </div>
         <div className="overflow-x-auto">
