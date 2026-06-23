@@ -28,6 +28,8 @@ export type ActiveView =
   | "corestart"
   | "dashboard"
   | "mobilfunk"
+  | "officesuite"
+  | "saasai"
   | "officeupload"
   | "locked"
   | "ai"
