@@ -6,8 +6,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronDown } from "lucide-react";
 
 export function Sidebar() {
-  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goLocked, mobilfunkStatus } = useCoreSpend();
+  const { activeView, goCockpit, goCoreStart, goDashboard, goMobilfunk, goOfficeSuite, goSaasAi, goLocked, mobilfunkStatus } = useCoreSpend();
   const [telcoOpen, setTelcoOpen] = useState(activeView === "mobilfunk");
+  const [officeOpen, setOfficeOpen] = useState(activeView === "officesuite");
+  const [saasOpen, setSaasOpen] = useState(activeView === "saasai");
 
   return (
     <aside className="hidden md:flex w-[272px] shrink-0 flex-col border-r border-border bg-surface/60 backdrop-blur-xl">
@@ -119,7 +121,79 @@ export function Sidebar() {
           </CollapsibleContent>
         </Collapsible>
 
-        {CATEGORIES_META.filter((c) => !c.available).map((c) => (
+        {/* Office-Suite (active) */}
+        <Collapsible open={officeOpen} onOpenChange={setOfficeOpen} className="rounded-lg">
+          <CollapsibleTrigger asChild>
+            <button
+              className={cn(
+                "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all cursor-pointer",
+                activeView === "officesuite"
+                  ? "bg-success/10 text-foreground border border-success/20"
+                  : "text-foreground hover:bg-accent/50",
+              )}
+            >
+              <span className="text-base w-5 text-center">💻</span>
+              <span className="flex-1 text-left">Office-Suite</span>
+              <span className="text-[9px] uppercase tracking-wider text-success">Aktiv</span>
+              <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200", officeOpen && "rotate-180")} />
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="ml-3 pl-3 border-l border-border space-y-1 mt-1 mb-2">
+              <button
+                onClick={goOfficeSuite}
+                className={cn(
+                  "w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all",
+                  activeView === "officesuite"
+                    ? "bg-success/15 text-foreground border border-success/40"
+                    : "text-foreground/90 hover:bg-success/10 border border-transparent",
+                )}
+              >
+                <span className="text-sm w-4 text-center">📊</span>
+                <span className="flex-1 text-left">Microsoft 365 / Workspace</span>
+                <span className="text-[9px] uppercase tracking-wider text-success">Live</span>
+              </button>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {/* SaaS / AI (active) */}
+        <Collapsible open={saasOpen} onOpenChange={setSaasOpen} className="rounded-lg">
+          <CollapsibleTrigger asChild>
+            <button
+              className={cn(
+                "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all cursor-pointer",
+                activeView === "saasai"
+                  ? "bg-success/10 text-foreground border border-success/20"
+                  : "text-foreground hover:bg-accent/50",
+              )}
+            >
+              <span className="text-base w-5 text-center">☁️</span>
+              <span className="flex-1 text-left">SaaS / AI</span>
+              <span className="text-[9px] uppercase tracking-wider text-success">Aktiv</span>
+              <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200", saasOpen && "rotate-180")} />
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="ml-3 pl-3 border-l border-border space-y-1 mt-1 mb-2">
+              <button
+                onClick={goSaasAi}
+                className={cn(
+                  "w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all",
+                  activeView === "saasai"
+                    ? "bg-success/15 text-foreground border border-success/40"
+                    : "text-foreground/90 hover:bg-success/10 border border-transparent",
+                )}
+              >
+                <span className="text-sm w-4 text-center">🤖</span>
+                <span className="flex-1 text-left">Consumption & Token</span>
+                <span className="text-[9px] uppercase tracking-wider text-success">Live</span>
+              </button>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        {CATEGORIES_META.filter((c) => !c.available && c.key !== "office" && c.key !== "saas").map((c) => (
           <LockedRow key={c.key} cat={c.key} label={c.label} emoji={c.emoji} onClick={() => goLocked(c.key)} />
         ))}
       </nav>

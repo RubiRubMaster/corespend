@@ -2,6 +2,8 @@ import { useCoreSpend } from "@/lib/corespend-store";
 import { ManagementCockpit } from "./ManagementCockpit";
 import { ManagementDashboard } from "./ManagementDashboard";
 import { MobilfunkView } from "./MobilfunkView";
+import { OfficeSuiteView } from "./OfficeSuiteView";
+import { SaasAiView } from "./SaasAiView";
 import { LockedView } from "./LockedView";
 import { DeadlinesView } from "./DeadlinesView";
 import { OptimizationsView } from "./OptimizationsView";
@@ -13,6 +15,8 @@ import { OfficeUploadView } from "./OfficeUploadView";
 export function Dashboard() {
   const { activeView } = useCoreSpend();
   if (activeView === "mobilfunk") return <MobilfunkView />;
+  if (activeView === "officesuite") return <OfficeSuiteView />;
+  if (activeView === "saasai") return <SaasAiView />;
   if (activeView === "locked") return <LockedView />;
   if (activeView === "dashboard") return <ManagementDashboard />;
   if (activeView === "corestart") return <CoreStartView />;
