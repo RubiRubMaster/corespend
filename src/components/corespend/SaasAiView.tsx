@@ -253,7 +253,7 @@ export function SaasAiView() {
             AI-Infrastruktur & API-Kostenüberwachung
           </h3>
           <span className="text-[11px] text-muted-foreground">
-            {TOKEN_ROWS.length} Vorgänge · 1 kritisch
+            {TOKEN_ROWS.length} Vorgänge · {isAnomaly ? "1 kritisch" : "alle im grünen Bereich"}
           </span>
         </div>
         <div className="overflow-x-auto">
