@@ -9,8 +9,8 @@ import {
 
 const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
 
-const usd = (n: number) =>
-  new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(n);
+const eur = (n: number) =>
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", minimumFractionDigits: 2 }).format(n);
 
 // Daily June spend; anomaly scenario shows spike on 10.06., normal stays flat.
 const FLAT_DAYS = [
@@ -175,16 +175,16 @@ export function SaasAiView() {
 
       {/* KPI cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <KpiCard label="Month-to-Date Spend" value={usd(effectiveSaasSpend)} sub="Juni 2026 · 20 Tage" />
+        <KpiCard label="Month-to-Date Spend" value={eur(effectiveSaasSpend)} sub="Juni 2026 · 20 Tage" />
         <KpiCard
           label="Identifizierter Schaden (Anomalie)"
-          value={usd(effectiveSaasDamage)}
+          value={eur(effectiveSaasDamage)}
           sub={isAnomaly ? "Peak am 10.06. · von CoreSpend abgefangen" : "Keine Anomalie detektiert · Verbrauch im grünen Bereich"}
           tone={isAnomaly ? "destructive" : "success"}
         />
         <KpiCard
           label="Hochgerechnetes Risiko (Forecast)"
-          value={usd(isAnomaly ? 38000 : 488)}
+          value={eur(isAnomaly ? 38000 : 488)}
           sub={isAnomaly ? "ohne CoreSpend-Warnung · monatliche Hochrechnung" : "Normalbetrieb · monatliche Hochrechnung"}
           tone={isAnomaly ? "warning" : "success"}
         />
@@ -211,11 +211,11 @@ export function SaasAiView() {
             <YAxis
               stroke="hsl(var(--muted-foreground))"
               fontSize={10}
-              tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k$` : `${v}$`}
+              tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k€` : `${v}€`}
             />
             <Tooltip
               contentStyle={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-              formatter={(v: number) => [usd(v), "Tageskosten"]}
+              formatter={(v: number) => [eur(v), "Tageskosten"]}
             />
             <Line
               type="monotone"
@@ -286,7 +286,7 @@ export function SaasAiView() {
                     "px-4 py-3 text-right tabular-nums font-semibold",
                     r.critical ? "text-destructive" : "text-foreground/90",
                   )}>
-                    {usd(r.cost)}
+                    {eur(r.cost)}
                   </td>
                   <td className="px-6 py-3">
                     <div className={cn(

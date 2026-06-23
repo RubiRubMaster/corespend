@@ -317,9 +317,9 @@ export function ManagementDashboard() {
         kpis={
           saasAiEnabled
             ? [
-                { label: "Month-to-Date Spend", value: `${effectiveSaasSpend.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $` },
-                { label: "Identifizierter Schaden", value: `${effectiveSaasDamage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`, tone: "destructive" },
-                { label: "Forecast-Risiko", value: "38.000 $ / Jahr", tone: "muted" },
+                { label: "Month-to-Date Spend", value: `${effectiveSaasSpend.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €` },
+                { label: "Identifizierter Schaden", value: `${effectiveSaasDamage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`, tone: "destructive" },
+                { label: "Forecast-Risiko", value: "38.000 € / Jahr", tone: "muted" },
               ]
             : lockedTopKpis
         }
@@ -329,9 +329,9 @@ export function ManagementDashboard() {
             items={
               saasAiEnabled
                 ? [
-                    { l: "Anomalie 10.06.", v: "2.650 $", sub: "Data_Analytics_Pipeline · gpt-4o" },
+                    { l: "Anomalie 10.06.", v: "2.650 €", sub: "Data_Analytics_Pipeline · gpt-4o" },
                     { l: "Token-Verbrauch (Spike)", v: "430 Mio.", sub: "Mögliche Endlosschleife detektiert" },
-                    { l: "Normalverbrauch (Schnitt)", v: "≈ 21 $/Tag", sub: "Customer_Support_AI · Pipeline" },
+                    { l: "Normalverbrauch (Schnitt)", v: "≈ 21 €/Tag", sub: "Customer_Support_AI · Pipeline" },
                   ]
                 : [
                     { l: "Seat-Auslastung Salesforce", v: "—", sub: "Aktive Logins / lizenzierte User" },
