@@ -157,8 +157,10 @@ export function Sidebar() {
             </div>
           </CollapsibleContent>
         </Collapsible>
+        )}
 
         {/* SaaS / AI (active) */}
+        {saasAiEnabled && (
         <Collapsible open={saasOpen} onOpenChange={setSaasOpen} className="rounded-lg">
           <CollapsibleTrigger asChild>
             <button
