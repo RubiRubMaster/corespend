@@ -370,6 +370,13 @@ export type CoreSpendSnapshot = {
   tickerOverrides?: (Partial<TickerItem> | null)[];
   basePriceOverride?: number | null;
   discountPerAreaOverride?: number | null;
+  officeSuiteEnabled?: boolean;
+  saasAiEnabled?: boolean;
+  officeSpendOverride?: number | null;
+  officeSavingsOverride?: number | null;
+  saasSpendOverride?: number | null;
+  saasDamageOverride?: number | null;
+  saasScenario?: SaasScenario;
 };
 
 export function CoreSpendProvider({
