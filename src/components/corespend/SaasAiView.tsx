@@ -175,18 +175,18 @@ export function SaasAiView() {
 
       {/* KPI cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <KpiCard label="Month-to-Date Spend" value={usd(2784.6)} sub="Juni 2026 · 20 Tage" />
+        <KpiCard label="Month-to-Date Spend" value={usd(effectiveSaasSpend)} sub="Juni 2026 · 20 Tage" />
         <KpiCard
           label="Identifizierter Schaden (Anomalie)"
-          value={usd(2610)}
-          sub="Peak am 10.06. · von CoreSpend abgefangen"
-          tone="destructive"
+          value={usd(effectiveSaasDamage)}
+          sub={isAnomaly ? "Peak am 10.06. · von CoreSpend abgefangen" : "Keine Anomalie detektiert · Verbrauch im grünen Bereich"}
+          tone={isAnomaly ? "destructive" : "success"}
         />
         <KpiCard
           label="Hochgerechnetes Risiko (Forecast)"
-          value={usd(38000)}
-          sub="ohne CoreSpend-Warnung · monatliche Hochrechnung"
-          tone="warning"
+          value={usd(isAnomaly ? 38000 : 488)}
+          sub={isAnomaly ? "ohne CoreSpend-Warnung · monatliche Hochrechnung" : "Normalbetrieb · monatliche Hochrechnung"}
+          tone={isAnomaly ? "warning" : "success"}
         />
       </div>
 
