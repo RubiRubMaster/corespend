@@ -628,6 +628,8 @@ export function CoreSpendProvider({
     goDashboard,
     goMobilfunk,
     goOfficeUpload,
+    goOfficeSuite,
+    goSaasAi,
     goLocked,
     goDeadlines,
     goOptimizations,
