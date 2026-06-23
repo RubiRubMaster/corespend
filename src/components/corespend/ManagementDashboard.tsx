@@ -317,8 +317,8 @@ export function ManagementDashboard() {
         kpis={
           saasAiEnabled
             ? [
-                { label: "Month-to-Date Spend", value: `${effectiveSaasSpend.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $` },
-                { label: "Identifizierter Schaden", value: `${effectiveSaasDamage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`, tone: "destructive" },
+                { label: "Month-to-Date Spend", value: `${effectiveSaasSpend.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €` },
+                { label: "Identifizierter Schaden", value: `${effectiveSaasDamage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`, tone: "destructive" },
                 { label: "Forecast-Risiko", value: "38.000 € / Jahr", tone: "muted" },
               ]
             : lockedTopKpis
