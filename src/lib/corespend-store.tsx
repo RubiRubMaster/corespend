@@ -634,12 +634,21 @@ export function CoreSpendProvider({
       const damage = saasDamageOverride ?? SAAS_DEFAULTS.damage;
       base.unshift({
         tone: "danger",
-        text: `🔴 KI-Anomalie im SaaS / AI-Bereich: Kosten-Explosion am 10.06. detektiert ($${damage.toLocaleString("de-DE")}). Mögliche Endlosschleife in Data_Analytics_Pipeline (gpt-4o).`,
+        text: `🔴 ALARM: Kosten-Explosion am 10.06. im Projekt 'Data_Analytics_Pipeline' (Modell gpt-4o) abgefangen. Schadensbegrenzung: ${damage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $ gesichert.`,
         target: "saasai",
       });
     }
+    // Office-Suite kaufmännischer Kurzbericht
+    if (officeSuiteEnabled) {
+      const saving = officeSavingsOverride ?? OFFICE_DEFAULTS.potential;
+      base.push({
+        tone: "success",
+        text: `M365-Analyse abgeschlossen: 2 Zombie-Lizenzen identifiziert, 3 Over-Licensing-Downgrades empfohlen. Sofortiges Einsparpotenzial: ${saving.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €/Monat.`,
+        target: "officesuite",
+      });
+    }
     return base;
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride]);
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride, officeSuiteEnabled, officeSavingsOverride]);
 
   const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
   const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
