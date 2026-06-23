@@ -634,7 +634,7 @@ export function CoreSpendProvider({
       const damage = saasDamageOverride ?? SAAS_DEFAULTS.damage;
       base.unshift({
         tone: "danger",
-        text: `🔴 ALARM: Kosten-Explosion am 10.06. im Projekt 'Data_Analytics_Pipeline' (Modell gpt-4o) abgefangen. Schadensbegrenzung: ${damage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $ gesichert.`,
+        text: `🔴 ALARM: Kosten-Explosion am 10.06. im Projekt 'Data_Analytics_Pipeline' (Modell gpt-4o) abgefangen. Schadensbegrenzung: ${damage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} € gesichert.`,
         target: "saasai",
       });
     }
