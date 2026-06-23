@@ -195,6 +195,7 @@ export function Sidebar() {
             </div>
           </CollapsibleContent>
         </Collapsible>
+        )}
 
         {CATEGORIES_META.filter((c) => !c.available && c.key !== "office" && c.key !== "saas").map((c) => (
           <LockedRow key={c.key} cat={c.key} label={c.label} emoji={c.emoji} onClick={() => goLocked(c.key)} />
