@@ -1,23 +1,31 @@
 import { toast } from "sonner";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoreSpend, formatEUR, PRICING } from "@/lib/corespend-store";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { ContractsTable } from "./ContractsTable";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
+} from "recharts";
 
 export function ManagementDashboard() {
   const {
     mobilfunkStatus, metrics, goMobilfunk,
     currentPrice, totalDiscount, activatedAreas,
     effectiveSpendMonthly, effectiveSavingsYearly, timeMode,
+    globalSpendMonthly, globalSavingsYearly,
+    officeSuiteEnabled, saasAiEnabled,
+    effectiveOfficeSpend, effectiveOfficeSavings,
+    effectiveSaasSpend, effectiveSaasDamage,
+    goOfficeSuite, goSaasAi,
   } = useCoreSpend();
   const mobilfunkLive = mobilfunkStatus === "analyzed";
   const live = mobilfunkLive;
   const yearly = timeMode === "yearly";
   const unit = yearly ? "/ Jahr" : "/ Monat";
   const unitShort = yearly ? "/ Jahr" : "/ Mo.";
-  const spendDisplay = yearly ? effectiveSpendMonthly * 12 : effectiveSpendMonthly;
-  const savingsDisplay = yearly ? effectiveSavingsYearly : Math.floor(effectiveSavingsYearly / 12);
+  const spendDisplay = yearly ? globalSpendMonthly * 12 : globalSpendMonthly;
+  const savingsDisplay = yearly ? globalSavingsYearly : Math.floor(globalSavingsYearly / 12);
   const spendLabel = yearly ? "Validierte Jahresausgaben (Gesamt)" : "Validierte Monatsausgaben (Gesamt)";
   const telcoCost = yearly ? metrics.costMonthly * 12 : metrics.costMonthly;
   const telcoSavings = yearly ? metrics.savingsYearly : Math.floor(metrics.savingsYearly / 12);
@@ -59,11 +67,11 @@ export function ManagementDashboard() {
           <div className="grid grid-cols-3 gap-3">
             <GlobalKpi
               label={spendLabel}
-              value={live || effectiveSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
+              value={globalSpendMonthly > 0 ? `${formatEUR(spendDisplay)} ${unit}` : `— ${unit}`}
             />
             <GlobalKpi
               label="Identifiziertes Einsparpotenzial"
-              value={live || effectiveSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
+              value={globalSavingsYearly > 0 ? `${formatEUR(savingsDisplay)} ${unit}` : `— ${unit}`}
               tone="success"
             />
             <GlobalKpi
@@ -101,15 +109,40 @@ export function ManagementDashboard() {
         </div>
       </header>
 
-      {/* Segment-Filter (MVP: Telekommunikation fest aktiv) */}
+      {/* Segment-Filter */}
       <div className="glass-card px-4 py-3 flex flex-wrap items-center gap-2">
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-2">Segment-Filter</span>
-        <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium">
+        <button
+          onClick={goMobilfunk}
+          className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+        >
           📞 Telekommunikation <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
-        </span>
+        </button>
+        {officeSuiteEnabled ? (
+          <button
+            onClick={goOfficeSuite}
+            className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+          >
+            💻 Office-Suite <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
+          </button>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border bg-surface/40 text-muted-foreground px-3 py-1.5 opacity-60 cursor-not-allowed">
+            🔒 💻 Office-Suite
+          </span>
+        )}
+        {saasAiEnabled ? (
+          <button
+            onClick={goSaasAi}
+            className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+          >
+            ☁️ SaaS / AI <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
+          </button>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border bg-surface/40 text-muted-foreground px-3 py-1.5 opacity-60 cursor-not-allowed">
+            🔒 ☁️ SaaS / AI
+          </span>
+        )}
         {[
-          { e: "💻", l: "Office" },
-          { e: "☁️", l: "SaaS / AI" },
           { e: "🌩", l: "Cloud" },
           { e: "🔌", l: "Hardware" },
         ].map((s) => (
@@ -122,6 +155,18 @@ export function ManagementDashboard() {
           </span>
         ))}
       </div>
+
+      {/* Global Analytics Charts */}
+      <GlobalAnalyticsCharts
+        telcoMonthly={metrics.costMonthly}
+        telcoSavingsMonthly={Math.round(metrics.savingsYearly / 12)}
+        officeMonthly={officeSuiteEnabled ? effectiveOfficeSpend : 0}
+        officeSavings={officeSuiteEnabled ? effectiveOfficeSavings : 0}
+        saasMonthly={saasAiEnabled ? effectiveSaasSpend : 0}
+        saasSavings={saasAiEnabled ? effectiveSaasDamage : 0}
+      />
+
+
 
 
 
@@ -531,6 +576,95 @@ function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?
       >
         {value}
       </span>
+    </div>
+  );
+}
+
+const COLORS = {
+  telco: "hsl(160 70% 45%)",
+  office: "hsl(45 90% 55%)",
+  saas: "hsl(265 75% 60%)",
+};
+
+function GlobalAnalyticsCharts({
+  telcoMonthly, telcoSavingsMonthly,
+  officeMonthly, officeSavings,
+  saasMonthly, saasSavings,
+}: {
+  telcoMonthly: number; telcoSavingsMonthly: number;
+  officeMonthly: number; officeSavings: number;
+  saasMonthly: number; saasSavings: number;
+}) {
+  const trendData = useMemo(() => {
+    const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun"];
+    return months.map((mo, i) => ({
+      month: mo,
+      Mobilfunk: Math.round(telcoMonthly * (0.94 + i * 0.012)),
+      "Office-Suite": Math.round(officeMonthly * (0.96 + i * 0.008)),
+      "SaaS / AI": Math.round(saasMonthly * (i === 5 ? 1.95 : (0.95 + i * 0.01))),
+    }));
+  }, [telcoMonthly, officeMonthly, saasMonthly]);
+
+  const savingsData = useMemo(
+    () => [
+      { category: "Mobilfunk", potenzial: telcoSavingsMonthly, fill: COLORS.telco },
+      { category: "Office-Suite", potenzial: Math.round(officeSavings), fill: COLORS.office },
+      { category: "SaaS / AI", potenzial: Math.round(saasSavings), fill: COLORS.saas },
+    ].filter((d) => d.potenzial > 0),
+    [telcoSavingsMonthly, officeSavings, saasSavings],
+  );
+
+  const tooltipStyle = {
+    background: "hsl(var(--background))",
+    border: "1px solid hsl(var(--border))",
+    borderRadius: 8,
+    fontSize: 12,
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <div className="glass-card p-5 flex flex-col gap-3">
+        <div>
+          <h3 className="text-sm font-semibold tracking-tight">Gesamt-Kosten · Monatlicher Verlauf</h3>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Gestapelte Ausgaben Mobilfunk · Office-Suite · SaaS / AI
+          </p>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={trendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => formatEUR(v)} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <Bar dataKey="Mobilfunk" stackId="a" fill={COLORS.telco} radius={[0, 0, 0, 0]} />
+            <Bar dataKey="Office-Suite" stackId="a" fill={COLORS.office} radius={[0, 0, 0, 0]} />
+            <Bar dataKey="SaaS / AI" stackId="a" fill={COLORS.saas} radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="glass-card p-5 flex flex-col gap-3">
+        <div>
+          <h3 className="text-sm font-semibold tracking-tight">Einsparpotenzial nach Kategorie</h3>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Monatliches Optimierungs-Potenzial je aktivem Bereich
+          </p>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={savingsData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis dataKey="category" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => `${v}€`} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatEUR(v), "Potenzial / Monat"]} />
+            <Bar dataKey="potenzial" radius={[6, 6, 0, 0]}>
+              {savingsData.map((d) => (
+                <Cell key={d.category} fill={d.fill} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

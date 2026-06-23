@@ -10,11 +10,16 @@ export function ManagementCockpit() {
   const {
     mobilfunkStatus, cockpit: m, tickerItems, timeMode, spendBreakdown,
     goDeadlines, goOptimizations, goSpend, goRisk, setActiveView,
+    globalSpendMonthly, globalSavingsYearly,
+    officeSuiteEnabled, saasAiEnabled,
   } = useCoreSpend();
   const live = mobilfunkStatus === "analyzed";
+  const anyLive = live || officeSuiteEnabled || saasAiEnabled;
   const yearly = timeMode === "yearly";
-  const spendValue = yearly ? m.spendMonthly * 12 : m.spendMonthly;
-  const savingsValue = yearly ? m.savingsYearly : Math.floor(m.savingsYearly / 12);
+  const spendMonthlyEffective = anyLive ? globalSpendMonthly : m.spendMonthly;
+  const savingsYearlyEffective = anyLive ? globalSavingsYearly : m.savingsYearly;
+  const spendValue = yearly ? spendMonthlyEffective * 12 : spendMonthlyEffective;
+  const savingsValue = yearly ? savingsYearlyEffective : Math.floor(savingsYearlyEffective / 12);
   const unit = yearly ? "/ Jahr" : "/ Monat";
   const spendLabel = yearly ? "Validierte Jahresausgaben" : "Validierte Monatsausgaben";
 
@@ -49,22 +54,22 @@ export function ManagementCockpit() {
       <section className="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_1fr_1.5fr]">
         <KpiCard
           label={spendLabel}
-          value={live ? `${formatEUR(spendValue)}` : "—"}
+          value={anyLive ? `${formatEUR(spendValue)}` : "—"}
           unit={unit}
-          sub={live ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr` : "Datenbasis wird geladen"}
+          sub={anyLive ? `▲ +${m.spendYoyPercent.toFixed(1).replace(".", ",")} % vs. Vorjahr · Mobilfunk + Office + SaaS / AI` : "Datenbasis wird geladen"}
           subTone="destructive"
-          locked={!live}
-          onClick={live ? goSpend : undefined}
+          locked={!anyLive}
+          onClick={anyLive ? goSpend : undefined}
         />
         <KpiCard
           label="Identifiziertes Sparpotenzial"
-          value={live ? `${formatEUR(savingsValue)}` : "—"}
+          value={anyLive ? `${formatEUR(savingsValue)}` : "—"}
           unit={unit}
-          sub={live ? `${m.savingsPercent.toFixed(1).replace(".", ",")} % Optimierungspotenzial im bestehenden Stack` : "Wird nach Analyse berechnet"}
+          sub={anyLive ? `Aggregiert aus allen aktiven Bereichen` : "Wird nach Analyse berechnet"}
           subTone="success"
           valueTone="success"
-          locked={!live}
-          onClick={live ? goOptimizations : undefined}
+          locked={!anyLive}
+          onClick={anyLive ? goOptimizations : undefined}
         />
         <KpiCard
           label="Kritische Fristen"

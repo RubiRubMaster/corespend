@@ -270,6 +270,8 @@ type Ctx = {
   savingsOverride: number | null;
   effectiveSpendMonthly: number;
   effectiveSavingsYearly: number;
+  globalSpendMonthly: number;
+  globalSavingsYearly: number;
   currentPrice: number;
   totalDiscount: number;
   activatedAreas: number;
@@ -632,12 +634,21 @@ export function CoreSpendProvider({
       const damage = saasDamageOverride ?? SAAS_DEFAULTS.damage;
       base.unshift({
         tone: "danger",
-        text: `🔴 KI-Anomalie im SaaS / AI-Bereich: Kosten-Explosion am 10.06. detektiert ($${damage.toLocaleString("de-DE")}). Mögliche Endlosschleife in Data_Analytics_Pipeline (gpt-4o).`,
+        text: `🔴 ALARM: Kosten-Explosion am 10.06. im Projekt 'Data_Analytics_Pipeline' (Modell gpt-4o) abgefangen. Schadensbegrenzung: ${damage.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $ gesichert.`,
         target: "saasai",
       });
     }
+    // Office-Suite kaufmännischer Kurzbericht
+    if (officeSuiteEnabled) {
+      const saving = officeSavingsOverride ?? OFFICE_DEFAULTS.potential;
+      base.push({
+        tone: "success",
+        text: `M365-Analyse abgeschlossen: 2 Zombie-Lizenzen identifiziert, 3 Over-Licensing-Downgrades empfohlen. Sofortiges Einsparpotenzial: ${saving.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €/Monat.`,
+        target: "officesuite",
+      });
+    }
     return base;
-  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride]);
+  }, [deadlines, optimizations, derivedSavings, cockpitMetrics.deadlineWindowDays, tickerOverrides, saasAiEnabled, saasScenario, saasDamageOverride, officeSuiteEnabled, officeSavingsOverride]);
 
   const effectiveBasePrice = basePriceOverride ?? PRICING.BASE_PRICE;
   const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
@@ -662,6 +673,21 @@ export function CoreSpendProvider({
   const effectiveSaasSpend = saasSpendOverride ?? SAAS_DEFAULTS.mtdSpend;
   const effectiveSaasDamage = saasScenario === "normal" ? 0 : (saasDamageOverride ?? SAAS_DEFAULTS.damage);
 
+  // Global aggregates across Mobilfunk + Office-Suite + SaaS / AI
+  const globalSpendMonthly = useMemo(() => {
+    const telco = mobilfunkLive ? metrics.costMonthly : 0;
+    const office = officeSuiteEnabled ? effectiveOfficeSpend : 0;
+    const saas = saasAiEnabled ? effectiveSaasSpend : 0;
+    return telco + office + saas;
+  }, [mobilfunkLive, metrics.costMonthly, officeSuiteEnabled, effectiveOfficeSpend, saasAiEnabled, effectiveSaasSpend]);
+
+  const globalSavingsYearly = useMemo(() => {
+    const telco = mobilfunkLive ? derivedSavings : 0;
+    const office = officeSuiteEnabled ? effectiveOfficeSavings * 12 : 0;
+    const saas = saasAiEnabled ? effectiveSaasDamage * 12 : 0;
+    return Math.ceil(telco + office + saas);
+  }, [mobilfunkLive, derivedSavings, officeSuiteEnabled, effectiveOfficeSavings, saasAiEnabled, effectiveSaasDamage]);
+
   const value: Ctx = {
     mobilfunkStatus,
     mobilfunkFile,
@@ -677,6 +703,8 @@ export function CoreSpendProvider({
     savingsOverride,
     effectiveSpendMonthly,
     effectiveSavingsYearly,
+    globalSpendMonthly,
+    globalSavingsYearly,
     currentPrice,
     totalDiscount,
     activatedAreas,
