@@ -77,7 +77,7 @@ export function CoreStartView() {
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {TILES.map((t) => {
-          const status = coreStartStatuses[t.key];
+          const status = effectiveStatus(t.key);
           const meta = STATUS_META[status];
           const isComingSoon = status === "comingsoon";
           const Icon = t.Icon;
