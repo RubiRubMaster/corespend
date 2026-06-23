@@ -245,6 +245,18 @@ export const PRICING = {
   TOTAL_AREAS: 5,
 };
 
+/** Defaults for Office-Suite & SaaS/AI admin-controlled KPIs. */
+export const OFFICE_DEFAULTS = {
+  totalSpend: 1014, // € / Monat
+  potential: 245,   // € / Monat
+};
+export const SAAS_DEFAULTS = {
+  mtdSpend: 2784.6, // $ / Monat
+  damage: 2610,     // $ Anomalie-Schaden
+};
+export type SaasScenario = "anomaly" | "normal";
+
+
 type Ctx = {
   mobilfunkStatus: UploadStatus;
   mobilfunkFile?: string;
