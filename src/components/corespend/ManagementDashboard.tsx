@@ -657,7 +657,11 @@ function GlobalAnalyticsCharts({
             <XAxis dataKey="category" stroke="hsl(var(--muted-foreground))" fontSize={11} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => `${v}€`} />
             <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatEUR(v), "Potenzial / Monat"]} />
-            <Bar dataKey="potenzial" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="potenzial" radius={[6, 6, 0, 0]}>
+              {savingsData.map((d) => (
+                <Cell key={d.category} fill={d.fill} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
