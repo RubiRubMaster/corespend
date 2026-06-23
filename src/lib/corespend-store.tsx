@@ -643,7 +643,7 @@ export function CoreSpendProvider({
   const effectiveDiscountPerArea = discountPerAreaOverride ?? PRICING.DISCOUNT_PER_AREA;
 
   const { activatedAreas, totalDiscount, currentPrice, effectiveSpendMonthly, effectiveSavingsYearly } = useMemo(() => {
-    const areas = mobilfunkLive ? 1 : 0;
+    const areas = (mobilfunkLive ? 1 : 0) + (officeSuiteEnabled ? 1 : 0) + (saasAiEnabled ? 1 : 0);
     const discount = areas * effectiveDiscountPerArea;
     const price = priceOverride ?? Math.max(effectiveBasePrice - discount, PRICING.MIN_PRICE);
     const spend = spendOverride ?? (mobilfunkLive ? metrics.costMonthly : 0);
@@ -655,7 +655,12 @@ export function CoreSpendProvider({
       effectiveSpendMonthly: spend,
       effectiveSavingsYearly: savings,
     };
-  }, [mobilfunkLive, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
+  }, [mobilfunkLive, officeSuiteEnabled, saasAiEnabled, priceOverride, spendOverride, savingsOverride, metrics.costMonthly, derivedSavings, effectiveBasePrice, effectiveDiscountPerArea]);
+
+  const effectiveOfficeSpend = officeSpendOverride ?? OFFICE_DEFAULTS.totalSpend;
+  const effectiveOfficeSavings = officeSavingsOverride ?? OFFICE_DEFAULTS.potential;
+  const effectiveSaasSpend = saasSpendOverride ?? SAAS_DEFAULTS.mtdSpend;
+  const effectiveSaasDamage = saasScenario === "normal" ? 0 : (saasDamageOverride ?? SAAS_DEFAULTS.damage);
 
   const value: Ctx = {
     mobilfunkStatus,
