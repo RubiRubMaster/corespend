@@ -579,3 +579,88 @@ function GlobalKpi({ label, value, tone }: { label: string; value: string; tone?
     </div>
   );
 }
+
+const COLORS = {
+  telco: "hsl(160 70% 45%)",
+  office: "hsl(45 90% 55%)",
+  saas: "hsl(265 75% 60%)",
+};
+
+function GlobalAnalyticsCharts({
+  telcoMonthly, telcoSavingsMonthly,
+  officeMonthly, officeSavings,
+  saasMonthly, saasSavings,
+}: {
+  telcoMonthly: number; telcoSavingsMonthly: number;
+  officeMonthly: number; officeSavings: number;
+  saasMonthly: number; saasSavings: number;
+}) {
+  const trendData = useMemo(() => {
+    const months = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun"];
+    return months.map((mo, i) => ({
+      month: mo,
+      Mobilfunk: Math.round(telcoMonthly * (0.94 + i * 0.012)),
+      "Office-Suite": Math.round(officeMonthly * (0.96 + i * 0.008)),
+      "SaaS / AI": Math.round(saasMonthly * (i === 5 ? 1.95 : (0.95 + i * 0.01))),
+    }));
+  }, [telcoMonthly, officeMonthly, saasMonthly]);
+
+  const savingsData = useMemo(
+    () => [
+      { category: "Mobilfunk", potenzial: telcoSavingsMonthly, fill: COLORS.telco },
+      { category: "Office-Suite", potenzial: Math.round(officeSavings), fill: COLORS.office },
+      { category: "SaaS / AI", potenzial: Math.round(saasSavings), fill: COLORS.saas },
+    ].filter((d) => d.potenzial > 0),
+    [telcoSavingsMonthly, officeSavings, saasSavings],
+  );
+
+  const tooltipStyle = {
+    background: "hsl(var(--background))",
+    border: "1px solid hsl(var(--border))",
+    borderRadius: 8,
+    fontSize: 12,
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <div className="glass-card p-5 flex flex-col gap-3">
+        <div>
+          <h3 className="text-sm font-semibold tracking-tight">Gesamt-Kosten · Monatlicher Verlauf</h3>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Gestapelte Ausgaben Mobilfunk · Office-Suite · SaaS / AI
+          </p>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={trendData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => formatEUR(v)} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <Bar dataKey="Mobilfunk" stackId="a" fill={COLORS.telco} radius={[0, 0, 0, 0]} />
+            <Bar dataKey="Office-Suite" stackId="a" fill={COLORS.office} radius={[0, 0, 0, 0]} />
+            <Bar dataKey="SaaS / AI" stackId="a" fill={COLORS.saas} radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="glass-card p-5 flex flex-col gap-3">
+        <div>
+          <h3 className="text-sm font-semibold tracking-tight">Einsparpotenzial nach Kategorie</h3>
+          <p className="text-[11px] text-muted-foreground mt-0.5">
+            Monatliches Optimierungs-Potenzial je aktivem Bereich
+          </p>
+        </div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={savingsData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis dataKey="category" stroke="hsl(var(--muted-foreground))" fontSize={11} />
+            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickFormatter={(v) => `${v}€`} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatEUR(v), "Potenzial / Monat"]} />
+            <Bar dataKey="potenzial" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
