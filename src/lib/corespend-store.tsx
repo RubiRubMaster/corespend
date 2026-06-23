@@ -406,6 +406,8 @@ export function CoreSpendProvider({
   const goDashboard = useCallback(() => { setActiveView("dashboard"); setLockedHint(null); }, []);
   const goMobilfunk = useCallback(() => { setActiveView("mobilfunk"); setLockedHint(null); }, []);
   const goOfficeUpload = useCallback(() => { setActiveView("officeupload"); setLockedHint(null); }, []);
+  const goOfficeSuite = useCallback(() => { setActiveView("officesuite"); setLockedHint(null); }, []);
+  const goSaasAi = useCallback(() => { setActiveView("saasai"); setLockedHint(null); }, []);
   const goLocked = useCallback((c: Category) => { setLockedHint(c); setActiveView("locked"); }, []);
   const goDeadlines = useCallback(() => { setActiveView("deadlines"); setLockedHint(null); }, []);
   const goOptimizations = useCallback(() => { setActiveView("optimizations"); setLockedHint(null); }, []);
