@@ -13,10 +13,10 @@ import { CoreStartView } from "./CoreStartView";
 import { OfficeUploadView } from "./OfficeUploadView";
 
 export function Dashboard() {
-  const { activeView } = useCoreSpend();
+  const { activeView, officeSuiteEnabled, saasAiEnabled } = useCoreSpend();
   if (activeView === "mobilfunk") return <MobilfunkView />;
-  if (activeView === "officesuite") return <OfficeSuiteView />;
-  if (activeView === "saasai") return <SaasAiView />;
+  if (activeView === "officesuite" && officeSuiteEnabled) return <OfficeSuiteView />;
+  if (activeView === "saasai" && saasAiEnabled) return <SaasAiView />;
   if (activeView === "locked") return <LockedView />;
   if (activeView === "dashboard") return <ManagementDashboard />;
   if (activeView === "corestart") return <CoreStartView />;
