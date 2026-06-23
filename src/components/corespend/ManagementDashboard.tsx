@@ -106,15 +106,40 @@ export function ManagementDashboard() {
         </div>
       </header>
 
-      {/* Segment-Filter (MVP: Telekommunikation fest aktiv) */}
+      {/* Segment-Filter */}
       <div className="glass-card px-4 py-3 flex flex-wrap items-center gap-2">
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-2">Segment-Filter</span>
-        <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium">
+        <button
+          onClick={goMobilfunk}
+          className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+        >
           📞 Telekommunikation <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
-        </span>
+        </button>
+        {officeSuiteEnabled ? (
+          <button
+            onClick={goOfficeSuite}
+            className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+          >
+            💻 Office-Suite <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
+          </button>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border bg-surface/40 text-muted-foreground px-3 py-1.5 opacity-60 cursor-not-allowed">
+            🔒 💻 Office-Suite
+          </span>
+        )}
+        {saasAiEnabled ? (
+          <button
+            onClick={goSaasAi}
+            className="inline-flex items-center gap-1.5 text-xs rounded-full border border-success/40 bg-success/10 text-success px-3 py-1.5 font-medium hover:bg-success/15 transition-colors"
+          >
+            ☁️ SaaS / AI <span className="text-[10px] uppercase tracking-wider opacity-80">Aktiv</span>
+          </button>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-xs rounded-full border border-border bg-surface/40 text-muted-foreground px-3 py-1.5 opacity-60 cursor-not-allowed">
+            🔒 ☁️ SaaS / AI
+          </span>
+        )}
         {[
-          { e: "💻", l: "Office" },
-          { e: "☁️", l: "SaaS / AI" },
           { e: "🌩", l: "Cloud" },
           { e: "🔌", l: "Hardware" },
         ].map((s) => (
@@ -127,6 +152,18 @@ export function ManagementDashboard() {
           </span>
         ))}
       </div>
+
+      {/* Global Analytics Charts */}
+      <GlobalAnalyticsCharts
+        telcoMonthly={metrics.costMonthly}
+        telcoSavingsMonthly={Math.round(metrics.savingsYearly / 12)}
+        officeMonthly={officeSuiteEnabled ? effectiveOfficeSpend : 0}
+        officeSavings={officeSuiteEnabled ? effectiveOfficeSavings : 0}
+        saasMonthly={saasAiEnabled ? effectiveSaasSpend : 0}
+        saasSavings={saasAiEnabled ? effectiveSaasDamage : 0}
+      />
+
+
 
 
 
