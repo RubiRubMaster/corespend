@@ -126,6 +126,97 @@ export function AdminPanel() {
             />
           </div>
 
+          {/* Office-Suite + SaaS / AI · Bereichs-Steuerung */}
+          <div className="md:col-span-4 rounded-lg border border-success/30 bg-success/5 p-3 space-y-3">
+            <div className="text-[10px] uppercase tracking-wider text-success flex items-center gap-1.5">
+              🧩 Analyse Cockpit · Bereiche & KPI-Simulatoren
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2">
+              <ToggleRow
+                label="Office-Suite aktiv (Microsoft 365 / Workspace)"
+                checked={officeSuiteEnabled}
+                onChange={setOfficeSuiteEnabled}
+                hint={officeSuiteEnabled ? "Sichtbar · zählt zur Lizenz-Berechnung (−Bonus)" : "Ausgeblendet · kein Bonus"}
+              />
+              <ToggleRow
+                label="SaaS / AI aktiv (Consumption & Token)"
+                checked={saasAiEnabled}
+                onChange={setSaasAiEnabled}
+                hint={saasAiEnabled ? "Sichtbar · zählt zur Lizenz-Berechnung (−Bonus)" : "Ausgeblendet · kein Bonus"}
+              />
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              <NumField
+                label="Office · Total License Spend (€/Mo.)"
+                value={officeSpendOverride ?? effectiveOfficeSpend}
+                placeholder={`${OFFICE_DEFAULTS.totalSpend}`}
+                onChange={(n) => setOfficeSpendOverride(Number.isFinite(n) ? n : null)}
+                onClear={() => setOfficeSpendOverride(null)}
+                cleared={officeSpendOverride === null}
+                hint={`Aktuell: ${formatEUR(effectiveOfficeSpend)} (Standard ${formatEUR(OFFICE_DEFAULTS.totalSpend)})`}
+              />
+              <NumField
+                label="Office · Identifiziertes Potenzial (€/Mo.)"
+                value={officeSavingsOverride ?? effectiveOfficeSavings}
+                placeholder={`${OFFICE_DEFAULTS.potential}`}
+                onChange={(n) => setOfficeSavingsOverride(Number.isFinite(n) ? n : null)}
+                onClear={() => setOfficeSavingsOverride(null)}
+                cleared={officeSavingsOverride === null}
+                hint={`Aktuell: ${formatEUR(effectiveOfficeSavings)} (Standard ${formatEUR(OFFICE_DEFAULTS.potential)})`}
+              />
+              <NumField
+                label="SaaS / AI · Month-to-Date Spend ($)"
+                value={saasSpendOverride ?? effectiveSaasSpend}
+                placeholder={`${SAAS_DEFAULTS.mtdSpend}`}
+                onChange={(n) => setSaasSpendOverride(Number.isFinite(n) ? n : null)}
+                onClear={() => setSaasSpendOverride(null)}
+                cleared={saasSpendOverride === null}
+                hint={`Aktuell: ${usd(effectiveSaasSpend)} (Standard ${usd(SAAS_DEFAULTS.mtdSpend)})`}
+              />
+              <NumField
+                label="SaaS / AI · Identifizierter Schaden ($)"
+                value={saasDamageOverride ?? (saasScenario === "normal" ? 0 : SAAS_DEFAULTS.damage)}
+                placeholder={`${SAAS_DEFAULTS.damage}`}
+                onChange={(n) => setSaasDamageOverride(Number.isFinite(n) ? n : null)}
+                onClear={() => setSaasDamageOverride(null)}
+                cleared={saasDamageOverride === null}
+                hint={`Aktuell: ${usd(effectiveSaasDamage)} · Szenario: ${saasScenario === "anomaly" ? "Anomalie" : "Normal (0 $)"}`}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap pt-1">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground mr-1">
+                Daten-Szenario · SaaS / AI:
+              </span>
+              <button
+                onClick={() => setSaasScenario("normal")}
+                className={cn(
+                  "text-xs rounded-md border px-3 py-1.5 transition",
+                  saasScenario === "normal"
+                    ? "border-success/60 bg-success/15 text-success"
+                    : "border-border bg-background/40 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                🟢 Normaler Verbrauch
+              </button>
+              <button
+                onClick={() => setSaasScenario("anomaly")}
+                className={cn(
+                  "text-xs rounded-md border px-3 py-1.5 transition",
+                  saasScenario === "anomaly"
+                    ? "border-destructive/60 bg-destructive/15 text-destructive"
+                    : "border-border bg-background/40 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                🔴 KI-Anomalie am 10. Juni
+              </button>
+            </div>
+          </div>
+
+
+
           <div className="md:col-span-4 rounded-lg border border-primary/30 bg-primary/5 p-3">
             <div className="text-[10px] uppercase tracking-wider text-primary mb-1.5 flex items-center gap-1.5">
               🤖 AI Consultant · Kundenbriefing (Mobilfunk-Nebenabreden)
