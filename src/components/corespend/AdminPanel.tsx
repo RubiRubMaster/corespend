@@ -303,3 +303,26 @@ function NumField({
     </div>
   );
 }
+
+function ToggleRow({
+  label, checked, onChange, hint,
+}: {
+  label: string; checked: boolean; onChange: (v: boolean) => void; hint?: string;
+}) {
+  return (
+    <label className="flex items-center gap-3 rounded-lg border border-border bg-background/40 px-3 py-2.5 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="h-4 w-4 accent-success"
+      />
+      <span className="text-xs leading-tight">
+        <span className="block font-medium text-foreground">{label}</span>
+        {hint && (
+          <span className={cn("block", checked ? "text-success" : "text-muted-foreground")}>{hint}</span>
+        )}
+      </span>
+    </label>
+  );
+}
