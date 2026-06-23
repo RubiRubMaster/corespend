@@ -39,18 +39,30 @@ const STATUS_META: Record<CoreStartStatus, { label: string; badge: string; dot: 
 };
 
 export function CoreStartView() {
-  const { coreStartStatuses, goMobilfunk, goOfficeUpload } = useCoreSpend();
+  const {
+    coreStartStatuses, goMobilfunk, goOfficeSuite, goSaasAi,
+    officeSuiteEnabled, saasAiEnabled,
+  } = useCoreSpend();
   const [infoTile, setInfoTile] = useState<Tile | null>(null);
 
+  // Office-Suite & SaaS / AI follow the Admin Bar toggles globally
+  const effectiveStatus = (k: Category): CoreStartStatus => {
+    if (k === "office") return officeSuiteEnabled ? "analyzed" : "comingsoon";
+    if (k === "saas") return saasAiEnabled ? "analyzed" : "comingsoon";
+    return coreStartStatuses[k];
+  };
+
   const onTileClick = (t: Tile) => {
-    const status = coreStartStatuses[t.key];
+    const status = effectiveStatus(t.key);
     if (status === "comingsoon") {
       setInfoTile(t);
       return;
     }
     if (t.key === "telco") goMobilfunk();
-    else if (t.key === "office") goOfficeUpload();
+    else if (t.key === "office") goOfficeSuite();
+    else if (t.key === "saas") goSaasAi();
   };
+
 
   return (
     <div className="space-y-8">
