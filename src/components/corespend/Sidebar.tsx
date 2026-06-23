@@ -122,6 +122,7 @@ export function Sidebar() {
         </Collapsible>
 
         {/* Office-Suite (active) */}
+        {officeSuiteEnabled && (
         <Collapsible open={officeOpen} onOpenChange={setOfficeOpen} className="rounded-lg">
           <CollapsibleTrigger asChild>
             <button
