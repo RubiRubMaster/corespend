@@ -414,6 +414,13 @@ export function CoreSpendProvider({
   const [tickerOverrides, setTickerOverrides] = useState<(Partial<TickerItem> | null)[]>(s.tickerOverrides ?? [null, null, null, null]);
   const [basePriceOverride, setBasePriceOverride] = useState<number | null>(s.basePriceOverride ?? null);
   const [discountPerAreaOverride, setDiscountPerAreaOverride] = useState<number | null>(s.discountPerAreaOverride ?? null);
+  const [officeSuiteEnabled, setOfficeSuiteEnabled] = useState<boolean>(s.officeSuiteEnabled ?? true);
+  const [saasAiEnabled, setSaasAiEnabled] = useState<boolean>(s.saasAiEnabled ?? true);
+  const [officeSpendOverride, setOfficeSpendOverride] = useState<number | null>(s.officeSpendOverride ?? null);
+  const [officeSavingsOverride, setOfficeSavingsOverride] = useState<number | null>(s.officeSavingsOverride ?? null);
+  const [saasSpendOverride, setSaasSpendOverride] = useState<number | null>(s.saasSpendOverride ?? null);
+  const [saasDamageOverride, setSaasDamageOverride] = useState<number | null>(s.saasDamageOverride ?? null);
+  const [saasScenario, setSaasScenario] = useState<SaasScenario>(s.saasScenario ?? "anomaly");
 
   // Debounced persistence — fires whenever any persistable state changes
   const persistRef = useRef(onPersist);
