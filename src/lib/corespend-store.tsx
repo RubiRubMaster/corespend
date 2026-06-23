@@ -435,6 +435,9 @@ export function CoreSpendProvider({
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
       strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
       basePriceOverride, discountPerAreaOverride,
+      officeSuiteEnabled, saasAiEnabled,
+      officeSpendOverride, officeSavingsOverride,
+      saasSpendOverride, saasDamageOverride, saasScenario,
     };
     const t = setTimeout(() => { persistRef.current?.(snap); }, 800);
     return () => clearTimeout(t);
@@ -442,7 +445,10 @@ export function CoreSpendProvider({
       deadlines, optimizations, spendBreakdown, riskItems,
       priceOverride, spendOverride, savingsOverride, mobilfunkStage,
       strategy, coreStartStatuses, timeMode, consultantBriefing, tickerOverrides,
-      basePriceOverride, discountPerAreaOverride]);
+      basePriceOverride, discountPerAreaOverride,
+      officeSuiteEnabled, saasAiEnabled,
+      officeSpendOverride, officeSavingsOverride,
+      saasSpendOverride, saasDamageOverride, saasScenario]);
 
   const updateCoreStartStatus = useCallback((c: Category, s: CoreStartStatus) => {
     setCoreStartStatuses((prev) => ({ ...prev, [c]: s }));
